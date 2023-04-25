@@ -78,6 +78,7 @@
     "module": "es2022",
     "moduleResolution": "bundler",
     "traceResolution": false,
+    "explainFiles": false,
     "extendedDiagnostics": false,
     "baseUrl": "./",
     "rootDir": ".",
