@@ -129,6 +129,9 @@
     "**/*.postcss"
   ],
   "scripts": {
+    "dev": "vite serve --force --mode development --config ./vite.config.mjs",
+    "preview": "vite preview --mode development --config ./vite.config.mjs",
+    "production": "vite build --force --mode production --config ./vite.config.mjs",
     "update_tsconfig_lib": "node --experimental-network-imports --experimental-import-meta-resolve --experimental-wasm-modules --experimental-top-level-await --experimental-vm-modules --experimental-json-modules --experimental-shadow-realm --no-warnings --no-deprecation --experimental-loader ts-node/esm ./configures/update_tsconfig_lib/UpdateTSConfigLib.mjs"
   },
   "devDependencies": {

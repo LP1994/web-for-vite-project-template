@@ -9,4 +9,6 @@
 
 'use strict';
 
+import './HelloWorld.css';
+
 document.querySelector( 'main' ).textContent = `Hello World!`;

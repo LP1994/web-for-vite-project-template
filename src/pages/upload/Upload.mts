@@ -10,11 +10,13 @@
 'use strict';
 
 import {
-  type ComponentPublicInstance,
   type App,
+  type ComponentPublicInstance,
 
   createApp,
 } from 'vue';
+
+import './Upload.css';
 
 // @ts-expect-error
 import UploadComponentForVue3 from './Upload.Vue3.ts.vue';
