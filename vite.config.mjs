@@ -24,8 +24,6 @@ import {
   defineConfig,
 } from 'vite';
 
-import checker from 'vite-plugin-checker';
-
 /**
  * 该函数返回值完全等价于“CommonJS modules”中的“__dirname”，是一个字符串，Windows系统下型如：G:\WebStormWS\xx\tools。<br />
  *
@@ -158,6 +156,14 @@ export default defineConfig( ( {
       // workers文件夹 End
     },
     /**
+     * @type {string} 默认：“/”，开发或生产环境服务的公共基础路径。合法的值包括以下几种：
+     * 绝对URL路径名，例如：/foo/
+     * 完整的URL，例如：https://foo.com/
+     * 空字符串或./（用于嵌入形式的开发）
+     */
+    base = ``,
+    // ToDo
+    /**
      * @type {object} 详细配置见：
      * https://cn.vitejs.dev/config/shared-options.html#esbuild
      * node_modules/vite/dist/node/index.d.ts:2470
@@ -190,36 +196,7 @@ export default defineConfig( ( {
      * @rollup/plugin-commonjs：https://github.com/rollup/plugins/tree/master/packages/commonjs
      */
     plugins = [
-      checker( {
-        overlay: {
-          initialIsOpen: true,
-          position: 'bl',
-          /**
-           * 使用它向徽章按钮添加额外的样式字符串，字符串格式为：[Svelte style](https://svelte.dev/docs#template-syntax-element-directives-style-property)<br />
-           * 例如，如果要隐藏徽章，可以将“display: none;”传递给badgeStyle属性。<br />
-           */
-          // badgeStyle: ``,
-          /**
-           * 使用它向诊断面板添加额外的样式字符串，字符串格式为：[Svelte style](https://svelte.dev/docs#template-syntax-element-directives-style-property)<br />
-           * 例如，如果要更改面板的不透明度，可以将“opacity: 0.8;”传递给panelStyle属性。<br />
-           */
-          // panelStyle: ``,
-        },
-        terminal: true,
-        enableBuild: true,
-        typescript: {
-          root: resolve( __dirname, `./` ),
-          tsconfigPath: './tsconfig.json',
-          buildMode: false,
-        },
-        // 供Vue3使用。
-        vueTsc: {
-          root: resolve( __dirname, `./` ),
-          tsconfigPath: './tsconfig.json',
-        },
-        // 供Vue2使用。
-        // vls: true,
-      } ),
+      // ToDo
       /**
        * 该插件的详细配置选项见：
        * node_modules/@vitejs/plugin-vue/dist/index.d.ts:20
@@ -237,6 +214,7 @@ export default defineConfig( ( {
    */
   if( command === 'serve' ){
     return {
+      base,
       esbuild,
       plugins: [
         ...plugins,
@@ -252,6 +230,7 @@ export default defineConfig( ( {
    */
   else if( command === 'build' ){
     return {
+      base,
       esbuild,
       plugins: [
         ...plugins,
