@@ -49,14 +49,13 @@ function Get__filename( import_meta_url = import.meta.url ){
 }
 
 /**
- * 表示项目文件夹根目录，不是磁盘根目录。<br />
- *
- * @type {string}
+ * @type {string} 表示项目文件夹根目录，不是磁盘根目录。<br />
  */
 const __dirname = Get__dirname( import.meta.url );
 
 /**
- * @type {import('vite').UserConfig}
+ * @type {import('vite').UserConfig} Vite配置。
+ * 详细选项见：node_modules/vite/dist/node/index.d.ts:2407
  */
 export default defineConfig( ( {
   command,
@@ -75,11 +74,11 @@ export default defineConfig( ( {
    * 2、也可以指定完整路径：xxx: path.resolve(path.join(__dirname, 'src/module1'))。<br />
    * 3、path.resolve和path.join的区别在于：<br />
    * 例如：<br />
-   * path.resolve( __dirname, './src/assets/' )，最后解析成：G:\WebStormWS\web-project-template\src\assets
-   * path.join( __dirname, './src/assets/' )，最后解析成：G:\WebStormWS\web-project-template\src\assets\
+   * path.resolve( __dirname, './src/assets/' )，最后解析成：G:\WebStormWS\web-for-vite-project-template\src\assets
+   * path.join( __dirname, './src/assets/' )，最后解析成：G:\WebStormWS\web-for-vite-project-template\src\assets\
    * 有或是没有最后的“\”在具体应用时很重要！不然容易出现不如你所愿的现象。<br />
-   * 4、当设置文件夹的路径别名时，用path.resolve设置时，其值包不包含最后的“/”都没关系，因为最后生成的路径（如：G:\WebStormWS\web-project-template\src\assets）最尾部都不会包含“\”。<br />
-   * 5、当设置文件夹的路径别名时，用path.join设置时，其值如果包含最后的“/”，则最后生成的路径（如：G:\WebStormWS\web-project-template\src\assets\）最尾部就会包含“\”，反之不会。<br />
+   * 4、当设置文件夹的路径别名时，用path.resolve设置时，其值包不包含最后的“/”都没关系，因为最后生成的路径（如：G:\WebStormWS\web-for-vite-project-template\src\assets）最尾部都不会包含“\”。<br />
+   * 5、当设置文件夹的路径别名时，用path.join设置时，其值如果包含最后的“/”，则最后生成的路径（如：G:\WebStormWS\web-for-vite-project-template\src\assets\）最尾部就会包含“\”，反之不会。<br />
    * 6、设置文件夹的路径别名时，建议使用path.resolve，这样在后续使用路径别名时，就可以按正常的习惯使用：import JSONDemo001 from 'jsonDir/Demo001.json';<br />
    */
   const alias = {
@@ -158,7 +157,13 @@ export default defineConfig( ( {
       webWorkersDir: resolve( __dirname, './src/workers/web_workers/' ),
       // workers文件夹 End
     },
-    // 更多见：node_modules/esbuild/lib/main.d.ts
+    /**
+     * @type {object} 详细配置见：
+     * node_modules/vite/dist/node/index.d.ts:2470
+     * node_modules/vite/dist/node/index.d.ts:687
+     * node_modules/esbuild/lib/main.d.ts:235
+     * node_modules/esbuild/lib/main.d.ts:8
+     */
     esbuild = {
       /**
        * 不遵守此选项。请改用build.minify。<br />
@@ -170,6 +175,9 @@ export default defineConfig( ( {
       jsxFactory: 'React.createElement',
       jsxFragment: 'React.Fragment',
     },
+    /**
+     * @type {[]} 插件配置。
+     */
     plugins = [
       checker( {
         overlay: {
@@ -201,14 +209,21 @@ export default defineConfig( ( {
         // 供Vue2使用。
         // vls: true,
       } ),
-      vue(),
+      /**
+       * 该插件的详细配置选项见：
+       * node_modules/@vitejs/plugin-vue/dist/index.d.ts:20
+       * https://github.com/vitejs/vite-plugin-vue/tree/main/packages/plugin-vue
+       */
+      vue( /*{}*/ ),
     ],
     /**
      * @type {string} 表示项目根目录，一个绝对路径。<br />
      */
     root = resolve( __dirname, `./` );
 
-  // 开发配置，“vite preview”也会用该配置。
+  /**
+   * 开发配置，“vite preview”也会用该配置。
+   */
   if( command === 'serve' ){
     return {
       esbuild,
@@ -221,7 +236,9 @@ export default defineConfig( ( {
       root,
     };
   }
-  // 生产配置。
+  /**
+   * 生产配置。
+   */
   else if( command === 'build' ){
     return {
       esbuild,

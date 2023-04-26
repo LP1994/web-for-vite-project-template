@@ -22,9 +22,7 @@ import './Upload.css';
 import UploadComponentForVue3 from './Upload.Vue3.ts.vue';
 
 /**
- * 创建了一个Vue 3的应用实例。
- *
- * @type {App<Element>} 一个Vue 3的应用实例。
+ * @type {App<Element>} 创建了一个Vue 3的应用实例。
  */
 const UploadAPP: App<Element> = createApp( UploadComponentForVue3 );
 
@@ -42,8 +40,6 @@ UploadAPP.config.errorHandler = ( error: unknown, instance: ComponentPublicInsta
 };
 
 /**
- * 一个Vue 3的根组件实例。
- *
  * @type {ComponentPublicInstance} 一个Vue 3的根组件实例。
  */
 const RootComponent: ComponentPublicInstance = UploadAPP.mount( '#UploadAPP' );
