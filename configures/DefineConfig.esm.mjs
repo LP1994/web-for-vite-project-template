@@ -24,12 +24,13 @@
  *
  * @param {object} config 对象参数。
  *
- * @param {string|undefined} config.env_platform env_platform的值是字符串，有4个值：'dev_server'、'local_server'、'test'、'production'，来源是CLI参数中的自定义“env_platform”参数值，必需。<br />
+ * @param {string|undefined} config.env_platform env_platform的值是字符串，有4个值：'dev_server'、'local_server'、'test'、'production'，来源是CLI参数中的“--mode”参数值，必需。<br />
  * 注意：<br />
- * 1、但是必须有这么一个自定义“env_platform”参数设置，这4个之中的其中一个即可：env_platform=dev_server、env_platform=local_server、env_platform=test、env_platform=production。<br />
- * 2、紧跟在“--config ./vite.config.mjs”之后，用一个空格隔开，如：vite serve --force --mode development --config ./vite.config.mjs env_platform=dev_server
+ * 1、但是必须有这么一个“--mode”参数设置，这4个之中的其中一个即可：--mode dev_server、--mode local_server、--mode test、--mode production。<br />
  *
  * @param {boolean} config.isProduction 值为true时表示生产环境，反之开发环境，该值依赖CLI参数中的“--mode”参数值，必需。<br />
+ * 1、当CLI参数中有：“--mode dev_server”、“--mode local_server”时，该参数为false，表示开发环境。<br />
+ * 2、当CLI参数中有：“--mode test”、“--mode production”时，该参数为true，表示生产环境。<br />
  *
  * @returns {object} 返回一个对象，里面是Vite的顶级配置项define的配置。
  */
