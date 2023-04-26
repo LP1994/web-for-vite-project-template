@@ -24,6 +24,8 @@ import {
   defineConfig,
 } from 'vite';
 
+import DefineConfig from './configures/DefineConfig.esm.mjs';
+
 /**
  * 该函数返回值完全等价于“CommonJS modules”中的“__dirname”，是一个字符串，Windows系统下型如：G:\WebStormWS\xx\tools。<br />
  *
@@ -60,11 +62,24 @@ export default defineConfig( ( {
   mode,
   ssrBuild,
 } ) => {
+  console.log( `\n\n\nmode Start` );
+  console.log( mode );
+  console.log( `mode End\n\n\n` );
+
   /**
-   * @type {boolean} isProduction的值为true时表示生产环境，反之开发环境，该值依赖CLI参数中的“--mode”参数值。<br />
-   * 1、有效的“--mode”参数设置是：--mode development（用于开发）、--mode production（用于生产）。<br />
+   * @type {string|undefined} env_platform的值是字符串，有4个值：'dev_server'、'local_server'、'test'、'production'，来源是CLI参数中的“--env”参数值，注意“--env”参数是允许多个的哦。<br />
+   * 1、但是必须有这么一个“--env”参数设置，这4个之中的其中一个即可：--env platform=dev_server、--env platform=local_server、--env platform=test、--env platform=production。<br />
    */
-  const isProduction = mode === 'production';
+  const env_platform = mode,
+    /**
+     * @type {boolean} isProduction的值为true时表示生产环境，反之开发环境，该值依赖CLI参数中的“--mode”参数值。<br />
+     * 1、有效的“--mode”参数设置是：--mode development（用于开发）、--mode production（用于生产）。<br />
+     */
+    isProduction = ( mode === 'test' || mode === 'production' );
+
+  mode = isProduction
+         ? 'production'
+         : 'development';
 
   /**
    * @type {object} 设置路径别名。<br />
@@ -156,12 +171,25 @@ export default defineConfig( ( {
       // workers文件夹 End
     },
     /**
-     * @type {string} 默认：“/”，开发或生产环境服务的公共基础路径。合法的值包括以下几种：
-     * 绝对URL路径名，例如：/foo/
-     * 完整的URL，例如：https://foo.com/
-     * 空字符串或./（用于嵌入形式的开发）
+     * @type {string} 默认：“/”，开发或生产环境服务的公共基础路径。合法的值包括以下3种：
+     * 1、绝对URL路径名，例如：/foo/
+     * 2、完整的URL，例如：https://foo.com/
+     * 3、空字符串“”或“./”（用于嵌入形式的开发）
      */
     base = ``,
+    /**
+     * @type {object} Vite的顶级配置项define的配置。在编译时用其他值或表达式替换代码中的变量。这对于允许开发构建和生产构建之间的不同行为很有用。<br />
+     * 1、传递给define的每个键都是一个标识符或多个用.连接的标识符：'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)。<br />
+     * 2、如果该值是一个字符串，它将被用作代码片段：TWO: '1+1'。<br />
+     * 3、如果值不是字符串，它将被字符串化（包括函数）。<br />
+     * 4、如果你在key前加上typeof前缀，它只为typeof调用定义：'typeof window': JSON.stringify('object111')。<br />
+     * 5、如果需要定义一个值是字符串值，得单引号内部嵌套双引号，如：'"例子"'（或者JSON.stringify('例子')），否则没法真正输出这个字符串。<br />
+     * 6、如果值不是字符串，它将被字符串化，相当于使用JSON.stringify处理，但是如果是函数，直接这么设置就行，别用JSON.stringify：'fun1': () => {}。<br />
+     */
+    define = DefineConfig( {
+      env_platform,
+      isProduction,
+    } ),
     // ToDo
     /**
      * @type {object} 详细配置见：
@@ -215,7 +243,9 @@ export default defineConfig( ( {
   if( command === 'serve' ){
     return {
       base,
+      define,
       esbuild,
+      mode,
       plugins: [
         ...plugins,
       ],
@@ -231,7 +261,9 @@ export default defineConfig( ( {
   else if( command === 'build' ){
     return {
       base,
+      define,
       esbuild,
+      mode,
       plugins: [
         ...plugins,
       ],
