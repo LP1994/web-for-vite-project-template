@@ -83,7 +83,9 @@
     "isolatedModules": true,
     "baseUrl": "./",
     "rootDir": ".",
-    "types": [],
+    "types": [
+      "vite/client"
+    ],
     "declarationDir": "./ts_compiled/",
     "outDir": "./ts_compiled/",
     "generateTrace": "./ts_compiled/",

@@ -159,6 +159,7 @@ export default defineConfig( ( {
     },
     /**
      * @type {object} 详细配置见：
+     * https://cn.vitejs.dev/config/shared-options.html#esbuild
      * node_modules/vite/dist/node/index.d.ts:2470
      * node_modules/vite/dist/node/index.d.ts:687
      * node_modules/esbuild/lib/main.d.ts:235
@@ -177,6 +178,16 @@ export default defineConfig( ( {
     },
     /**
      * @type {[]} 插件配置。
+     * 官方插件信息：https://cn.vitejs.dev/plugins/
+     * 社区插件列表：https://github.com/vitejs/awesome-vite#plugins
+     * 兼容Rollup官方插件列表：https://vite-rollup-plugins.patak.dev/
+     *
+     * @vitejs/plugin-legacy：https://github.com/vitejs/vite/tree/main/packages/plugin-legacy
+     * vite-plugin-wasm：https://github.com/Menci/vite-plugin-wasm
+     * vite-plugin-top-level-await：https://github.com/Menci/vite-plugin-top-level-await
+     * @rollup/plugin-image：https://github.com/rollup/plugins/tree/master/packages/image
+     * @rollup/plugin-babel：https://github.com/rollup/plugins/tree/master/packages/babel
+     * @rollup/plugin-commonjs：https://github.com/rollup/plugins/tree/master/packages/commonjs
      */
     plugins = [
       checker( {
