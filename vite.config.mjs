@@ -64,6 +64,12 @@ export default defineConfig( ( {
   ssrBuild,
 } ) => {
   /**
+   * @type {boolean} isProduction的值为true时表示生产环境，反之开发环境，该值依赖CLI参数中的“--mode”参数值。<br />
+   * 1、有效的“--mode”参数设置是：--mode development（用于开发）、--mode production（用于生产）。<br />
+   */
+  const isProduction = mode === 'production';
+
+  /**
    * @type {object} 设置路径别名。<br />
    * 1、路径别名到底是路径别名，别用于直接指向具体的文件，尤其是JS文件，因为会导致无法根据导入语法的不同自行加载到相应的模块文件，致使报错；但是CSS一类的文件倒是可以直接指向到具体的文件。<br />
    * 2、也可以指定完整路径：xxx: path.resolve(path.join(__dirname, 'src/module1'))。<br />
@@ -152,6 +158,18 @@ export default defineConfig( ( {
       webWorkersDir: resolve( __dirname, './src/workers/web_workers/' ),
       // workers文件夹 End
     },
+    // 更多见：node_modules/esbuild/lib/main.d.ts
+    esbuild = {
+      /**
+       * 不遵守此选项。请改用build.minify。<br />
+       * 注意esbuild.minify选项无法用于覆盖build.minify。<br />
+       */
+      // minify: isProduction,
+      // jsx: 'automatic',
+      jsxInject: `import React from 'react';`,
+      jsxFactory: 'React.createElement',
+      jsxFragment: 'React.Fragment',
+    },
     plugins = [
       checker( {
         overlay: {
@@ -193,25 +211,27 @@ export default defineConfig( ( {
   // 开发配置，“vite preview”也会用该配置。
   if( command === 'serve' ){
     return {
-      root,
-      resolve: {
-        alias,
-      },
+      esbuild,
       plugins: [
         ...plugins,
       ],
+      resolve: {
+        alias,
+      },
+      root,
     };
   }
   // 生产配置。
   else if( command === 'build' ){
     return {
-      root,
-      resolve: {
-        alias,
-      },
+      esbuild,
       plugins: [
         ...plugins,
       ],
+      resolve: {
+        alias,
+      },
+      root,
     };
   }
   else{

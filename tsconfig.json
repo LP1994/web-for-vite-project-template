@@ -80,6 +80,7 @@
     "traceResolution": false,
     "explainFiles": false,
     "extendedDiagnostics": false,
+    "isolatedModules": true,
     "baseUrl": "./",
     "rootDir": ".",
     "types": [],
