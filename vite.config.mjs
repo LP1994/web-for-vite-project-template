@@ -54,7 +54,7 @@ function Get__filename( import_meta_url = import.meta.url ){
 const __dirname = Get__dirname( import.meta.url );
 
 /**
- * @type {import('vite').UserConfig} Vite配置。
+ * @type {import('vite').UserConfig} Vite配置。<br />
  * 详细选项见：node_modules/vite/dist/node/index.d.ts:2407
  */
 export default defineConfig( ( {
@@ -169,7 +169,7 @@ export default defineConfig( ( {
       // workers文件夹 End
     },
     /**
-     * @type {string} 默认：“/”，开发或生产环境服务的公共基础路径。合法的值包括以下3种：
+     * @type {string} 默认：“/”，开发或生产环境服务的公共基础路径。合法的值包括以下3种：<br />
      * 1、绝对URL路径名，例如：/foo/
      * 2、完整的URL，例如：https://foo.com/
      * 3、空字符串“”或“./”（用于嵌入形式的开发）
@@ -188,9 +188,26 @@ export default defineConfig( ( {
       env_platform,
       isProduction,
     } ),
+    /**
+     * @type {string} 默认值同顶级配置选项“root”的值。用于加载.env文件的目录。可以是一个绝对路径，也可以是相对于项目根的路径。<br />
+     */
+    envDir = resolve( __dirname, `./configures/env/` ),
+    /**
+     * @type {string|string[]} 默认值：“VITE_”，以envPrefix开头的环境变量会通过import.meta.env暴露在你的客户端源码中。<br />
+     * 安全注意事项：<br />
+     * envPrefix不应被设置为空字符串''，这将暴露你所有的环境变量，导致敏感信息的意外泄漏。检测到配置为''时Vite将会抛出错误。<br />
+     * 如果你想暴露一个不含前缀的变量，可以使用顶级配置项define选项：<br />
+     * define: {
+     *   'import.meta.env.ENV_VARIABLE': JSON.stringify( process.env.ENV_VARIABLE ),
+     * }
+     */
+    envPrefix = [
+      'VITE_',
+      'env_',
+    ],
     // ToDo
     /**
-     * @type {object} 详细配置见：
+     * @type {object} 详细配置见：<br />
      * https://cn.vitejs.dev/config/shared-options.html#esbuild
      * node_modules/vite/dist/node/index.d.ts:2470
      * node_modules/vite/dist/node/index.d.ts:687
@@ -209,7 +226,7 @@ export default defineConfig( ( {
       jsxFragment: 'React.Fragment',
     },
     /**
-     * @type {[]} 插件配置。
+     * @type {[]} 插件配置。<br />
      * 官方插件信息：https://cn.vitejs.dev/plugins/
      * 社区插件列表：https://github.com/vitejs/awesome-vite#plugins
      * 兼容Rollup官方插件列表：https://vite-rollup-plugins.patak.dev/
@@ -224,7 +241,7 @@ export default defineConfig( ( {
     plugins = [
       // ToDo
       /**
-       * 该插件的详细配置选项见：
+       * 该插件的详细配置选项见：<br />
        * node_modules/@vitejs/plugin-vue/dist/index.d.ts:20
        * https://github.com/vitejs/vite-plugin-vue/tree/main/packages/plugin-vue
        */
@@ -242,6 +259,8 @@ export default defineConfig( ( {
     return {
       base,
       define,
+      envDir,
+      envPrefix,
       esbuild,
       mode,
       plugins: [
@@ -260,6 +279,8 @@ export default defineConfig( ( {
     return {
       base,
       define,
+      envDir,
+      envPrefix,
       esbuild,
       mode,
       plugins: [

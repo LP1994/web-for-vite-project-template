@@ -83,9 +83,7 @@
     "isolatedModules": true,
     "baseUrl": "./",
     "rootDir": ".",
-    "types": [
-      "vite/client"
-    ],
+    "types": [],
     "declarationDir": "./ts_compiled/",
     "outDir": "./ts_compiled/",
     "generateTrace": "./ts_compiled/",
@@ -94,7 +92,8 @@
       ""
     ],
     "typeRoots": [
-      "./node_modules/@types"
+      "./node_modules/@types",
+      "./src/custom_declare_types"
     ],
     "paths": {
       "element-ui-css": [
