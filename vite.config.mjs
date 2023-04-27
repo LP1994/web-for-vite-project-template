@@ -169,12 +169,38 @@ export default defineConfig( ( {
       // workers文件夹 End
     },
     /**
+     * @type {string}
+     */
+    appType = 'spa',
+    /**
      * @type {string} 默认：“/”，开发或生产环境服务的公共基础路径。合法的值包括以下3种：<br />
      * 1、绝对URL路径名，例如：/foo/
      * 2、完整的URL，例如：https://foo.com/
      * 3、空字符串“”或“./”（用于嵌入形式的开发）
      */
     base = ``,
+    // ToDo
+    /**
+     * @type {object}
+     */
+    build = {
+      /**
+       * @type {string} 指定输出路径。<br />
+       */
+      outDir: resolve( __dirname, `./dist/${ env_platform }/` ),
+    },
+    /**
+     * @type {object}
+     */
+    css = {
+      /**
+       * @type {CSSModulesOptions|boolean} 配置CSS modules的行为。选项将被传递给postcss-modules。<br />
+       * 详细见：<br />
+       * node_modules/vite/dist/node/index.d.ts:514
+       * https://github.com/css-modules/postcss-modules
+       */
+      modules: false,
+    },
     /**
      * @type {object} Vite的顶级配置项define的配置。在编译时用其他值或表达式替换代码中的变量。这对于允许开发构建和生产构建之间的不同行为很有用。<br />
      * 1、传递给define的每个键都是一个标识符或多个用.连接的标识符：'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)。<br />
@@ -226,6 +252,29 @@ export default defineConfig( ( {
       jsxFragment: 'React.Fragment',
     },
     /**
+     * @type {string[]} 导入时想要省略的扩展名列表。注意，不 建议忽略自定义导入类型的扩展名（例如：.vue），因为它会影响 IDE 和类型支持。<br />
+     * 默认值：['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json']。<br />
+     */
+    extensions = [
+      '.js',
+      '.cjs',
+      '.mjs',
+      '.ts',
+      '.cts',
+      '.mts',
+
+      '.jsx',
+      '.tsx',
+
+      '.json',
+      '.json5',
+
+      '.wasm',
+
+      '.vue',
+    ],
+    // ToDo
+    /**
      * @type {[]} 插件配置。<br />
      * 官方插件信息：https://cn.vitejs.dev/plugins/
      * 社区插件列表：https://github.com/vitejs/awesome-vite#plugins
@@ -247,6 +296,14 @@ export default defineConfig( ( {
        */
       vue( /*{}*/ ),
     ],
+    // ToDo 考虑使用类似copy插件的工具来复制静态资源文件夹。
+    /**
+     * @type {string|boolean} 默认值：“public”。作为“静态资源服务”的文件夹。<br />
+     * 该目录中的文件在“开发期间”在“/”处提供，并在“构建期间”复制到选项build.outDir设置的文件夹下，并且始终按原样提供或复制而无需进行转换。<br />
+     * 该值可以是文件系统的绝对路径，也可以是相对于项目根目录的相对路径。<br />
+     * 将publicDir设定为false可以关闭此项功能，使用类似copy插件的工具来复制静态资源文件夹。<br />
+     */
+    publicDir = false,
     /**
      * @type {string} 表示项目根目录，一个绝对路径。<br />
      */
@@ -257,17 +314,25 @@ export default defineConfig( ( {
    */
   if( command === 'serve' ){
     return {
+      appType,
       base,
+      build,
+      clearScreen: false,
+      css,
       define,
       envDir,
       envPrefix,
       esbuild,
+      logLevel: 'info',
       mode,
       plugins: [
         ...plugins,
       ],
+      publicDir,
       resolve: {
         alias,
+        extensions,
+        preserveSymlinks: false,
       },
       root,
     };
@@ -277,17 +342,25 @@ export default defineConfig( ( {
    */
   else if( command === 'build' ){
     return {
+      appType,
       base,
+      build,
+      clearScreen: false,
+      css,
       define,
       envDir,
       envPrefix,
       esbuild,
+      logLevel: 'info',
       mode,
       plugins: [
         ...plugins,
       ],
+      publicDir,
       resolve: {
         alias,
+        extensions,
+        preserveSymlinks: false,
       },
       root,
     };
