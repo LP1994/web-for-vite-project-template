@@ -15,6 +15,7 @@ import {
 
 import {
   dirname,
+  join,
   resolve,
 } from 'node:path';
 
@@ -35,6 +36,10 @@ import {
 import tsconfig_json from './tsconfig.json' assert { type: 'json', };
 
 import DefineConfig from './configures/DefineConfig.esm.mjs';
+
+import {
+  devServerGlobalParameters,
+} from './configures/GlobalParameters.esm.mjs';
 
 /**
  * 该函数返回值完全等价于“CommonJS modules”中的“__dirname”，是一个字符串，Windows系统下型如：G:\WebStormWS\xx\tools。<br />
@@ -766,7 +771,8 @@ export default defineConfig( ( {
           // additionalData: `$injectedColor: orange;`,
 
           // 作者自己说这个库已经过时了，不建议再使用它了！设置成false就可以禁用它，而不是不设置，因为默认是启用它的。
-          fiber: false,
+          // 报：[sass] fiber.call$1 is not a function
+          // fiber: false,
           /**
            * dart-sass的charset选项默认值为true，我们强烈建议不要将值更改为false，因为webpack不支持utf-8以外的文件。<br />
            * 1、值类型：boolean，默认值：true。<br />
@@ -858,7 +864,8 @@ export default defineConfig( ( {
           // additionalData: `$injectedColor: orange;`,
 
           // 作者自己说这个库已经过时了，不建议再使用它了！设置成false就可以禁用它，而不是不设置，因为默认是启用它的。
-          fiber: false,
+          // 报：[sass] fiber.call$1 is not a function
+          // fiber: false,
           /**
            * dart-sass的charset选项默认值为true，我们强烈建议不要将值更改为false，因为webpack不支持utf-8以外的文件。<br />
            * 1、值类型：boolean，默认值：true。<br />
@@ -1423,24 +1430,7 @@ export default defineConfig( ( {
        * node_modules/@vitejs/plugin-vue/dist/index.d.ts:20
        * https://github.com/vitejs/vite-plugin-vue/tree/main/packages/plugin-vue
        */
-      vue( {
-        // vue-loader v16+才有的选项。Start
-        /**
-         * 在使用Vue的反应性API时，引入一组编译器转换来改善人体工程学，特别是能够使用没有.value的refs。<br />
-         * 1、具体可阅https://github.com/vuejs/rfcs/discussions/369 <br />
-         * 2、仅在SFC中生效。<br />
-         */
-        reactivityTransform: true,
-        /**
-         * 启用自定义元素模式。在自定义元素模式下加载的SFC将其<style>标记内联为组件样式选项下的字符串。<br />
-         * 1、当与Vue核心的defineCustomElement一起使用时，样式将被注入到自定义元素的阴影根中。<br />
-         * 2、默认值为：/\.ce\.vue$/。<br />
-         * 3、该选项的值类型为：boolean、RegExp。<br />
-         * 4、设置为true将以“自定义元素模式”处理所有.vue文件。<br />
-         */
-        // customElement: /\.ce\.vue$/,
-        // vue-loader v16+才有的选项。End
-      } ),
+      vue(),
     ],
     // ToDo 考虑使用类似copy插件的工具来复制静态资源文件夹。
     /**
@@ -1453,7 +1443,147 @@ export default defineConfig( ( {
     /**
      * @type {string} 表示项目根目录，一个绝对路径。<br />
      */
-    root = resolve( __dirname, `./` );
+    root = resolve( __dirname, `./` ),
+    /**
+     * @type {ServerOptions} 开发服务器选项。<br />
+     * 详细见：<br />
+     * node_modules/vite/dist/node/index.d.ts:2079
+     * node_modules/vite/dist/node/index.d.ts:318
+     */
+    server = {
+      /**
+       * @type {string | boolean} 默认值：'localhost'，指定服务器应该监听哪个IP地址。如果将此设置为0.0.0.0或者true将监听所有地址，包括局域网和公网地址。<br />
+       * 注意：<br />
+       * 在某些情况下，可能响应的是其他服务器而不是Vite：<br />
+       * 第1种情况是：<br />
+       * localhost被使用了。Node.js在v17以下版本中默认会对DNS解析地址的结果进行重新排序。当访问localhost时，浏览器使用DNS来解析地址，这个地址可能与Vite正在监听的地址不同。<br />
+       * 当地址不一致时，Vite会打印出来。<br />
+       * 你可以设置dns.setDefaultResultOrder('verbatim')来禁用这个重新排序的行为。Vite会将地址打印为localhost。<br />
+       * 例如：<br />
+       * // vite.config.js
+       * import { defineConfig, } from 'vite';
+       * import dns from 'dns';
+       *
+       * dns.setDefaultResultOrder( 'verbatim' );
+       *
+       * export default defineConfig({
+       *   // omit
+       * });
+       *
+       * 第2种情况是：<br />
+       * 使用了通配主机地址（例如 0.0.0.0）。这是因为侦听非通配符主机的服务器优先于侦听通配符主机的服务器。<br />
+       */
+      host: true,
+      /**
+       * @type {number} 默认值：5173，指定开发服务器端口。<br />
+       * 注意：如果端口已经被使用，Vite会自动尝试下一个可用的端口，所以这可能不是开发服务器最终监听的实际端口。<br />
+       */
+      port: devServerGlobalParameters[ env_platform ]?.port ?? 5173,
+      /**
+       * @type {boolean} 设为true时若端口已被占用则会直接退出，而不是尝试下一个可用端口。<br />
+       */
+      strictPort: true,
+      /**
+       * @type {boolean | https.ServerOptions} 启用TLS + HTTP/2。注意：当server.proxy选项也被使用时，将会仅使用TLS。<br />
+       * 这个值也可以是一个传递给https.createServer()的选项对象。<br />
+       * 详细见：<br />
+       * https://nodejs.org/api/https.html#httpscreateserveroptions-requestlistener
+       * https://nodejs.org/api/tls.html#tlscreateserveroptions-secureconnectionlistener
+       * https://nodejs.org/api/tls.html#tlscreatesecurecontextoptions
+       * https://nodejs.org/api/http.html#httpcreateserveroptions-requestlistener
+       * https://nodejs.org/api/net.html#netcreateserveroptions-connectionlistener
+       */
+      https: {
+        /**
+         * 使用一个不安全的HTTP解析器，在真实时接受无效的HTTP头。应该避免使用不安全的解析器。参见--insecure-http-parser获取更多信息。默认值：false。
+         */
+        insecureHTTPParser: true,
+
+        /**
+         * 可选择覆盖该服务器收到的请求的--max-http-header-size的值，即请求头的最大长度（字节）。默认值：16384（16 KiB）。
+         */
+        maxHeaderSize: 1024000,
+
+        /**
+         * 覆盖受信任的CA证书。<br />
+         * 默认情况是信任Mozilla策划的知名CA。<br />
+         * 当使用此选项显式指定CA时，Mozilla的CA将被完全替换。<br />
+         *
+         * PS：<br />
+         * 1、一般指的是“根CA证书，HTTPSSL001_Root_CA.crt”，“根CA证书，HTTPSSL001_Root_CA.crt”用于安装到系统、浏览器（尤其是火狐浏览器，它有自己的证书列表，也要给它安装）的证书列表中，手机、平板等非电脑的移动设备，只要安装这个“根CA证书”即可。<br />
+         */
+        ca: [
+          readFileSync( join( __dirname, './configures/openssl/HTTPSSL001/001根CA证书/HTTPSSL001_Root_CA.crt' ), 'utf8' ),
+        ],
+
+        /**
+         * PEM格式的私钥（“HTTPSSL001_Root_CA_Key.key”）。<br />
+         * PEM允许选择加密私钥，加密密钥将使用“options.passphrase”（用于单个私钥或PFX的共享密码）解密。<br />
+         *
+         * 注意：<br />
+         * 1、在生成“服务端CA证书，HTTPSSL001_Servers_192_168_2_7_CA.crt”的“HTTPSSL001_Root_CA_Key.key”文件时，除了用.key作为文件的扩展后缀，也可以用.pem做后缀，一般首选.key。<br />
+         * 2、当前“HTTPSSL001_Root_CA_Key.key”没使用加密。<br />
+         */
+        key: readFileSync( join( __dirname, './configures/openssl/HTTPSSL001/001根CA证书/HTTPSSL001_Root_CA_Key.key' ), 'utf8' ),
+
+        /**
+         * PEM格式的证书链（服务端CA证书，HTTPSSL001_Servers_192_168_2_7_CA.crt）。<br />
+         */
+        cert: readFileSync( join( __dirname, './configures/openssl/HTTPSSL001/002服务端CA证书/HTTPSSL001_Servers_192_168_2_7_CA.crt' ), 'utf8' ),
+
+        /**
+         * 如果SSL/TLS握手未在指定的毫秒数内完成，则中止连接。只要握手超时，就会在tls.Server对象上发出“tlsClientError”。默认值：120000（120000毫秒 = 120秒）。<br />
+         */
+        handshakeTimeout: 120000,
+
+        /**
+         * 如果为true，服务器将从连接的客户端请求证书并尝试验证该证书。默认值：false。<br />
+         *
+         * PS：<br />
+         * 启用该项会导致浏览器无法从https加载，因为服务器将从连接的客户端请求证书并尝试验证该证书，如果客户端没能提供“证书”，那么就会报错，这通常出现在浏览器端。<br />
+         */
+        requestCert: false,
+
+        /**
+         * （可选）设置允许的最低TLS版本。“TLSv1.3”、“TLSv1.2”、“TLSv1.1”或“TLSv1”之一。不能与“secureProtocol”选项一起指定。<br />
+         * 使用一个或另一个。避免设置为低于TLSv1.2，但互操作性可能需要它。默认值：tls.DEFAULT_MIN_VERSION（也就是：TLSv1.2）。<br />
+         */
+        minVersion: 'TLSv1.2',
+
+        /**
+         * （可选）设置允许的最大TLS版本。“TLSv1.3”、“TLSv1.2”、“TLSv1.1”或“TLSv1”之一。不能与“secureProtocol”选项一起指定。<br />
+         * 使用一个或另一个。默认值：tls.DEFAULT_MAX_VERSION（也就是：TLSv1.3）。<br />
+         */
+        maxVersion: 'TLSv1.3',
+
+        /**
+         * 用于单个私钥和/或PFX的共享密码。<br />
+         */
+        passphrase: '@HTTPSSL001.2023#',
+
+        /**
+         * PEM格式的CRL（证书吊销列表）。<br />
+         */
+        // crl: readFileSync( join( __dirname, './configures/openssl/HTTPSSL001/证书吊销列表/证书吊销列表.pem' ), 'utf8' ),
+
+        /**
+         * PFX或PKCS12编码的私钥和证书链。<br />
+         * pfx是单独提供密钥和证书的替代方案。<br />
+         * PFX通常是加密的，如果是，将使用“options.passphrase”（用于单个私钥或PFX的共享密码）解密。<br />
+         *
+         * 该选项跟上面的“key”、“cert”选项是互斥的，也就是不要同时设置该选项跟“key”、“cert”选项，否则会报错，说什么太长了。<br />
+         */
+        // pfx: readFileSync( join( __dirname, './configures/openssl/HTTPSSL001/001根CA证书/HTTPSSL001_Root_CA.p12' ), 'utf8' ),
+      },
+      /**
+       * @type {boolean | string} 开发服务器启动时，自动在浏览器中打开应用程序。<br />
+       * 当该值为字符串时，它将被用作URL的路径名。<br />
+       * 如果你想在你喜欢的某个浏览器打开该开发服务器，你可以设置环境变量process.env.BROWSER（例如：Windows上的msedge）。<br />
+       * 你还可以设置process.env.BROWSER_ARGS来传递额外的参数，例如：--incognito（以隐私模式打开浏览器），--new-window（在新窗口中打开浏览器）。<br />
+       * BROWSER和BROWSER_ARGS都是特殊的环境变量，你可以将它们放在.env文件中进行设置，欲了解更多打开浏览器的更多内部细节，请参阅open包的源码（https://github.com/sindresorhus/open#app）。<br />
+       */
+      open: `https://${ devServerGlobalParameters[ env_platform ]?.host }:${ devServerGlobalParameters[ env_platform ]?.port }/${ env_platform }/index.html`,
+    };
 
   /**
    * 开发配置，“vite preview”也会用该配置。
@@ -1483,6 +1613,7 @@ export default defineConfig( ( {
         preserveSymlinks: false,
       },
       root,
+      server,
     };
   }
   /**
