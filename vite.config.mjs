@@ -484,7 +484,9 @@ export default defineConfig( ( {
      * 2、完整的URL，例如：https://foo.com/
      * 3、空字符串“”或“./”（用于嵌入形式的开发）
      */
-    base = ``,
+    base = isProduction
+           ? ''
+           : `/${ env_platform }/`,
     // ToDo
     /**
      * @type {object}
@@ -1735,7 +1737,6 @@ export default defineConfig( ( {
       hmr: {
         overlay: true,
       },
-      base: `/${ env_platform }/`,
       fs: {
         strict: true,
         allow: [
@@ -1743,6 +1744,7 @@ export default defineConfig( ( {
         ],
         deny: [],
       },
+      // base: `/${ env_platform }/`,
       /**
        * 使用该选项会报错，导致无法启动！
        * Setting server.middlewareMode to 'html' is deprecated, set server.middlewareMode to `true` instead
