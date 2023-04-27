@@ -169,11 +169,14 @@ export default defineConfig( ( {
       // workers文件夹 End
     },
     /**
-     * @type {string}
+     * @type {string} 默认值为'spa'。无论你的应用是一个单页应用（SPA）还是一个多页应用（MPA），亦或是一个定制化应用（SSR和自定义HTML处理的框架）：<br />
+     * 'spa'：包含HTML中间件以及使用SPA回退。在预览中将sirv配置为single: true。<br />
+     * 'mpa'：包含HTML中间件。<br />
+     * 'custom'：不包含HTML中间件。<br />
      */
     appType = 'spa',
     /**
-     * @type {string|RegExp|(string|RegExp)[]}
+     * @type {string|RegExp|(string|RegExp)[]} 详细见：https://cn.vitejs.dev/config/shared-options.html#assetsinclude
      */
     assetsInclude = [
       ( () => {
