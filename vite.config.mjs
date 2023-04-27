@@ -173,6 +173,144 @@ export default defineConfig( ( {
      */
     appType = 'spa',
     /**
+     * @type {string|RegExp|(string|RegExp)[]}
+     */
+    assetsInclude = [
+      ( () => {
+        const KNOWN_ASSET_TYPES = Array.from( new Set( [
+          // fonts Start
+          'eot',
+          'otf',
+          'fon',
+          'font',
+          'ttf',
+          'ttc',
+          'woff',
+          'woff2',
+          // fonts End
+
+          // images Start
+          'apng',
+          'arw',
+          'avif',
+          'bmp',
+          'bpg',
+          'cr2',
+          'cur',
+          'dcx',
+          'dng',
+          'flif',
+          'gif',
+          'heic',
+          'heif',
+          'icns',
+          'ico',
+          'j2c',
+          'j2k',
+          'jbig2',
+          'jng',
+          'jp2',
+          'jpe',
+          'jpeg',
+          'jpg',
+          'jpm',
+          'jpx',
+          'jxl',
+          'jxr',
+          'ktx',
+          'mj2',
+          'nef',
+          'orf',
+          'pam',
+          'pbm',
+          'pcx',
+          'pgm',
+          'png',
+          'pnm',
+          'ppm',
+          'psd',
+          'raf',
+          'raw',
+          'rgbe',
+          'rw2',
+          'svg',
+          'svgz',
+          'tga',
+          'tif',
+          'tiff',
+          'wbmp',
+          'webp',
+          'wp2',
+          'xbm',
+          'xpm',
+          'jfif',
+          'pjpeg',
+          'pjp',
+          // images End
+
+          // music Start
+          'm4a',
+          'kar',
+          'ape',
+          'wav',
+          'wave',
+          'flac',
+          'wma',
+          'cda',
+          'aiff',
+          'au',
+          'mpeg',
+          'mpeg-1',
+          'mpeg-2',
+          'mpeg-layer3',
+          'mpeg-4',
+          'mp3',
+          'mp2',
+          'mp1',
+          'mid',
+          'midi',
+          'ra',
+          'rm',
+          'rmx',
+          'vqf',
+          'amr',
+          'aac',
+          'vorbis',
+          'opus',
+          // music End
+
+          // videos Start
+          'wmv',
+          'asf',
+          'asx',
+          'rmvb',
+          'mp4',
+          '3gp',
+          'mov',
+          'm4v',
+          'avi',
+          'dat',
+          'mkv',
+          'flv',
+          'vob',
+          'mod',
+          'mng',
+          'mpg',
+          '3gpp',
+          'ogg',
+          'webm',
+          // videos End
+
+          // other Start
+          'webmanifest',
+          // other End
+        ] ) );
+
+        return new RegExp( `\\.(` + KNOWN_ASSET_TYPES.join( '|' ) + `)(\\?.*)?$`, );
+      } )(),
+      new RegExp( `\\.(manifest)\\.(json)(\\?.*)?$` ),
+    ],
+    /**
      * @type {string} 默认：“/”，开发或生产环境服务的公共基础路径。合法的值包括以下3种：<br />
      * 1、绝对URL路径名，例如：/foo/
      * 2、完整的URL，例如：https://foo.com/
@@ -189,6 +327,7 @@ export default defineConfig( ( {
        */
       outDir: resolve( __dirname, `./dist/${ env_platform }/` ),
     },
+    // ToDo
     /**
      * @type {object}
      */
@@ -315,6 +454,7 @@ export default defineConfig( ( {
   if( command === 'serve' ){
     return {
       appType,
+      assetsInclude,
       base,
       build,
       clearScreen: false,
@@ -343,6 +483,7 @@ export default defineConfig( ( {
   else if( command === 'build' ){
     return {
       appType,
+      assetsInclude,
       base,
       build,
       clearScreen: false,
