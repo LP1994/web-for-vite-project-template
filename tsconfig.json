@@ -81,6 +81,8 @@
     "explainFiles": false,
     "extendedDiagnostics": false,
     "isolatedModules": true,
+    "emitDeclarationOnly": false,
+    "noEmit": true,
     "baseUrl": "./",
     "rootDir": ".",
     "types": [],
