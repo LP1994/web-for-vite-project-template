@@ -21,45 +21,200 @@
 const localHost = 'localhost';
 
 /**
+ * 远端调试工具(weinre)的本地服务的端口值，值类型只能是number。<br />
+ * 1、在package.json中的scripts.weinre里头默认也是用8700的。<br />
+ */
+const weinreLocalPort = 8700,
+  /**
+   * 映射到公网的IP地址，一般是配合远端调试工具(weinre)的远端调试需要，值类型只能是string。<br />
+   * 1、null表示还没设置。<br />
+   */
+  weinrePublicNetworkHost = null,
+  /**
+   * 映射到公网的端口，一般是配合远端调试工具(weinre)的远端调试需要，值类型只能是string。<br />
+   * 1、null表示还没设置。<br />
+   */
+  weinrePublicNetworkPort = null;
+
+/**
  * 给Vite的顶级配置项“server”用的参数，分2种环境dev_server、local_server。<br />
  */
 const devServerGlobalParameters = {
-  /**
-   * 环境dev_server用。<br />
-   */
-  dev_server: {
     /**
-     * 不是给“server.host”用的，是给“server.open”用的在浏览器打开页面的host。<br />
-     * 1、可以是：'localhost'、'192.168.1.3'等等。<br />
+     * 环境dev_server用。<br />
      */
-    host: localHost,
+    dev_server: {
+      /**
+       * 不是给“server.host”用的，是给“server.open”用的在浏览器打开页面的host。<br />
+       * 1、可以是：'localhost'、'192.168.1.3'等等。<br />
+       */
+      host: localHost,
+      /**
+       * 指定一个端口号来监听请求，给“server.port”用的。<br />
+       * 1、有效值类型有：number。<br />
+       */
+      port: 8500,
+    },
     /**
-     * 指定一个端口号来监听请求，给“server.port”用的。<br />
-     * 1、有效值类型有：number。<br />
+     * 环境local_server用。<br />
      */
-    port: 8500,
+    local_server: {
+      /**
+       * 不是给“server.host”用的，是给“server.open”用的在浏览器打开页面的host。<br />
+       * 1、可以是：'localhost'、'192.168.1.3'等等。<br />
+       */
+      host: localHost,
+      /**
+       * 指定一个端口号来监听请求，给“server.port”用的。<br />
+       * 1、有效值类型有：number。<br />
+       */
+      port: 8600,
+    },
   },
   /**
-   * 环境local_server用。<br />
+   * 1、关于跨域请求头。<br />
+   *   1)当Access-Control-Allow-Origin:*时，不允许使用凭证（即withCredentials:true）。<br />
+   *   2)当Access-Control-Allow-Origin:*时，只需确保客户端在发出CORS请求时凭据标志的值为false就可以了：<br />
+   *     如果请求使用XMLHttpRequest发出，请确保withCredentials为false。<br />
+   *     如果使用服务器发送事件，确保EventSource.withCredentials是false（这是默认值）。<br />
+   *     如果使用Fetch API，请确保Request.credentials是"omit"。<br />
    */
-  local_server: {
+  httpHeaders = {
+    // 'Content-Security-Policy': 'require-sri-for script style',
     /**
-     * 不是给“server.host”用的，是给“server.open”用的在浏览器打开页面的host。<br />
-     * 1、可以是：'localhost'、'192.168.1.3'等等。<br />
+     * Clear-Site-Data：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Clear-Site-Data
+     * 1、该标头的值的格式比较特别，必需是用“双引号”括起来，这时就会出现字符串嵌套字符串的情况。
      */
-    host: localHost,
+    // 'Clear-Site-Data': '"cache"',
+    'Service-Worker-Allowed': '/',
     /**
-     * 指定一个端口号来监听请求，给“server.port”用的。<br />
-     * 1、有效值类型有：number。<br />
+     * Cache-Control：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
      */
-    port: 8600,
+    'Cache-Control': 'no-store',
+    /**
+     * Expires：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Expires
+     */
+    'Expires': 0,
+    /**
+     * Allow：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Allow
+     */
+    'Allow': 'GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH',
+    /**
+     * X-DNS-Prefetch-Control：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-DNS-Prefetch-Control
+     */
+    'X-DNS-Prefetch-Control': 'on',
+    /**
+     * Access-Control-Allow-Credentials：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials
+     * 1、Access-Control-Allow-Credentials响应标头告诉浏览器是否在包含请求的凭据模式(Request.credentials)时将响应公开给前端JavaScript代码。
+     * 2、当包含请求的凭据模式(Request.credentials)时，如果Access-Control-Allow-Credentials值为true，浏览器只会将响应公开给前端JavaScript代码。
+     * 3、凭据是cookies、授权标头（authorization headers）或TLS客户端证书（TLS client certificates）。
+     * 4、当用作对预检请求的响应的一部分时，这表明是否可以使用凭据进行实际请求。
+     * 5、请注意，简单的GET请求不会进行预检。因此，如果对具有凭据的资源发出请求，并且如果此标头未随资源一起返回，则浏览器将忽略响应，并且不会将其返回到Web内容。
+     * 6、Access-Control-Allow-Credentials标头与XMLHttpRequest.withCredentials属性或Fetch API的Request()构造函数中的credentials选项结合使用。
+     * 7、对于带有证书的CORS请求，浏览器要将响应暴露给前端JavaScript代码，服务器（使用Access-Control-Allow-Credentials标头）和客户端（通过为XHR、Fetch或Ajax请求设置证书模式）都必须表明他们选择包括证书。
+     * 8、此标头的唯一有效值为true（区分大小写）。如果您不需要凭据，请完全省略此标头（而不是将其值设置为 false）。
+     * 9、当此标头设置为true时，客户端发起的请求，相应的也要设置：如果请求使用XMLHttpRequest发出，请确保withCredentials为true、如果使用Fetch API，请确保Request.credentials是"include"。
+     */
+    'Access-Control-Allow-Credentials': true,
+    /**
+     * Access-Control-Allow-Headers：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers
+     * 1、Access-Control-Allow-Headers响应标头用于响应预检请求，其中包括Access-Control-Request-Headers以指示在实际请求期间可以使用哪些HTTP标头。
+     * 2、如果请求具有Access-Control-Request-Headers标头，则此标头是必需的。
+     * 3、注意：始终允许使用CORS安全列表请求标头，并且通常不会在Access-Control-Allow-Headers中列出（除非需要规避安全列表附加限制）。
+     * 4、对于没有凭据的请求（没有HTTP cookie或HTTP身份验证信息的请求），值“*”仅算作一个特殊的通配符值。
+     * 5、在带有凭据的请求中，它被视为没有特殊语义的文字标头名称“*”。请注意，授权标头（Authorization header）不能使用通配符，并且始终需要明确列出。
+     * 6、CORS安全列表请求标头：Accept、Content-Type、Content-Language、Accept-Language。
+     * 7、当仅包含CORS安全列表请求标头（以及满足下面列出的附加要求的值）时，请求不需要在CORS上下文中发送预检请求（OPTIONS请求）。
+     * 8、您可以使用Access-Control-Allow-Headers标头将更多标头列入安全列表，并在那里列出上述标头以规避以下附加限制：
+     *   附加限制，CORS安全列表标头还必须满足以下要求才能成为CORS安全列表请求标头：
+     *   1）对于Accept-Language和Content-Language：只能有由0-9、A-Z、a-z、空格或*,-.;=组成的值。
+     *   2）对于Accept和Content-Type：不能包含CORS不安全请求标头字节：0x00-0x1F（除了0x09 (HT)，它是允许的）、"():<>?@[\]{}、0x7F (DEL)。
+     *   3）对于Content-Type：需要其解析值（忽略参数）的MIME类型为：application/x-www-form-urlencoded、multipart/form-data或text/plain。
+     *   4）对于任何标头：值的长度不能大于128个字符。
+     */
+    'Access-Control-Allow-Headers': 'X-Custom-Header-File-SRI, Authorization, Accept, Content-Type, Content-Language, Accept-Language',
+    /**
+     * Access-Control-Allow-Methods：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods
+     * 1、Access-Control-Allow-Methods响应标头指定访问资源以响应预检请求时允许的一种或多种方法。
+     * 2、对于没有凭据的请求（没有HTTP cookie或HTTP身份验证信息的请求），值“*”仅算作一个特殊的通配符值。
+     * 3、在带有凭据的请求中，它被视为没有特殊语义的文字方法名称“*”。
+     */
+    'Access-Control-Allow-Methods': 'GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH',
+    /**
+     * Access-Control-Allow-Origin：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
+     * 1、Access-Control-Allow-Origin响应标头指示是否可以与来自给定来源的请求代码共享响应。
+     * 2、对于没有凭据的请求，可以指定字面值“*”作为通配符；该值告诉浏览器允许来自任何来源的请求代码访问资源。但是尝试将通配符与凭据一起使用会导致错误。
+     * 3、Access-Control-Allow-Origin: <origin>：只能指定一个来源。如果服务器支持来自多个来源的客户端，它必须返回发出请求的特定客户端的来源。
+     */
+    'Access-Control-Allow-Origin': '*',
+    /**
+     * Access-Control-Expose-Headers：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers
+     * 1、CORS安全列表响应标头是CORS响应中的HTTP标头，它被认为可以安全地暴露给客户端脚本。只有列入安全列表的响应标头可用于网页。
+     * 2、默认情况下，安全列表包含以下响应标头：Cache-Control、Content-Language、Content-Length、Content-Type、Expires、Last-Modified、Pragma。
+     * 3、可以使用Access-Control-Expose-Headers将其他标头添加到安全列表。
+     * 4、注意：Content-Length不是原始安全列表响应标头集的一部分。
+     * 5、Access-Control-Expose-Headers 响应标头允许服务器指示哪些响应标头应提供给浏览器中运行的脚本，以响应跨域请求。
+     * 6、对于没有凭据的请求（没有 HTTP cookie 或 HTTP 身份验证信息的请求），值“*”仅算作一个特殊的通配符值。
+     * 7、在带有凭据的请求中，它被视为没有特殊语义的文字标头名称“*”。
+     */
+    'Access-Control-Expose-Headers': 'X-Custom-Header-File-SRI, Authorization, Content-Encoding, Cache-Control, Content-Language, Content-Length, Content-Type, Expires, Last-Modified, Pragma',
+    /**
+     * Access-Control-Max-Age：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Max-Age
+     * 1、Access-Control-Max-Age响应标头指示预检请求的结果（即Access-Control-Allow-Methods和Access-Control-Allow-Headers标头中包含的信息）可以缓存多长时间（单位：秒）。默认值为5秒。
+     * 2、可以缓存结果的最大秒数，作为无符号非负整数。Firefox的上限为24小时（86400秒）。
+     * 3、Chromium（v76之前）的上限为10分钟（600秒）。Chromium（从v76开始）的上限为2小时（7200秒）。
+     */
+    'Access-Control-Max-Age': 2 * 60 * 60,
+    /**
+     * Access-Control-Request-Headers：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Request-Headers
+     * 1、浏览器在发出预检请求时使用Access-Control-Request-Headers请求标头，让服务器知道在发出实际请求时客户端可能发送哪些HTTP标头（例如使用setRequestHeader()）。
+     * 2、Access-Control-Allow-Headers的补充服务器端标头将回答此浏览器端标头。
+     * 3、该标头系用于客户端发起的请求中的标头，而不是用于服务器的响应中的标头。
+     */
+    // 'Access-Control-Request-Headers': 'X-Custom-Header-File-SRI, Authorization, Accept, Content-Type, Content-Language, Accept-Language',
+    /**
+     * Access-Control-Request-Method：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Request-Method
+     * 1、浏览器在发出预检请求时使用Access-Control-Request-Method请求标头，让服务器知道在发出实际请求时将使用哪种HTTP方法。
+     * 2、这个标头是必需的，因为预检请求始终是一个选项，并且不使用与实际请求相同的方法。
+     * 3、该标头系用于客户端发起的请求中的标头，而不是用于服务器的响应中的标头。
+     */
+    // 'Access-Control-Request-Method': 'GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH',
   },
-};
+  /**
+   * 注意：仅使用纯字母字符作为自定义变量名称。我们正在使用正则表达式来修补视口值，任何带有特殊字符的变量都可能导致未知问题。<br />
+   * 1、自定义属性名称区分大小写--my-color将被视为与--My-color不同的自定义属性。<br />
+   */
+  postcssViewportHeightCorrectionCustomViewportCorrectionVariable = 'postcss-viewport-height-correction2023',
+  /**
+   * 使用postcss-viewport-height-correction插件时需要手动引入的JS，其是为了解决height: 100vh在移动端浏览器（尤其是iOS端的浏览器）上出现的“怪异”现象，哪怕不是100vh，如：50vh、75vh、-1vh也会出现怪异现象。
+   * 1、相关文章可见：<br />
+   * https://cloud.tencent.com/developer/article/2031944
+   * https://www.jianshu.com/p/437fd5b603de
+   * 2、该插件的使用需要手动引入部分JS，具体写法见：<br />
+   * https://github.com/Faisal-Manzer/postcss-viewport-height-correction
+   * 3、注意：仅使用纯字母字符作为自定义变量名称。我们正在使用正则表达式来修补视口值，任何带有特殊字符的变量都可能导致未知问题。<br />
+   * 4、自定义属性名称区分大小写--my-color将被视为与--My-color不同的自定义属性。<br />
+   * 5、默认值为：vh。<br />
+   * 6、里面的变量customViewportCorrectionVariable的值要跟插件中的选项variable的值保持一致。<br />
+   */
+  postcssViewportHeightCorrectionJS = `var customViewportCorrectionVariable='${ postcssViewportHeightCorrectionCustomViewportCorrectionVariable }';function setViewportProperty(doc){var prevClientHeight,customVar='--'+(customViewportCorrectionVariable||'vh');function handleResize(){var clientHeight=doc.clientHeight;if(clientHeight===prevClientHeight){return;}requestAnimationFrame(function updateViewportHeight(){doc.style.setProperty(customVar,(clientHeight*0.01)+'px');prevClientHeight=clientHeight;});}handleResize();return handleResize;}window.addEventListener('resize',setViewportProperty(document.documentElement));`;
 
 export {
   devServerGlobalParameters,
+  httpHeaders,
+  postcssViewportHeightCorrectionCustomViewportCorrectionVariable,
+  postcssViewportHeightCorrectionJS,
+  weinreLocalPort,
+  weinrePublicNetworkHost,
+  weinrePublicNetworkPort,
 };
 
 export default {
   devServerGlobalParameters,
+  httpHeaders,
+  postcssViewportHeightCorrectionCustomViewportCorrectionVariable,
+  postcssViewportHeightCorrectionJS,
+  weinreLocalPort,
+  weinrePublicNetworkHost,
+  weinrePublicNetworkPort,
 };
