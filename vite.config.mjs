@@ -1422,43 +1422,68 @@ export default defineConfig( async ( {
      * @rollup/plugin-commonjs：https://github.com/rollup/plugins/tree/master/packages/commonjs
      */
     plugins = [
-      checker( {
-        overlay: {
-          initialIsOpen: true,
-          position: 'bl',
-          /**
-           * 使用它向徽章按钮添加额外的样式字符串，字符串格式为：[Svelte style](https://svelte.dev/docs#template-syntax-element-directives-style-property)<br />
-           * 例如，如果要隐藏徽章，可以将“display: none;”传递给badgeStyle属性。<br />
-           */
-          // badgeStyle: ``,
-          /**
-           * 使用它向诊断面板添加额外的样式字符串，字符串格式为：[Svelte style](https://svelte.dev/docs#template-syntax-element-directives-style-property)<br />
-           * 例如，如果要更改面板的不透明度，可以将“opacity: 0.8;”传递给panelStyle属性。<br />
-           */
-          // panelStyle: ``,
-        },
-        terminal: true,
-        enableBuild: true,
-        typescript: {
-          root: resolve( __dirname, `./` ),
-          tsconfigPath: './tsconfig.json',
-          buildMode: false,
-        },
-        // 供Vue3使用。
-        vueTsc: {
-          root: resolve( __dirname, `./` ),
-          tsconfigPath: './tsconfig.json',
-        },
-        // 供Vue2使用。
-        // vls: true,
-      } ),
+      ...(
+        isProduction
+        ? []
+        : [
+            checker( {
+              overlay: {
+                initialIsOpen: true,
+                position: 'bl',
+                /**
+                 * 使用它向徽章按钮添加额外的样式字符串，字符串格式为：[Svelte style](https://svelte.dev/docs#template-syntax-element-directives-style-property)<br />
+                 * 例如，如果要隐藏徽章，可以将“display: none;”传递给badgeStyle属性。<br />
+                 */
+                // badgeStyle: ``,
+                /**
+                 * 使用它向诊断面板添加额外的样式字符串，字符串格式为：[Svelte style](https://svelte.dev/docs#template-syntax-element-directives-style-property)<br />
+                 * 例如，如果要更改面板的不透明度，可以将“opacity: 0.8;”传递给panelStyle属性。<br />
+                 */
+                // panelStyle: ``,
+              },
+              terminal: true,
+              enableBuild: true,
+              typescript: {
+                root: resolve( __dirname, `./` ),
+                tsconfigPath: './tsconfig.json',
+                buildMode: false,
+              },
+              // 供Vue3使用。
+              vueTsc: {
+                root: resolve( __dirname, `./` ),
+                tsconfigPath: './tsconfig.json',
+              },
+              // 供Vue2使用。
+              // vls: true,
+            } ),
+          ]
+      ),
       // ToDo
       /**
        * 该插件的详细配置选项见：<br />
        * node_modules/@vitejs/plugin-vue/dist/index.d.ts:20
        * https://github.com/vitejs/vite-plugin-vue/tree/main/packages/plugin-vue
        */
-      vue(),
+      vue( {
+        // vue-loader v16+才有的选项。Start
+
+        /**
+         * 在使用Vue的反应性API时，引入一组编译器转换来改善人体工程学，特别是能够使用没有.value的refs。<br />
+         * 1、具体可阅https://github.com/vuejs/rfcs/discussions/369 <br />
+         * 2、仅在SFC中生效。<br />
+         */
+        reactivityTransform: true,
+        /**
+         * 启用自定义元素模式。在自定义元素模式下加载的SFC将其<style>标记内联为组件样式选项下的字符串。<br />
+         * 1、当与Vue核心的defineCustomElement一起使用时，样式将被注入到自定义元素的阴影根中。<br />
+         * 2、默认值为：/\.ce\.vue$/。<br />
+         * 3、该选项的值类型为：boolean、RegExp。<br />
+         * 4、设置为true将以“自定义元素模式”处理所有.vue文件。<br />
+         */
+        // customElement: /\.ce\.vue$/,
+
+        // vue-loader v16+才有的选项。End
+      } ),
     ],
     // ToDo 考虑使用类似copy插件的工具来复制静态资源文件夹。
     /**
