@@ -1062,20 +1062,21 @@ export default defineConfig( async ( {
      */
     esbuild = {
       include: [
-        ( () => {
-          return new RegExp( `\\.(` + Array.from( new Set( [
-            'js',
-            'cjs',
-            'mjs',
+        new RegExp( `\\.(` + Array.from( new Set( [
+          'js',
+          'cjs',
+          'mjs',
 
-            'ts',
-            'cts',
-            'mts',
+          'ts',
+          'cts',
+          'mts',
 
-            'jsx',
-            'tsx',
-          ] ) ).join( '|' ) + `)(\\?.*)?$`, );
-        } )(),
+          'jsx',
+          'tsx',
+        ] ) ).join( '|' ) + `)(\\?.*)?$`, ),
+      ],
+      exclude: [
+        `**/node_modules/**/*`,
       ],
       /**
        * “法律注释（legal comment）”被认为是JS中的任何语句级注释或CSS中包含@license或@preserve或以//!或者/*!开头的任何规则级注释。<br />
