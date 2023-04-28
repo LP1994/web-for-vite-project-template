@@ -1,0 +1,252 @@
+发现本机系统的OpenSSL版本默认指向：OpenSSL 1.1.1i  8 Dec 2020。
+原因是因为上面安装的“StrawberryPerl”里面有一个“openssl.exe”，见：D:\StrawberryPerl\App\c\bin\openssl.exe
+可以在安装、配置完后，将环境变量“D:\StrawberryPerl\App\c\bin”删除。
+实在不行就进到“D:\OpenSSL\App\bin”，然后在其下进行各种证书配置操作。
+
+Windows查看证书的命令：certmgr.msc（当前用户）、mmc（本地计算机）
+
+关于在生成操作的过程中，对于输入值的说明：
+1、以生成“HTTPSSL001_Root_CA.crt”中的输入值为基准。
+2、生成“HTTPSSL001_Servers_192_168_2_7_CA.csr”时，输入值中除了“Common Name”、“Organizational Unit Name”选项的值可以跟“基准”的“Common Name”、“Organizational Unit Name”选项的值不一样（最好不一样），其他选项值都必须跟“基准”的一样。
+3、生成“HTTPSSL001_Clients_192_168_2_7_CA.csr”时，输入值中除了“Common Name”、“Organizational Unit Name”选项的值可以跟“基准”的“Common Name”、“Organizational Unit Name”选项的值不一样（最好不一样），其他选项值都必须跟“基准”的一样。
+4、多个“服务端CA证书”之间的输入值中，“Organizational Unit Name”选项的值必须一样。
+5、多个“客户端CA证书”之间的输入值中，“Organizational Unit Name”选项的值必须一样。
+6、多个“服务端CA证书”之间的输入值中，“Common Name”选项的值可以是各自不同的域名、IP，且该值也这只能是域名、IP。当然在生成的过程中可以通过设置“subjectAltName”来设置多个域名、IP别名。
+7、多个“客户端CA证书”之间的输入值中，“Common Name”选项的值可以是各自不同的域名、IP，且该值也这只能是域名、IP。但生成的过程中不可以通过设置“subjectAltName”来设置多个域名、IP别名，会导致证书无法被浏览器使用。
+
+
+
+1、生成“私钥，HTTPSSL001_Root_CA_Key.key”：
+对于生成用于网站的HTTPS自定义证书（并不是所有的支持端都有一个类似“密码”的选项，它是用于解码加了密的私钥），不要对“私钥，HTTPSSL001_Root_CA_Key.key”进行加密处理（使用“openssl genrsa -aes256”这个就是启用加密）：
+openssl genrsa -out HTTPSSL001_Root_CA_Key.key 4096
+
+
+
+2、生成“根CA证书，HTTPSSL001_Root_CA.crt”：
+openssl req -x509 -config openssl.cnf -new -nodes -key HTTPSSL001_Root_CA_Key.key -days 365 -out HTTPSSL001_Root_CA.crt
+执行输出：
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [CN]:CN
+State or Province Name (full name) [GuangDong]:GuangDong
+Locality Name (eg, city) [ShenZhen]:ShenZhen
+Organization Name (eg, company) [HTTPSSL001]:HTTPSSL001
+Organizational Unit Name (eg, section) [IT]:IT
+Common Name (e.g. server FQDN or YOUR name) [192.168.2.7]:HTTPSSL001_Root_CA
+Email Address [2726893248@qq.com]:2726893248@qq.com
+
+生成的一个可读版本来验证“根CA证书，HTTPSSL001_Root_CA.crt”的内容：
+openssl x509 -noout -text -in HTTPSSL001_Root_CA.crt
+执行输出：
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            6b:07:80:d6:a7:cd:a6:5f:c4:3d:10:51:23:71:fc:30:43:59:e7:28
+        Signature Algorithm: sha512WithRSAEncryption
+        Issuer: C = CN, ST = GuangDong, L = ShenZhen, O = HTTPSSL001, OU = IT, CN = HTTPSSL001_Root_CA, emailAddress = 2726893248@qq.com
+        Validity
+            Not Before: Feb 27 22:08:33 2023 GMT
+            Not After : Feb 27 22:08:33 2024 GMT
+        Subject: C = CN, ST = GuangDong, L = ShenZhen, O = HTTPSSL001, OU = IT, CN = HTTPSSL001_Root_CA, emailAddress = 2726893248@qq.com
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (4096 bit)
+                Modulus:
+                    00:97:02:1d:da:f8:1f:4b:03:7b:83:1c:32:4e:50:
+                    f2:45:67:5f:98:dc:2a:30:4c:06:db:4c:10:3c:1f:
+                    2a:e3:3b:a7:a4:0b:9c:30:6b:d9:17:c9:8b:4c:15:
+                    c2:14:be:b8:33:96:0c:e6:4f:d8:6a:0b:80:86:20:
+                    3e:dc:44:52:a1:a0:20:0f:eb:ac:6d:d0:06:ae:c2:
+                    49:5c:ce:53:9d:56:dc:f1:bd:38:a3:67:ae:3a:ae:
+                    54:24:4a:0b:c7:8d:10:6a:23:d2:61:c8:8b:f4:89:
+                    bf:b2:49:40:2f:2c:c7:fa:b5:51:9a:2b:7d:a0:9f:
+                    fd:27:61:a0:f3:d1:0e:1f:ce:2e:73:6d:5e:0c:5c:
+                    67:77:45:11:83:ca:14:e5:3f:61:9c:7f:18:69:ae:
+                    91:29:8a:18:dc:48:cc:51:1f:0c:07:f4:85:f3:dd:
+                    26:cd:c7:d3:62:a5:46:8b:75:1b:31:1e:d8:f5:81:
+                    7e:71:e6:9c:19:23:78:2f:27:b0:fb:fb:52:9e:fd:
+                    a1:a1:60:9b:b7:be:a6:d3:73:e9:cb:57:ec:bd:23:
+                    e5:9e:ff:62:37:09:7b:2d:48:1a:32:77:db:f6:b6:
+                    99:99:a9:06:1f:45:38:6a:67:88:60:45:58:ed:6a:
+                    f3:a4:ef:12:ca:28:c8:35:bb:e3:7b:e4:eb:c6:ec:
+                    99:76:f6:1c:d4:66:2c:4b:33:41:f0:ca:4e:2f:2e:
+                    9a:ef:87:b8:7d:b6:c8:06:c9:dc:d1:fd:2d:a2:04:
+                    95:fc:9b:ce:f1:c1:38:bf:73:80:3e:d9:1d:d9:28:
+                    cb:9d:be:49:4b:9f:cb:ef:7c:6e:af:e3:a0:e5:b2:
+                    81:84:f5:ba:07:5c:a4:70:f9:93:08:a2:d8:ba:25:
+                    54:84:64:f1:39:37:f4:eb:3a:de:6a:fc:cc:ce:b4:
+                    c0:15:f8:43:f4:c2:e4:1d:1d:39:f3:29:84:09:8a:
+                    a7:7c:e4:98:14:21:96:3b:16:c9:f0:0d:53:80:85:
+                    3e:6f:cb:17:82:bf:61:cf:84:c3:47:96:99:92:68:
+                    bc:56:7b:e4:f2:72:8b:00:c0:3e:7c:36:25:33:25:
+                    81:31:a7:6a:e8:61:63:dc:cb:b6:bb:10:68:20:3b:
+                    49:cf:22:cb:f0:5c:ab:00:95:9d:3b:6e:97:45:b0:
+                    d3:75:04:df:2a:83:bd:c5:99:af:27:84:97:a3:8d:
+                    49:4c:23:46:d4:e4:34:fe:16:98:6c:f7:69:16:8c:
+                    65:9f:75:14:8f:a5:c9:ba:fd:19:84:a6:f4:1f:ac:
+                    56:5c:a4:c2:89:56:56:52:3f:a6:fe:a3:4c:d8:82:
+                    c7:75:3a:fc:ca:c8:c7:ba:f3:f2:1d:69:7e:f8:50:
+                    ce:7f:e9
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Subject Key Identifier:
+                56:BB:FF:D9:CC:B8:7B:61:0A:43:AF:39:02:75:5F:A1:9A:71:C8:1B
+            X509v3 Authority Key Identifier:
+                56:BB:FF:D9:CC:B8:7B:61:0A:43:AF:39:02:75:5F:A1:9A:71:C8:1B
+            X509v3 Basic Constraints: critical
+                CA:TRUE
+    Signature Algorithm: sha512WithRSAEncryption
+    Signature Value:
+        1c:0c:83:5e:80:5b:3a:f7:10:35:b6:1f:f3:69:d4:41:a3:10:
+        ce:55:34:bf:59:50:59:82:5e:d0:04:21:63:46:ca:13:3b:00:
+        4f:fc:5a:4c:e8:51:54:9d:f2:23:6a:02:96:73:a4:27:e2:95:
+        ff:aa:f7:b1:8f:b1:e5:c3:63:50:c1:e9:b3:69:27:ce:34:e1:
+        51:f0:a0:e8:27:97:03:7e:df:bb:17:4a:a7:ad:77:6b:d3:2c:
+        ff:db:9a:05:1c:6a:e3:92:73:88:93:0d:f1:8d:b0:15:d4:70:
+        6d:f5:33:f5:bf:0e:f5:37:20:69:99:86:91:c7:bb:4b:1c:ce:
+        97:f7:2b:76:2b:77:71:b6:d1:ce:76:1c:e8:1d:8e:84:2d:ec:
+        65:1b:ee:81:dd:b8:0f:ac:28:cf:80:08:d5:9a:4f:f7:c1:4a:
+        62:22:c2:ca:32:86:4b:b4:3f:1e:ce:4b:fd:d7:ae:6e:85:bb:
+        b3:68:a2:0f:ef:dc:08:85:a8:3f:20:26:dd:7a:4e:55:c0:0e:
+        d6:4d:79:37:f2:b1:e5:8c:a9:23:64:f2:24:69:95:ac:ab:ad:
+        ff:25:57:9b:57:59:2e:98:c1:d0:a9:4b:cf:03:33:c8:19:49:
+        99:3d:84:c7:13:64:9a:f7:bc:37:4f:0b:52:73:1b:7c:49:30:
+        de:dc:36:ed:8e:85:b6:6c:6e:91:c4:be:f0:02:42:98:7b:cd:
+        02:0d:6f:e9:43:01:16:3b:e7:5c:87:3c:a9:c7:98:ce:9e:fb:
+        c7:a1:d6:d3:e4:f3:23:84:ed:e7:92:ab:0b:65:5d:89:30:1e:
+        4e:05:47:c5:77:c3:59:f2:15:3d:ae:a0:a0:8e:18:ad:b2:11:
+        ef:83:18:96:19:fe:81:a4:f6:31:29:52:d0:da:f1:7b:07:59:
+        a3:c5:98:4b:fd:2b:ff:da:d1:8b:93:9b:2b:bb:08:0e:47:bd:
+        a2:48:51:f7:35:70:8b:4c:11:c9:fb:23:fb:07:e5:f8:65:a3:
+        3d:e7:8e:60:76:0a:cb:4f:f8:76:9d:15:31:5c:6c:34:f3:6e:
+        37:ca:0d:4a:89:49:35:67:d5:37:75:92:0f:5e:c5:0d:00:60:
+        da:29:17:4a:d6:7a:f9:aa:96:3c:33:c1:a0:ad:08:a2:a3:c9:
+        d4:7e:0b:48:8e:d8:bd:22:da:de:72:66:d6:35:0f:52:9b:e6:
+        bf:7c:bc:5c:b1:d9:53:f0:a1:72:e5:7a:ee:5d:60:97:ad:9e:
+        ed:6e:0a:96:64:68:4d:bd:71:7b:2f:08:df:21:a0:0b:63:53:
+        d3:5b:cc:51:93:71:ca:00:5b:dd:61:77:a4:83:f3:1f:de:95:
+        59:20:77:21:79:6e:29:17
+
+
+
+3、生成一个用于生成“服务端CA证书”的“证书签名请求，HTTPSSL001_Servers_192_168_2_7_CA.csr”：
+openssl req -new -key HTTPSSL001_Root_CA_Key.key -out HTTPSSL001_Servers_192_168_2_7_CA.csr -config openssl.cnf
+执行输出：
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [CN]:CN
+State or Province Name (full name) [GuangDong]:GuangDong
+Locality Name (eg, city) [ShenZhen]:ShenZhen
+Organization Name (eg, company) [HTTPSSL001]:HTTPSSL001
+Organizational Unit Name (eg, section) [IT]:HTTPSSL001_Servers
+Common Name (e.g. server FQDN or YOUR name) [192.168.2.7]:192.168.2.7
+Email Address [2726893248@qq.com]:2726893248@qq.com
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:@HTTPSSL001.2023#
+An optional company name [HTTPSSL001]:HTTPSSL001
+
+
+
+4、生成一个用于生成“客户端CA证书”的“证书签名请求，HTTPSSL001_Clients_192_168_2_7_CA.csr”：
+openssl req -new -key HTTPSSL001_Root_CA_Key.key -out HTTPSSL001_Clients_192_168_2_7_CA.csr -config openssl.cnf
+执行输出：
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [CN]:CN
+State or Province Name (full name) [GuangDong]:GuangDong
+Locality Name (eg, city) [ShenZhen]:ShenZhen
+Organization Name (eg, company) [HTTPSSL001]:HTTPSSL001
+Organizational Unit Name (eg, section) [IT]:HTTPSSL001_Clients
+Common Name (e.g. server FQDN or YOUR name) [192.168.2.7]:192.168.2.7
+Email Address [2726893248@qq.com]:2726893248@qq.com
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:@HTTPSSL001.2023#
+An optional company name [HTTPSSL001]:HTTPSSL001
+
+
+
+5、生成“服务端CA证书，HTTPSSL001_Servers_192_168_2_7_CA.crt”：
+1）：
+openssl x509 -req -in HTTPSSL001_Servers_192_168_2_7_CA.csr -CA HTTPSSL001_Root_CA.crt -CAkey HTTPSSL001_Root_CA_Key.key -CAcreateserial -out HTTPSSL001_Servers_192_168_2_7_CA.crt -days 365 -sha512 -extfile https.ext
+执行输出：
+Certificate request self-signature ok
+subject=C = CN, ST = GuangDong, L = ShenZhen, O = HTTPSSL001, OU = HTTPSSL001_Servers, CN = 192.168.2.7, emailAddress = 2726893248@qq.com
+2）：
+type HTTPSSL001_Servers_192_168_2_7_CA.crt > HTTPSSL001_Servers_192_168_2_7_CA.pem
+3）：
+type HTTPSSL001_Root_CA_Key.key >> HTTPSSL001_Servers_192_168_2_7_CA.pem
+
+
+
+6、生成“客户端CA证书，HTTPSSL001_Clients_192_168_2_7_CA.crt”：
+1）：
+openssl x509 -req -in HTTPSSL001_Clients_192_168_2_7_CA.csr -CA HTTPSSL001_Root_CA.crt -CAkey HTTPSSL001_Root_CA_Key.key -CAcreateserial -out HTTPSSL001_Clients_192_168_2_7_CA.crt -days 365 -sha512
+执行输出：
+Certificate request self-signature ok
+subject=C = CN, ST = GuangDong, L = ShenZhen, O = HTTPSSL001, OU = HTTPSSL001_Clients, CN = 192.168.2.7, emailAddress = 2726893248@qq.com
+2）：
+type HTTPSSL001_Clients_192_168_2_7_CA.crt > HTTPSSL001_Clients_192_168_2_7_CA.pem
+3）：
+type HTTPSSL001_Root_CA_Key.key >> HTTPSSL001_Clients_192_168_2_7_CA.pem
+
+
+
+7、将“根CA证书，HTTPSSL001_Root_CA.crt”打包为“p12格式，HTTPSSL001_Root_CA.p12”：
+openssl pkcs12 -export -clcerts -in HTTPSSL001_Root_CA.crt -inkey HTTPSSL001_Root_CA_Key.key -out HTTPSSL001_Root_CA.p12 -password pass:@HTTPSSL001.2023#
+执行输出：
+Warning: -clcerts option ignored with -export
+
+
+
+8、还得将输出的“HTTPSSL001_Root_CA.p12”的内容转换为“base64”编码的新文件“HTTPSSL001_Root_CA.p12.base64”。
+Windows系统上用Node写一个转换就行了，代码如下：
+'use strict';
+
+import {
+  readFileSync,
+  writeFileSync,
+} from 'node:fs';
+
+import {
+  dirname,
+  join,
+} from 'node:path';
+
+import {
+  fileURLToPath,
+} from 'node:url';
+
+function Get__dirname( import_meta_url = import.meta.url ){
+  return dirname( Get__filename( import_meta_url ) );
+}
+
+function Get__filename( import_meta_url = import.meta.url ){
+  return fileURLToPath( import_meta_url );
+}
+
+const __dirname = Get__dirname( import.meta.url );
+
+writeFileSync(
+  join( __dirname, './HTTPSSL001_Root_CA.p12.base64' ),
+  readFileSync( join( __dirname, './HTTPSSL001_Root_CA.p12' ) ).toString( 'base64' )
+);
