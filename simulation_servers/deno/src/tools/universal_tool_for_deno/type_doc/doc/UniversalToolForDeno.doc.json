@@ -696,7 +696,7 @@
 					"type": {
 						"type": "reference",
 						"target": {
-							"sourceFileName": "../../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+							"sourceFileName": "../../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 							"qualifiedName": "Uint8Array"
 						},
 						"name": "Uint8Array",
@@ -771,7 +771,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Uint8Array"
 								},
 								"name": "Uint8Array",
@@ -852,7 +852,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Date"
 								},
 								"name": "Date",
@@ -9560,7 +9560,7 @@
 											"type": {
 												"type": "reference",
 												"target": {
-													"sourceFileName": "../../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+													"sourceFileName": "../../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 													"qualifiedName": "Uint8Array"
 												},
 												"name": "Uint8Array",
@@ -9653,7 +9653,7 @@
 													"type": {
 														"type": "reference",
 														"target": {
-															"sourceFileName": "../../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+															"sourceFileName": "../../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 															"qualifiedName": "Uint8Array"
 														},
 														"name": "Uint8Array",
@@ -9752,7 +9752,7 @@
 													"type": {
 														"type": "reference",
 														"target": {
-															"sourceFileName": "../../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+															"sourceFileName": "../../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 															"qualifiedName": "Date"
 														},
 														"name": "Date",
