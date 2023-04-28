@@ -1061,7 +1061,6 @@ export default defineConfig( async ( {
      * https://esbuild.github.io/api/
      */
     esbuild = {
-      // ToDo 是不是要动态的加入：js、mjs、cjs、mts、cts等等。
       include: [
         ( () => {
           return new RegExp( `\\.(` + Array.from( new Set( [

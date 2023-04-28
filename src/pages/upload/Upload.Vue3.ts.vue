@@ -195,7 +195,7 @@ async function UploadForBinary( event: Event ): Promise<void>{
 
     console.dir( file );
 
-    fetch( `/simulation_servers_deno/upload?uploadType=binary&fileName=${ file.name }&isForcedWrite=false`, {
+    fetch( `${ devURL001 }/simulation_servers_deno/upload?uploadType=binary&fileName=${ file.name }&isForcedWrite=false`, {
       body: file,
       cache: 'no-store',
       credentials: 'omit',
@@ -236,7 +236,7 @@ async function UploadForSingle( event: Event ): Promise<void>{
     formData.append( 'file', file, file.name );
     formData.append( 'fileName', `${ file.name }` );
 
-    fetch( `/simulation_servers_deno/upload?uploadType=single&isForcedWrite=false`, {
+    fetch( `${ devURL001 }/simulation_servers_deno/upload?uploadType=single&isForcedWrite=false`, {
       body: formData,
       cache: 'no-store',
       credentials: 'omit',
@@ -277,7 +277,7 @@ function UploadForMultiple( event: Event ): void{
       formData.append( 'files', file, file.name );
     } );
 
-    fetch( `/simulation_servers_deno/upload?uploadType=multiple&isForcedWrite=false`, {
+    fetch( `${ devURL001 }/simulation_servers_deno/upload?uploadType=multiple&isForcedWrite=false`, {
       body: formData,
       cache: 'no-store',
       credentials: 'omit',
