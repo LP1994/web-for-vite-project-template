@@ -1679,7 +1679,7 @@ export default defineConfig( async ( {
          * node_modules/vite/dist/node/index.d.ts:1063
          * node_modules/vite/dist/node/index.d.ts:922
          */
-        proxy: ProxyConfig( {
+        proxy: await ProxyConfig( {
           env_platform,
         } ),
         cors: {
