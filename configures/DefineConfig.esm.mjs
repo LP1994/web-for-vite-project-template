@@ -33,9 +33,7 @@
  * 注意：<br />
  * 1、但是必须有这么一个“--mode”参数设置，这4个之中的其中一个即可：--mode dev_server、--mode local_server、--mode test、--mode production。<br />
  *
- * @param {boolean} config.isProduction 值为true时表示生产环境，反之开发环境，该值依赖CLI参数中的“--mode”参数值，必需。<br />
- * 1、当CLI参数中有：“--mode dev_server”、“--mode local_server”时，该参数为false，表示开发环境。<br />
- * 2、当CLI参数中有：“--mode test”、“--mode production”时，该参数为true，表示生产环境。<br />
+ * @param {boolean} config.isProduction isProduction的值为true时表示生产环境，反之开发环境。<br />
  *
  * @returns {object} 返回一个对象，里面是Vite的顶级配置项define的配置。
  */
