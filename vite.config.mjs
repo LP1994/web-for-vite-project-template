@@ -23,6 +23,8 @@ import {
   fileURLToPath,
 } from 'node:url';
 
+import chalk from 'chalk';
+
 import JSON5 from 'json5';
 
 import PostcssSCSS from 'postcss-scss';
@@ -270,13 +272,24 @@ export default defineConfig( async ( {
    * 注意：<br />
    * 1、但是必须有这么一个“--mode”参数设置，这4个之中的其中一个即可：--mode dev_server、--mode local_server、--mode test、--mode production。<br />
    */
-  const env_platform = mode,
+  const env_platform = ( ( mode ) => {
+      if( ![
+        'dev_server',
+        'local_server',
+        'test',
+        'production',
+      ].includes( mode ) ){
+        console.log( chalk.cyan( `\nmode的值为--->${ mode }<---。\n` ) );
+
+        throw new Error( `CLI参数中必须有这么一个“--mode”参数设置，这4个之中的其中一个即可：--mode dev_server、--mode local_server、--mode test、--mode production。` );
+      }
+
+      return mode;
+    } )( mode ),
     /**
-     * @type {boolean} isProduction的值为true时表示生产环境，反之开发环境，该值依赖CLI参数中的“--mode”参数值，必需。<br />
-     * 1、当CLI参数中有：“--mode dev_server”、“--mode local_server”时，该参数为false，表示开发环境。<br />
-     * 2、当CLI参数中有：“--mode test”、“--mode production”时，该参数为true，表示生产环境。<br />
+     * @type {boolean} isProduction的值为true时表示生产环境，反之开发环境。<br />
      */
-    isProduction = ( mode === 'test' || mode === 'production' );
+    isProduction = command === 'build';
 
   mode = isProduction
          ? 'production'
