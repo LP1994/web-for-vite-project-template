@@ -654,77 +654,16 @@ HTTP代理--->${ req.originalUrl }<---End
         }
       },
 
-      // http-proxy-middleware options Start
-
       /**
-       * 重写目标的url路径。对象键将用作正则表达式来匹配路径。<br />
-       * PS：<br />
-       * 1、该选项有3种值类型：<br />
-       * { [ regexp: string ]: string }、( path: string, req: Request ) => string、( path: string, req: Request ) => Promise<string>。<br />
-       * 2、当值类型为对象时，有几类例子：<br />
-       * 重写路径：pathRewrite: {'^/old/api' : '/new/api'}，原来的http://localhost:3000/old/api，现在的http://localhost:3000/new/api。<br />
-       * 删除路径：pathRewrite: {'^/remove' : ''}，原来的http://localhost:3000/remove/api，现在的http://localhost:3000/api。<br />
-       * 添加基本路径：pathRewrite: {'^/' : '/basepath/'}，原来的http://localhost:3000/xxx，现在的http://localhost:3000/basepath/xxx。<br />
+       * 重写目标的url路径。例子可见：https://vitejs.dev/config/server-options.html#server-proxy
        *
-       * @param {string} path
-       * @param {Request} req
+       * @param path {string}
        *
        * @returns {string} 新路径。
        */
-      pathRewrite: {
-        '^/ws4DevURL001': '',
+      rewrite( path ){
+        return path.replace( /^\/ws4DevURL001/, '' );
       },
-
-      /**
-       * 为特定请求重新定位到option.target。<br />
-       * PS：<br />
-       * 1、有效值类型有3种：<br />
-       * { [ hostOrPath: string ]: httpProxy.ServerOptions['target'] }、( req: Request ) => httpProxy.ServerOptions['target']、( req: Request ) => Promise<httpProxy.ServerOptions['target']>。<br />
-       * 2、使用host、path来匹配请求时，将优先使用第一个匹配到的规则，所以配置的顺序很重要，具体使用例如：<br />
-       * host only：<br />
-       * 'localhost:3000': 'http://192.168.1.3:8087'
-       * host + path：<br />
-       * 'localhost:3000/api': 'http://192.168.1.3:8087'
-       * path only：<br />
-       * '/rest': 'http://192.168.1.3:8087'
-       *
-       * 当设置为'0.0.0.0'时的注意事项：<br />
-       * 1、关于浏览器通过node服务代理请求本deno服务时，node的代理设置（target、router选项）得指向'0.0.0.0'，否者node会报错误：<br />
-       * ECONNREFUSED (Connection refused): No connection could be made because the target machine actively refused it. This usually results from trying to connect to a service that is inactive on the foreign host.<br />
-       * 2、如上类比，当任何非浏览器端访问、代理到本deno服务时，都得保证其目标指向'0.0.0.0'，否则，大概率会报错。<br />
-       * 3、Windows系统上，浏览器不支持对0.0.0.0的直接访问，例如无法访问：https://0.0.0.0:9000。<br />
-       *
-       * 关于浏览器访问“不安全的HTTPS协议”时的注意事项（尤其是火狐浏览器），浏览器访问“不安全的HTTPS协议”时需要先同意其不安全的警告，否则无法访问：
-       * 1、当页面地址（如“https://localhost:9200”）跟其中的websocket服务地址（如“wss://localhost:9000”）不一样时，因为端口不一致，所以也算不同的服务地址。
-       * 2、这时要先访问一下websocket服务地址对应的HTTP服务地址，即“https://localhost:9000”。
-       * 3、然后才能让页面（如“https://localhost:9200”）成功访问其中的websocket服务地址（如“wss://localhost:9000”）。
-       * 4、可以的话，还是使用同一个端口提供http、https、ws、wss服务，这样只需要同意一次不安全的警告即可。
-       */
-      router: {
-        'localhost:8100': 'wss://0.0.0.0:9200',
-        '127.0.0.1:8100': 'wss://0.0.0.0:9200',
-        '192.168.2.7:8100': 'wss://0.0.0.0:9200',
-
-        'localhost:8200': 'wss://0.0.0.0:9200',
-        '127.0.0.1:8200': 'wss://0.0.0.0:9200',
-        '192.168.2.7:8200': 'wss://0.0.0.0:9200',
-      },
-
-      /**
-       * 日志版本：'debug'、'info'、'warn'、'error'、'silent'，默认值为'info'。<br />
-       */
-      logLevel: 'info',
-
-      /**
-       * 修改或替换日志提供程序，该选项默认值为console。<br />
-       *
-       * @param {LogProvider} provider
-       *
-       * @returns {myCustomProvider} 修改或替换日志提供程序。
-       */
-      // logProvider: provider => myCustomProvider,
-
-      // http-proxy-middleware options End
 
       // http-proxy options Start
 
@@ -748,7 +687,7 @@ HTTP代理--->${ req.originalUrl }<---End
        * }<br />
        *
        * 当设置为'0.0.0.0'时的注意事项：<br />
-       * 1、关于浏览器通过node服务代理请求本deno服务时，node的代理设置（target、router选项）得指向'0.0.0.0'，否者node会报错误：<br />
+       * 1、关于浏览器通过node服务代理请求本deno服务时，node的代理设置（target选项）得指向'0.0.0.0'，否者node会报错误：<br />
        * ECONNREFUSED (Connection refused): No connection could be made because the target machine actively refused it. This usually results from trying to connect to a service that is inactive on the foreign host.<br />
        * 2、如上类比，当任何非浏览器端访问、代理到本deno服务时，都得保证其目标指向'0.0.0.0'，否则，大概率会报错。<br />
        * 3、Windows系统上，浏览器不支持对0.0.0.0的直接访问，例如无法访问：https://0.0.0.0:9000。<br />
@@ -781,10 +720,25 @@ HTTP代理--->${ req.originalUrl }<---End
       /**
        * 要传递给https.createServer()的对象。<br />
        * 保证跟服务端（Vite的配置项server.https、Deno）设置的各个证书一样就行。<br />
-       * 该选项里头的各个有效属性其实可以参考webpack的顶级配置项“devServer”中的“server.options”选项里的各个属性。<br />
-       * 因为它们都是属于“tls.createSecureContext([options])”中的“options”选项，具体的选项说明可见：https://nodejs.org/dist/latest/docs/api/tls.html#tlscreatesecurecontextoptions。<br />
+       * 该选项里头的各个有效属性其实可以参考Vite的配置项server.https选项里的各个属性。<br />
+       * 因为它们都是属于“tls.createSecureContext([options])”中的“options”选项，具体的选项说明可见：<br />
+       * https://nodejs.org/api/https.html#httpscreateserveroptions-requestlistener
+       * https://nodejs.org/api/tls.html#tlscreateserveroptions-secureconnectionlistener
+       * https://nodejs.org/api/tls.html#tlscreatesecurecontextoptions
+       * https://nodejs.org/api/http.html#httpcreateserveroptions-requestlistener
+       * https://nodejs.org/api/net.html#netcreateserveroptions-connectionlistener
        */
       ssl: {
+        /**
+         * 使用一个不安全的HTTP解析器，在真实时接受无效的HTTP头。应该避免使用不安全的解析器。参见--insecure-http-parser获取更多信息。默认值：false。
+         */
+        insecureHTTPParser: true,
+
+        /**
+         * 可选择覆盖该服务器收到的请求的--max-http-header-size的值，即请求头的最大长度（字节）。默认值：16384（16 KiB）。
+         */
+        maxHeaderSize: 1024000,
+
         /**
          * 覆盖受信任的CA证书。<br />
          * 默认情况是信任Mozilla策划的知名CA。<br />
@@ -1009,33 +963,43 @@ HTTP代理--->${ req.originalUrl }<---End
       // http-proxy events Start
 
       /**
-       * 在发送数据之前发出此事件。它使您有机会更改proxyReq请求对象。适用于“web”连接。<br />
+       * 配置代理服务器（例如，侦听各种事件）。
        *
-       * @param {http.ClientRequest} proxyReq
-       * @param {Request} req
-       * @param {Response} res
-       * @param {httpProxy.ServerOptions} options
+       * @param proxy {HttpProxy.Server} 'http-proxy'的实例。
        *
-       * @returns {void} 无返回值。
+       * @param options {ProxyOptions}
+       *
+       * @returns {void}
        */
-      onProxyReq: ( proxyReq, req, res, options ) => {
-      },
+      configure( proxy, options ){
+        /**
+         * 在发送数据之前发出此事件。它使您有机会更改proxyReq请求对象。适用于“web”连接。<br />
+         *
+         * @param {http.ClientRequest} proxyReq
+         * @param {Request} req
+         * @param {Response} res
+         * @param {httpProxy.ServerOptions} options
+         *
+         * @returns {void} 无返回值。
+         */
+        proxy.on( 'proxyReq', ( proxyReq, req, res, options ) => {
+        } );
 
-      /**
-       * 在发送数据之前发出此事件。它使您有机会更改proxyReq请求对象。适用于“websocket”连接。<br />
-       *
-       * @param {http.ClientRequest} proxyReq
-       * @param {Request} req
-       * @param {net.Socket} socket
-       * @param {httpProxy.ServerOptions} options
-       * @param {any} head
-       *
-       * @returns {void} 无返回值。
-       */
-      onProxyReqWs: ( proxyReq, req, socket, options, head ) => {
-        const arr001 = Reflect.ownKeys( proxyReq ).filter( item => typeof item === 'symbol' );
+        /**
+         * 在发送数据之前发出此事件。它使您有机会更改proxyReq请求对象。适用于“websocket”连接。<br />
+         *
+         * @param {http.ClientRequest} proxyReq
+         * @param {Request} req
+         * @param {net.Socket} socket
+         * @param {httpProxy.ServerOptions} options
+         * @param {any} head
+         *
+         * @returns {void} 无返回值。
+         */
+        proxy.on( 'proxyReqWs', ( proxyReq, req, socket, options, head ) => {
+          const arr001 = Reflect.ownKeys( proxyReq ).filter( item => typeof item === 'symbol' );
 
-        logWriteStream.write( `WebSocket代理--->${ options.context }<---Start
+          logWriteStream.write( `WebSocket代理--->${ options.context }<---Start
 原请求方法：${ req.method }
 原请求头：
 ${ JSON.stringify( req.headers, null, ' ' ) }
@@ -1048,55 +1012,56 @@ ${ JSON.stringify( req.headers, null, ' ' ) }
 ${ JSON.stringify( Object.fromEntries( Object.values( proxyReq[ arr001[ arr001.findIndex( item => item.toString() === 'Symbol(kOutHeaders)' ) ] ] ) ), null, ' ' ) }
 WebSocket代理--->${ options.context }<---End
 \n\n` );
-      },
+        } );
 
-      /**
-       * 如果对目标的请求得到响应，则会发出此事件。<br />
-       *
-       * @param {http.IncomingMessage} proxyRes
-       * @param {Request} req
-       * @param {Response} res
-       *
-       * @returns {void} 无返回值。
-       */
-      onProxyRes: ( proxyRes, req, res ) => {
-      },
+        /**
+         * 如果对目标的请求得到响应，则会发出此事件。<br />
+         *
+         * @param {http.IncomingMessage} proxyRes
+         * @param {Request} req
+         * @param {Response} res
+         *
+         * @returns {void} 无返回值。
+         */
+        proxy.on( 'proxyRes', ( proxyRes, req, res ) => {
+        } );
 
-      /**
-       * 一旦创建代理websocket并将其通过管道传输到目标websocket，就会发出此事件。<br />
-       * PS：<br />
-       * 1、“proxySocket”事件已经被废弃了现在是用当前这个事件代替它了。<br />
-       *
-       * @param {net.Socket} proxySocket
-       *
-       * @returns {void} 无返回值。
-       */
-      onOpen: proxySocket => {
-      },
+        /**
+         * 一旦创建代理websocket并将其通过管道传输到目标websocket，就会发出此事件。<br />
+         * PS：<br />
+         * 1、“proxySocket”事件已经被废弃了现在是用当前这个事件代替它了。<br />
+         *
+         * @param {net.Socket} proxySocket
+         *
+         * @returns {void} 无返回值。
+         */
+        proxy.on( 'open', proxySocket => {
+        } );
 
-      /**
-       * 一旦代理websocket关闭，就会发出此事件。<br />
-       *
-       * @param {Response} proxyRes
-       * @param {net.Socket} proxySocket
-       * @param {any} proxyHead
-       *
-       * @returns {void} 无返回值。
-       */
-      onClose: ( proxyRes, proxySocket, proxyHead ) => {
-      },
+        /**
+         * 一旦代理websocket关闭，就会发出此事件。<br />
+         *
+         * @param {Response} proxyRes
+         * @param {net.Socket} proxySocket
+         * @param {any} proxyHead
+         *
+         * @returns {void} 无返回值。
+         */
+        proxy.on( 'close', ( proxyRes, proxySocket, proxyHead ) => {
+        } );
 
-      /**
-       * 如果对目标的请求失败，则会发出错误事件。我们不对客户端和代理之间传递的消息以及代理和目标之间传递的消息进行任何错误处理，因此建议您侦听错误并进行处理。<br />
-       *
-       * @param {Error} err
-       * @param {Request} req
-       * @param {Response} res
-       * @param {string|Partial<url.Url>} target 可选的参数，不一定都有存在。<br />
-       *
-       * @returns {void} 无返回值。
-       */
-      onError: ( err, req, res, target ) => {
+        /**
+         * 如果对目标的请求失败，则会发出错误事件。我们不对客户端和代理之间传递的消息以及代理和目标之间传递的消息进行任何错误处理，因此建议您侦听错误并进行处理。<br />
+         *
+         * @param {Error} err
+         * @param {Request} req
+         * @param {Response} res
+         * @param {string|Partial<url.Url>} target 可选的参数，不一定都有存在。<br />
+         *
+         * @returns {void} 无返回值。
+         */
+        proxy.on( 'error', ( err, req, res, target ) => {
+        } );
       },
 
       // http-proxy events End
