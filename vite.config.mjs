@@ -37,8 +37,6 @@ import checker from 'vite-plugin-checker';
 
 import vue from '@vitejs/plugin-vue';
 
-import tsconfig_json from './tsconfig.json' assert { type: 'json', };
-
 import DefineConfig from './configures/DefineConfig.esm.mjs';
 
 import {
@@ -46,8 +44,10 @@ import {
 } from './configures/GlobalParameters.esm.mjs';
 
 import {
-  CreateLogger,
-} from './configures/Logger.esm.mjs';
+  ProxyConfig,
+} from './configures/ProxyConfig.esm.mjs';
+
+import tsconfig_json from './tsconfig.json' assert { type: 'json', };
 
 /**
  * 该函数返回值完全等价于“CommonJS modules”中的“__dirname”，是一个字符串，Windows系统下型如：G:\WebStormWS\xx\tools。<br />
@@ -69,36 +69,6 @@ function Get__dirname( import_meta_url = import.meta.url ){
  */
 function Get__filename( import_meta_url = import.meta.url ){
   return fileURLToPath( import_meta_url );
-}
-
-/**
- * 返回传入时间对象的年、月、日、时、分、秒、周几（当为周日的时候返回的是字符串“日”，其他星期则是数字）。<br />
- *
- * @param {Date} nowDate 一个时间对象，默认值（当前时间）：new Date( Date.now() )，可选。<br />
- *
- * @returns {{year: string, month: string, date: string, hours: string, minutes: string, seconds: string, day: string}} year：年、month：月、date：日、hours：时、minutes：分、seconds：秒、day：周几（当为周日的时候返回的是字符串“日”，其他星期则是数字）。
- */
-function DateHandle( nowDate = new Date( Date.now() ) ){
-  const year = String( nowDate.getFullYear() ),
-    month = String( nowDate.getMonth() + 1 ).padStart( 2, '0' ),
-    date = String( nowDate.getDate() ).padStart( 2, '0' ),
-    hours = String( nowDate.getHours() ).padStart( 2, '0' ),
-    minutes = String( nowDate.getMinutes() ).padStart( 2, '0' ),
-    seconds = String( nowDate.getSeconds() ).padStart( 2, '0' ),
-    day0 = Number( nowDate.getDay() ),
-    day = String( day0 === 0
-                  ? '日'
-                  : day0 );
-
-  return {
-    year,
-    month,
-    date,
-    hours,
-    minutes,
-    seconds,
-    day,
-  };
 }
 
 /**
@@ -237,29 +207,9 @@ const autoprefixerConfig = {
   };
 
 /**
- * 注意：仅使用纯字母字符作为自定义变量名称。我们正在使用正则表达式来修补视口值，任何带有特殊字符的变量都可能导致未知问题。<br />
- * 1、自定义属性名称区分大小写--my-color将被视为与--My-color不同的自定义属性。<br />
- */
-const postcssViewportHeightCorrectionCustomViewportCorrectionVariable = 'postcss-viewport-height-correction2023',
-  /**
-   * 使用postcss-viewport-height-correction插件时需要手动引入的JS，其是为了解决height: 100vh在移动端浏览器（尤其是iOS端的浏览器）上出现的“怪异”现象，哪怕不是100vh，如：50vh、75vh、-1vh也会出现怪异现象。
-   * 1、相关文章可见：<br />
-   * https://cloud.tencent.com/developer/article/2031944
-   * https://www.jianshu.com/p/437fd5b603de
-   * 2、该插件的使用需要手动引入部分JS，具体写法见：<br />
-   * https://github.com/Faisal-Manzer/postcss-viewport-height-correction
-   * 3、注意：仅使用纯字母字符作为自定义变量名称。我们正在使用正则表达式来修补视口值，任何带有特殊字符的变量都可能导致未知问题。<br />
-   * 4、自定义属性名称区分大小写--my-color将被视为与--My-color不同的自定义属性。<br />
-   * 5、默认值为：vh。<br />
-   * 6、里面的变量customViewportCorrectionVariable的值要跟插件中的选项variable的值保持一致。<br />
-   */
-  postcssViewportHeightCorrectionJS = `var customViewportCorrectionVariable='${ postcssViewportHeightCorrectionCustomViewportCorrectionVariable }';function setViewportProperty(doc){var prevClientHeight,customVar='--'+(customViewportCorrectionVariable||'vh');function handleResize(){var clientHeight=doc.clientHeight;if(clientHeight===prevClientHeight){return;}requestAnimationFrame(function updateViewportHeight(){doc.style.setProperty(customVar,(clientHeight*0.01)+'px');prevClientHeight=clientHeight;});}handleResize();return handleResize;}window.addEventListener('resize',setViewportProperty(document.documentElement));`;
-
-let logWriteStream = null;
-
-/**
  * @type {import('vite').UserConfig} Vite配置。<br />
  * 详细选项见：<br />
+ * https://vitejs.dev/config/
  * node_modules/vite/dist/node/index.d.ts:2407
  */
 export default defineConfig( async ( {
@@ -294,21 +244,6 @@ export default defineConfig( async ( {
   mode = isProduction
          ? 'production'
          : 'development';
-
-  if( !isProduction ){
-    const {
-        year,
-        month,
-        date,
-        hours,
-        minutes,
-        seconds,
-        day,
-      } = DateHandle(),
-      logFileName = `proxy_${ year }年${ month }月${ date }日${ hours }时${ minutes }分${ seconds }秒(周${ day }).log`;
-
-    logWriteStream = await CreateLogger( join( __dirname, `./log/${ env_platform }/${ logFileName }` ) );
-  }
 
   /**
    * @type {object} 设置路径别名。<br />
@@ -1561,852 +1496,7 @@ export default defineConfig( async ( {
     /**
      * @type {string} 表示项目根目录，一个绝对路径。<br />
      */
-    root = resolve( __dirname, `./` ),
-    /**
-     * @type {ServerOptions} 开发服务器选项。<br />
-     * 详细见：<br />
-     * node_modules/vite/dist/node/index.d.ts:2079
-     * node_modules/vite/dist/node/index.d.ts:318
-     */
-    server = {
-      /**
-       * @type {string | boolean} 默认值：'localhost'，指定服务器应该监听哪个IP地址。如果将此设置为0.0.0.0或者true将监听所有地址，包括局域网和公网地址。<br />
-       * 注意：<br />
-       * 在某些情况下，可能响应的是其他服务器而不是Vite：<br />
-       * 第1种情况是：<br />
-       * localhost被使用了。Node.js在v17以下版本中默认会对DNS解析地址的结果进行重新排序。当访问localhost时，浏览器使用DNS来解析地址，这个地址可能与Vite正在监听的地址不同。<br />
-       * 当地址不一致时，Vite会打印出来。<br />
-       * 你可以设置dns.setDefaultResultOrder('verbatim')来禁用这个重新排序的行为。Vite会将地址打印为localhost。<br />
-       * 例如：<br />
-       * // vite.config.js
-       * import { defineConfig, } from 'vite';
-       * import dns from 'dns';
-       *
-       * dns.setDefaultResultOrder( 'verbatim' );
-       *
-       * export default defineConfig({
-       *   // omit
-       * });
-       *
-       * 第2种情况是：<br />
-       * 使用了通配主机地址（例如 0.0.0.0）。这是因为侦听非通配符主机的服务器优先于侦听通配符主机的服务器。<br />
-       */
-      host: true,
-      /**
-       * @type {number} 默认值：5173，指定开发服务器端口。<br />
-       * 注意：如果端口已经被使用，Vite会自动尝试下一个可用的端口，所以这可能不是开发服务器最终监听的实际端口。<br />
-       */
-      port: devServerGlobalParameters[ env_platform ]?.port ?? 5173,
-      /**
-       * @type {boolean} 设为true时若端口已被占用则会直接退出，而不是尝试下一个可用端口。<br />
-       */
-      strictPort: true,
-      /**
-       * @type {boolean | https.ServerOptions} 启用TLS + HTTP/2。注意：当server.proxy选项也被使用时，将会仅使用TLS。<br />
-       * 这个值也可以是一个传递给https.createServer()的选项对象。<br />
-       * 详细见：<br />
-       * https://nodejs.org/api/https.html#httpscreateserveroptions-requestlistener
-       * https://nodejs.org/api/tls.html#tlscreateserveroptions-secureconnectionlistener
-       * https://nodejs.org/api/tls.html#tlscreatesecurecontextoptions
-       * https://nodejs.org/api/http.html#httpcreateserveroptions-requestlistener
-       * https://nodejs.org/api/net.html#netcreateserveroptions-connectionlistener
-       */
-      https: {
-        /**
-         * 使用一个不安全的HTTP解析器，在真实时接受无效的HTTP头。应该避免使用不安全的解析器。参见--insecure-http-parser获取更多信息。默认值：false。
-         */
-        insecureHTTPParser: true,
-
-        /**
-         * 可选择覆盖该服务器收到的请求的--max-http-header-size的值，即请求头的最大长度（字节）。默认值：16384（16 KiB）。
-         */
-        maxHeaderSize: 1024000,
-
-        /**
-         * 覆盖受信任的CA证书。<br />
-         * 默认情况是信任Mozilla策划的知名CA。<br />
-         * 当使用此选项显式指定CA时，Mozilla的CA将被完全替换。<br />
-         *
-         * PS：<br />
-         * 1、一般指的是“根CA证书，HTTPSSL001_Root_CA.crt”，“根CA证书，HTTPSSL001_Root_CA.crt”用于安装到系统、浏览器（尤其是火狐浏览器，它有自己的证书列表，也要给它安装）的证书列表中，手机、平板等非电脑的移动设备，只要安装这个“根CA证书”即可。<br />
-         */
-        ca: [
-          readFileSync( join( __dirname, './configures/openssl/HTTPSSL001/001根CA证书/HTTPSSL001_Root_CA.crt' ), 'utf8' ),
-        ],
-
-        /**
-         * PEM格式的私钥（“HTTPSSL001_Root_CA_Key.key”）。<br />
-         * PEM允许选择加密私钥，加密密钥将使用“options.passphrase”（用于单个私钥或PFX的共享密码）解密。<br />
-         *
-         * 注意：<br />
-         * 1、在生成“服务端CA证书，HTTPSSL001_Servers_192_168_2_7_CA.crt”的“HTTPSSL001_Root_CA_Key.key”文件时，除了用.key作为文件的扩展后缀，也可以用.pem做后缀，一般首选.key。<br />
-         * 2、当前“HTTPSSL001_Root_CA_Key.key”没使用加密。<br />
-         */
-        key: readFileSync( join( __dirname, './configures/openssl/HTTPSSL001/001根CA证书/HTTPSSL001_Root_CA_Key.key' ), 'utf8' ),
-
-        /**
-         * PEM格式的证书链（服务端CA证书，HTTPSSL001_Servers_192_168_2_7_CA.crt）。<br />
-         */
-        cert: readFileSync( join( __dirname, './configures/openssl/HTTPSSL001/002服务端CA证书/HTTPSSL001_Servers_192_168_2_7_CA.crt' ), 'utf8' ),
-
-        /**
-         * 如果SSL/TLS握手未在指定的毫秒数内完成，则中止连接。只要握手超时，就会在tls.Server对象上发出“tlsClientError”。默认值：120000（120000毫秒 = 120秒）。<br />
-         */
-        handshakeTimeout: 120000,
-
-        /**
-         * 如果为true，服务器将从连接的客户端请求证书并尝试验证该证书。默认值：false。<br />
-         *
-         * PS：<br />
-         * 启用该项会导致浏览器无法从https加载，因为服务器将从连接的客户端请求证书并尝试验证该证书，如果客户端没能提供“证书”，那么就会报错，这通常出现在浏览器端。<br />
-         */
-        requestCert: false,
-
-        /**
-         * （可选）设置允许的最低TLS版本。“TLSv1.3”、“TLSv1.2”、“TLSv1.1”或“TLSv1”之一。不能与“secureProtocol”选项一起指定。<br />
-         * 使用一个或另一个。避免设置为低于TLSv1.2，但互操作性可能需要它。默认值：tls.DEFAULT_MIN_VERSION（也就是：TLSv1.2）。<br />
-         */
-        minVersion: 'TLSv1.2',
-
-        /**
-         * （可选）设置允许的最大TLS版本。“TLSv1.3”、“TLSv1.2”、“TLSv1.1”或“TLSv1”之一。不能与“secureProtocol”选项一起指定。<br />
-         * 使用一个或另一个。默认值：tls.DEFAULT_MAX_VERSION（也就是：TLSv1.3）。<br />
-         */
-        maxVersion: 'TLSv1.3',
-
-        /**
-         * 用于单个私钥和/或PFX的共享密码。<br />
-         */
-        passphrase: '@HTTPSSL001.2023#',
-
-        /**
-         * PEM格式的CRL（证书吊销列表）。<br />
-         */
-        // crl: readFileSync( join( __dirname, './configures/openssl/HTTPSSL001/证书吊销列表/证书吊销列表.pem' ), 'utf8' ),
-
-        /**
-         * PFX或PKCS12编码的私钥和证书链。<br />
-         * pfx是单独提供密钥和证书的替代方案。<br />
-         * PFX通常是加密的，如果是，将使用“options.passphrase”（用于单个私钥或PFX的共享密码）解密。<br />
-         *
-         * 该选项跟上面的“key”、“cert”选项是互斥的，也就是不要同时设置该选项跟“key”、“cert”选项，否则会报错，说什么太长了。<br />
-         */
-        // pfx: readFileSync( join( __dirname, './configures/openssl/HTTPSSL001/001根CA证书/HTTPSSL001_Root_CA.p12' ), 'utf8' ),
-      },
-      /**
-       * @type {boolean | string} 开发服务器启动时，自动在浏览器中打开应用程序。<br />
-       * 当该值为字符串时，它将被用作URL的路径名。<br />
-       * 如果你想在你喜欢的某个浏览器打开该开发服务器，你可以设置环境变量process.env.BROWSER（例如：Windows上的msedge）。<br />
-       * 你还可以设置process.env.BROWSER_ARGS来传递额外的参数，例如：--incognito（以隐私模式打开浏览器），--new-window（在新窗口中打开浏览器）。<br />
-       * BROWSER和BROWSER_ARGS都是特殊的环境变量，你可以将它们放在.env文件中进行设置，欲了解更多打开浏览器的更多内部细节，请参阅open包的源码（https://github.com/sindresorhus/open#app）。<br />
-       */
-      open: `https://${ devServerGlobalParameters[ env_platform ]?.host }:${ devServerGlobalParameters[ env_platform ]?.port }/${ env_platform }/index.html`,
-      /**
-       * @type {Record<string, string | ProxyOptions>} 为开发服务器配置自定义代理规则。<br />
-       * 期望接收一个{ key: ProxyOptions }对象。<br />
-       * 任何请求路径以key值开头的请求将被代理到对应的目标。<br />
-       * 如果key值以“^”开头，将被识别为RegExp。ProxyOptions.configure选项可用于访问proxy实例。<br />
-       * 详细见：<br />
-       * node_modules/vite/dist/node/index.d.ts:365
-       * node_modules/vite/dist/node/index.d.ts:1657
-       * node_modules/vite/dist/node/index.d.ts:1063
-       * node_modules/vite/dist/node/index.d.ts:922
-       */
-      proxy: {
-        /**
-         * 这是一个标准Demo写法，不要删除！以供参考！假定后端提供一个HTTP服务API为：https://127.0.0.1:9200/simulation_servers_deno/GetJSON。<br />
-         */
-        '/devURL001/simulation_servers_deno/': {
-          /**
-           * 有时您不想代理所有内容。可以根据函数的返回值绕过代理。在该函数中，您可以访问请求、响应和代理选项。<br />
-           *
-           * @param {Request} req
-           * @param {Response} res
-           * @param {proxyConfig} proxyOptions
-           *
-           * @returns {void | null | undefined | false | string} 返回null或undefined以继续使用代理处理请求。返回false为请求生成404错误。返回一个提供服务的路径，而不是继续代理请求。
-           */
-          bypass( req, res, proxyOptions ){
-            // 正在跳过浏览器请求的代理。
-            if( ( req?.headers?.accept?.indexOf( 'xxx7788' ) ?? -1 ) !== -1 ){
-              return '/xxx7788.html';
-            }
-          },
-
-          /**
-           * 重写路径。
-           *
-           * @param path {string}
-           *
-           * @returns {string}
-           */
-          rewrite( path ){
-            return path.replace( /^\/devURL001/, '' );
-          },
-
-          // http-proxy options Start
-
-          /**
-           * 要使用url模块解析的url字符串，target和forward两者必须存在至少一个。<br />
-           * 1、有效值类型：string、Partial<url.Url>、ProxyTargetDetailed、undefined。<br />
-           * 2、其中ProxyTargetDetailed的结构为：<br />
-           * {<br />
-           * host：string，必需。<br />
-           * port：number，必需。<br />
-           * protocol：string、undefined，可选。<br />
-           * hostname：string、undefined，可选。<br />
-           * socketPath：string、undefined，可选。<br />
-           * key：string、undefined，可选。<br />
-           * passphrase：string、undefined，可选。<br />
-           * pfx：Buffer、string、undefined，可选。<br />
-           * cert：string、undefined，可选。<br />
-           * ca：string、undefined，可选。<br />
-           * ciphers：string、undefined，可选。<br />
-           * secureProtocol：string、undefined，可选。<br />
-           * }<br />
-           *
-           * 当设置为'0.0.0.0'时的注意事项：<br />
-           * 1、关于浏览器通过node服务代理请求本deno服务时，node的代理设置（target、router选项）得指向'0.0.0.0'，否者node会报错误：<br />
-           * ECONNREFUSED (Connection refused): No connection could be made because the target machine actively refused it. This usually results from trying to connect to a service that is inactive on the foreign host.<br />
-           * 2、如上类比，当任何非浏览器端访问、代理到本deno服务时，都得保证其目标指向'0.0.0.0'，否则，大概率会报错。<br />
-           * 3、Windows系统上，浏览器不支持对0.0.0.0的直接访问，例如无法访问：https://0.0.0.0:9000。<br />
-           *
-           * 关于浏览器访问“不安全的HTTPS协议”时的注意事项（尤其是火狐浏览器），浏览器访问“不安全的HTTPS协议”时需要先同意其不安全的警告，否则无法访问：
-           * 1、当页面地址（如“https://localhost:9200”）跟其中的websocket服务地址（如“wss://localhost:9000”）不一样时，因为端口不一致，所以也算不同的服务地址。
-           * 2、这时要先访问一下websocket服务地址对应的HTTP服务地址，即“https://localhost:9000”。
-           * 3、然后才能让页面（如“https://localhost:9200”）成功访问其中的websocket服务地址（如“wss://localhost:9000”）。
-           * 4、可以的话，还是使用同一个端口提供http、https、ws、wss服务，这样只需要同意一次不安全的警告即可。
-           */
-          target: 'https://0.0.0.0:9200',
-
-          /**
-           * 要使用url模块解析的url字符串，target和forward两者必须存在至少一个。<br />
-           * 1、有效值类型：string、Partial<url.Url>、undefined。<br />
-           */
-          // forward,
-
-          /**
-           * 要传递给http(s).request的对象（参见Node的https代理和http代理对象）。<br />
-           */
-          // agent,
-
-          /**
-           * 是否要验证SSL证书。<br />
-           * 1、有效值类型：boolean、undefined。<br />
-           */
-          secure: false,
-
-          /**
-           * 要传递给https.createServer()的对象。<br />
-           * 保证跟服务端（webpack-dev-server、Deno）设置的各个证书一样就行。<br />
-           * 该选项里头的各个有效属性其实可以参考webpack的顶级配置项“devServer”中的“server.options”选项里的各个属性。<br />
-           * 因为它们都是属于“tls.createSecureContext([options])”中的“options”选项，具体的选项说明可见：https://nodejs.org/dist/latest/docs/api/tls.html#tlscreatesecurecontextoptions。<br />
-           */
-          ssl: {
-            /**
-             * 使用一个不安全的HTTP解析器，在真实时接受无效的HTTP头。应该避免使用不安全的解析器。参见--insecure-http-parser获取更多信息。默认值：false。
-             */
-            insecureHTTPParser: true,
-
-            /**
-             * 可选择覆盖该服务器收到的请求的--max-http-header-size的值，即请求头的最大长度（字节）。默认值：16384（16 KiB）。
-             */
-            maxHeaderSize: 1024000,
-
-            /**
-             * 覆盖受信任的CA证书。<br />
-             * 默认情况是信任Mozilla策划的知名CA。<br />
-             * 当使用此选项显式指定CA时，Mozilla的CA将被完全替换。<br />
-             *
-             * PS：<br />
-             * 1、一般指的是“根CA证书，HTTPSSL001_Root_CA.crt”，“根CA证书，HTTPSSL001_Root_CA.crt”用于安装到系统、浏览器（尤其是火狐浏览器，它有自己的证书列表，也要给它安装）的证书列表中，手机、平板等非电脑的移动设备，只要安装这个“根CA证书”即可。<br />
-             */
-            ca: [
-              readFileSync( join( __dirname, './configures/openssl/HTTPSSL001/001根CA证书/HTTPSSL001_Root_CA.crt' ), 'utf8' ),
-            ],
-
-            /**
-             * PEM格式的私钥（“HTTPSSL001_Root_CA_Key.key”）。<br />
-             * PEM允许选择加密私钥，加密密钥将使用“options.passphrase”（用于单个私钥或PFX的共享密码）解密。<br />
-             *
-             * 注意：<br />
-             * 1、在生成“服务端CA证书，HTTPSSL001_Servers_192_168_2_7_CA.crt”的“HTTPSSL001_Root_CA_Key.key”文件时，除了用.key作为文件的扩展后缀，也可以用.pem做后缀，一般首选.key。<br />
-             * 2、当前“HTTPSSL001_Root_CA_Key.key”没使用加密。<br />
-             */
-            key: readFileSync( join( __dirname, './configures/openssl/HTTPSSL001/001根CA证书/HTTPSSL001_Root_CA_Key.key' ), 'utf8' ),
-
-            /**
-             * PEM格式的证书链（服务端CA证书，HTTPSSL001_Servers_192_168_2_7_CA.crt）。<br />
-             */
-            cert: readFileSync( join( __dirname, './configures/openssl/HTTPSSL001/002服务端CA证书/HTTPSSL001_Servers_192_168_2_7_CA.crt' ), 'utf8' ),
-
-            /**
-             * 如果SSL/TLS握手未在指定的毫秒数内完成，则中止连接。只要握手超时，就会在tls.Server对象上发出“tlsClientError”。默认值：120000（120000毫秒 = 120秒）。<br />
-             */
-            handshakeTimeout: 120000,
-
-            /**
-             * 如果为true，服务器将从连接的客户端请求证书并尝试验证该证书。默认值：false。<br />
-             *
-             * PS：<br />
-             * 启用该项会导致浏览器无法从https加载，因为服务器将从连接的客户端请求证书并尝试验证该证书，如果客户端没能提供“证书”，那么就会报错，这通常出现在浏览器端。<br />
-             */
-            requestCert: false,
-
-            /**
-             * （可选）设置允许的最低TLS版本。“TLSv1.3”、“TLSv1.2”、“TLSv1.1”或“TLSv1”之一。不能与“secureProtocol”选项一起指定。<br />
-             * 使用一个或另一个。避免设置为低于TLSv1.2，但互操作性可能需要它。默认值：tls.DEFAULT_MIN_VERSION（也就是：TLSv1.2）。<br />
-             */
-            minVersion: 'TLSv1.2',
-
-            /**
-             * （可选）设置允许的最大TLS版本。“TLSv1.3”、“TLSv1.2”、“TLSv1.1”或“TLSv1”之一。不能与“secureProtocol”选项一起指定。<br />
-             * 使用一个或另一个。默认值：tls.DEFAULT_MAX_VERSION（也就是：TLSv1.3）。<br />
-             */
-            maxVersion: 'TLSv1.3',
-
-            /**
-             * 用于单个私钥和/或PFX的共享密码。<br />
-             */
-            passphrase: '@HTTPSSL001.2023#',
-
-            /**
-             * PEM格式的CRL（证书吊销列表）。<br />
-             */
-            // crl: readFileSync( join( __dirname, './configures/openssl/HTTPSSL001/证书吊销列表/证书吊销列表.pem' ), 'utf8' ),
-
-            /**
-             * PFX或PKCS12编码的私钥和证书链。<br />
-             * pfx是单独提供密钥和证书的替代方案。<br />
-             * PFX通常是加密的，如果是，将使用“options.passphrase”（用于单个私钥或PFX的共享密码）解密。<br />
-             *
-             * 该选项跟上面的“key”、“cert”选项是互斥的，也就是不要同时设置该选项跟“key”、“cert”选项，否则会报错，说什么太长了。<br />
-             */
-            // pfx: readFileSync( join( __dirname, './configures/openssl/HTTPSSL001/001根CA证书/HTTPSSL001_Root_CA.p12' ), 'utf8' ),
-          },
-
-          /**
-           * 是否启用对websockets的代理。<br />
-           * 1、有效值类型：boolean、undefined。<br />
-           */
-          ws: false,
-
-          /**
-           * 添加x-forward标头。<br />
-           * 1、有效值类型：boolean、undefined。<br />
-           */
-          // xfwd: false,
-
-          /**
-           * 显式指定是否代理到另一个代理。<br />
-           * 1、有效值类型：boolean、undefined。<br />
-           */
-          // toProxy,
-
-          /**
-           * 指定是否要将目标路径添加到代理路径，默认值是true。<br />
-           * 1、有效值类型：boolean、undefined。<br />
-           */
-          // prependPath,
-
-          /**
-           * 指定是否要忽略传入请求的代理路径（注意：如果需要，您必须手动附加“/”），默认值是false。<br />
-           * 1、有效值类型：boolean、undefined。<br />
-           */
-          // ignorePath,
-
-          /**
-           * 为传出连接绑定的本地接口字符串。<br />
-           * 1、有效值类型：string、undefined。<br />
-           */
-          // localAddress,
-
-          /**
-           * 将主机标头的来源更改为目标URL，默认值是false。<br />
-           * 1、有效值类型：boolean、undefined。<br />
-           */
-          changeOrigin: true,
-
-          /**
-           * 指定是否要保留响应标头键的字母大小写，默认值是false。<br />
-           * 1、有效值类型：boolean、undefined。<br />
-           */
-          // preserveHeaderKeyCase,
-
-          /**
-           * 基本身份验证，即“user:password”来计算授权标头。<br />
-           * 1、有效值类型：string、undefined。<br />
-           */
-          // auth,
-
-          /**
-           * 在 (201/301/302/307/308) 重定向上重写位置主机名，默认值为null。<br />
-           * 1、有效值类型：string、undefined。<br />
-           */
-          // hostRewrite,
-
-          /**
-           * 根据请求的主机/端口重写 (201/301/302/307/308) 重定向上的位置主机/端口，默认值是false。<br />
-           * 1、有效值类型：boolean、undefined。<br />
-           */
-          // autoRewrite,
-
-          /**
-           * 重写 (201/301/302/307/308) 上的位置协议重定向到“http”或“https”，默认值为null。
-           * 1、有效值类型：string、undefined。<br />
-           */
-          // protocolRewrite,
-
-          /**
-           * 重写set-cookie标头的域，默认值是false。<br />
-           * 1、有效值类型：false、string、object（{ [ oldDomain: string ]: string }）、undefined。<br />
-           * 2、当值为false时，表示禁用cookie重写。<br />
-           * 3、当值类型为string时，表示设置新域名，例如：cookieDomainRewrite: "new.domain"，要删除域可使用：cookieDomainRewrite: ""。<br />
-           * 4、当值类型为object时，表示域到新域的映射，使用“*”匹配所有域，例如保持一个域不变，重写一个域并删除其他域：<br />
-           * cookieDomainRewrite: {
-           *   "unchanged.domain": "unchanged.domain",
-           *   "old.domain": "new.domain",
-           *   "*": ""
-           * }
-           */
-          // cookieDomainRewrite,
-
-          /**
-           * 重写set-cookie标头的路径，默认值是false。<br />
-           * 1、有效值类型：false、string、object（{ [ oldPath: string ]: string }）、undefined。<br />
-           * 2、当值为false时，表示禁用cookie重写。<br />
-           * 3、当值类型为string时，表示设置新路径，例如：cookiePathRewrite: "/newPath/"，要删除路径可使用：cookiePathRewrite: ""，要将路径设置为根目录可使用cookiePathRewrite:"/"。<br />
-           * 4、当值类型为object时，表示路径到新路径的映射，使用“*”匹配所有路径，例如要保持一个路径不变，重写一个路径并删除其他路径：<br />
-           * cookiePathRewrite: {
-           *   "/unchanged.path/": "/unchanged.path/",
-           *   "/old.path/": "/new.path/",
-           *   "*": ""
-           * }
-           */
-          // cookiePathRewrite,
-
-          /**
-           * 带有要添加到目标请求的额外标头的对象。<br />
-           * 1、有效值类型：object（{ [ header: string ]: string }）、undefined。<br />
-           */
-          headers: {
-            // 'Content-Security-Policy': 'require-sri-for script style',
-            /**
-             * Clear-Site-Data：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Clear-Site-Data
-             * 1、该标头的值的格式比较特别，必需是用“双引号”括起来，这时就会出现字符串嵌套字符串的情况。
-             */
-            // 'Clear-Site-Data': '"cache"',
-            'Service-Worker-Allowed': '/',
-            /**
-             * Cache-Control：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
-             */
-            'Cache-Control': 'no-store',
-            /**
-             * Expires：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Expires
-             */
-            'Expires': 0,
-            /**
-             * Allow：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Allow
-             */
-            'Allow': 'GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH',
-            /**
-             * X-DNS-Prefetch-Control：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-DNS-Prefetch-Control
-             */
-            'X-DNS-Prefetch-Control': 'on',
-            /**
-             * Access-Control-Allow-Credentials：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials
-             * 1、Access-Control-Allow-Credentials响应标头告诉浏览器是否在包含请求的凭据模式(Request.credentials)时将响应公开给前端JavaScript代码。
-             * 2、当包含请求的凭据模式(Request.credentials)时，如果Access-Control-Allow-Credentials值为true，浏览器只会将响应公开给前端JavaScript代码。
-             * 3、凭据是cookies、授权标头（authorization headers）或TLS客户端证书（TLS client certificates）。
-             * 4、当用作对预检请求的响应的一部分时，这表明是否可以使用凭据进行实际请求。
-             * 5、请注意，简单的GET请求不会进行预检。因此，如果对具有凭据的资源发出请求，并且如果此标头未随资源一起返回，则浏览器将忽略响应，并且不会将其返回到Web内容。
-             * 6、Access-Control-Allow-Credentials标头与XMLHttpRequest.withCredentials属性或Fetch API的Request()构造函数中的credentials选项结合使用。
-             * 7、对于带有证书的CORS请求，浏览器要将响应暴露给前端JavaScript代码，服务器（使用Access-Control-Allow-Credentials标头）和客户端（通过为XHR、Fetch或Ajax请求设置证书模式）都必须表明他们选择包括证书。
-             * 8、此标头的唯一有效值为true（区分大小写）。如果您不需要凭据，请完全省略此标头（而不是将其值设置为 false）。
-             * 9、当此标头设置为true时，客户端发起的请求，相应的也要设置：如果请求使用XMLHttpRequest发出，请确保withCredentials为true、如果使用Fetch API，请确保Request.credentials是"include"。
-             */
-            'Access-Control-Allow-Credentials': true,
-            /**
-             * Access-Control-Allow-Headers：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers
-             * 1、Access-Control-Allow-Headers响应标头用于响应预检请求，其中包括Access-Control-Request-Headers以指示在实际请求期间可以使用哪些HTTP标头。
-             * 2、如果请求具有Access-Control-Request-Headers标头，则此标头是必需的。
-             * 3、注意：始终允许使用CORS安全列表请求标头，并且通常不会在Access-Control-Allow-Headers中列出（除非需要规避安全列表附加限制）。
-             * 4、对于没有凭据的请求（没有HTTP cookie或HTTP身份验证信息的请求），值“*”仅算作一个特殊的通配符值。
-             * 5、在带有凭据的请求中，它被视为没有特殊语义的文字标头名称“*”。请注意，授权标头（Authorization header）不能使用通配符，并且始终需要明确列出。
-             * 6、CORS安全列表请求标头：Accept、Content-Type、Content-Language、Accept-Language。
-             * 7、当仅包含CORS安全列表请求标头（以及满足下面列出的附加要求的值）时，请求不需要在CORS上下文中发送预检请求（OPTIONS请求）。
-             * 8、您可以使用Access-Control-Allow-Headers标头将更多标头列入安全列表，并在那里列出上述标头以规避以下附加限制：
-             *   附加限制，CORS安全列表标头还必须满足以下要求才能成为CORS安全列表请求标头：
-             *   1）对于Accept-Language和Content-Language：只能有由0-9、A-Z、a-z、空格或*,-.;=组成的值。
-             *   2）对于Accept和Content-Type：不能包含CORS不安全请求标头字节：0x00-0x1F（除了0x09 (HT)，它是允许的）、"():<>?@[\]{}、0x7F (DEL)。
-             *   3）对于Content-Type：需要其解析值（忽略参数）的MIME类型为：application/x-www-form-urlencoded、multipart/form-data或text/plain。
-             *   4）对于任何标头：值的长度不能大于128个字符。
-             */
-            'Access-Control-Allow-Headers': 'X-Custom-Header-File-SRI, Authorization, Accept, Content-Type, Content-Language, Accept-Language',
-            /**
-             * Access-Control-Allow-Methods：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods
-             * 1、Access-Control-Allow-Methods响应标头指定访问资源以响应预检请求时允许的一种或多种方法。
-             * 2、对于没有凭据的请求（没有HTTP cookie或HTTP身份验证信息的请求），值“*”仅算作一个特殊的通配符值。
-             * 3、在带有凭据的请求中，它被视为没有特殊语义的文字方法名称“*”。
-             */
-            'Access-Control-Allow-Methods': 'GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH',
-            /**
-             * Access-Control-Allow-Origin：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
-             * 1、Access-Control-Allow-Origin响应标头指示是否可以与来自给定来源的请求代码共享响应。
-             * 2、对于没有凭据的请求，可以指定字面值“*”作为通配符；该值告诉浏览器允许来自任何来源的请求代码访问资源。但是尝试将通配符与凭据一起使用会导致错误。
-             * 3、Access-Control-Allow-Origin: <origin>：只能指定一个来源。如果服务器支持来自多个来源的客户端，它必须返回发出请求的特定客户端的来源。
-             */
-            'Access-Control-Allow-Origin': '*',
-            /**
-             * Access-Control-Expose-Headers：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers
-             * 1、CORS安全列表响应标头是CORS响应中的HTTP标头，它被认为可以安全地暴露给客户端脚本。只有列入安全列表的响应标头可用于网页。
-             * 2、默认情况下，安全列表包含以下响应标头：Cache-Control、Content-Language、Content-Length、Content-Type、Expires、Last-Modified、Pragma。
-             * 3、可以使用Access-Control-Expose-Headers将其他标头添加到安全列表。
-             * 4、注意：Content-Length不是原始安全列表响应标头集的一部分。
-             * 5、Access-Control-Expose-Headers 响应标头允许服务器指示哪些响应标头应提供给浏览器中运行的脚本，以响应跨域请求。
-             * 6、对于没有凭据的请求（没有 HTTP cookie 或 HTTP 身份验证信息的请求），值“*”仅算作一个特殊的通配符值。
-             * 7、在带有凭据的请求中，它被视为没有特殊语义的文字标头名称“*”。
-             */
-            'Access-Control-Expose-Headers': 'X-Custom-Header-File-SRI, Authorization, Content-Encoding, Cache-Control, Content-Language, Content-Length, Content-Type, Expires, Last-Modified, Pragma',
-            /**
-             * Access-Control-Max-Age：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Max-Age
-             * 1、Access-Control-Max-Age响应标头指示预检请求的结果（即Access-Control-Allow-Methods和Access-Control-Allow-Headers标头中包含的信息）可以缓存多长时间（单位：秒）。默认值为5秒。
-             * 2、可以缓存结果的最大秒数，作为无符号非负整数。Firefox的上限为24小时（86400秒）。
-             * 3、Chromium（v76之前）的上限为10分钟（600秒）。Chromium（从v76开始）的上限为2小时（7200秒）。
-             */
-            'Access-Control-Max-Age': 2 * 60 * 60,
-            /**
-             * Access-Control-Request-Headers：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Request-Headers
-             * 1、浏览器在发出预检请求时使用Access-Control-Request-Headers请求标头，让服务器知道在发出实际请求时客户端可能发送哪些HTTP标头（例如使用setRequestHeader()）。
-             * 2、Access-Control-Allow-Headers的补充服务器端标头将回答此浏览器端标头。
-             * 3、该标头系用于客户端发起的请求中的标头，而不是用于服务器的响应中的标头。
-             */
-            // 'Access-Control-Request-Headers': 'X-Custom-Header-File-SRI, Authorization, Accept, Content-Type, Content-Language, Accept-Language',
-            /**
-             * Access-Control-Request-Method：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Request-Method
-             * 1、浏览器在发出预检请求时使用Access-Control-Request-Method请求标头，让服务器知道在发出实际请求时将使用哪种HTTP方法。
-             * 2、这个标头是必需的，因为预检请求始终是一个选项，并且不使用与实际请求相同的方法。
-             * 3、该标头系用于客户端发起的请求中的标头，而不是用于服务器的响应中的标头。
-             */
-            // 'Access-Control-Request-Method': 'GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH',
-          },
-
-          /**
-           * 传出代理请求的超时（以毫秒为单位），默认值为120000（等同2分钟）。<br />
-           * 1、有效值类型：number、undefined。<br />
-           */
-          proxyTimeout: 120000,
-
-          /**
-           * 传入请求的超时（以毫秒为单位）。<br />
-           * 1、有效值类型：number、undefined。<br />
-           */
-          timeout: 120000,
-
-          /**
-           * 指定是否要遵循重定向，默认值false。<br />
-           * 1、有效值类型：boolean、undefined。<br />
-           */
-          // followRedirects,
-
-          /**
-           * 如果设置为true，则不会调用任何webOutgoing传递，您有责任通过侦听和处理proxyRes事件来适当地返回响应。<br />
-           * 1、有效值类型：boolean、undefined。<br />
-           */
-          // selfHandleResponse,
-
-          /**
-           * 作为请求正文发送的数据流。也许您有一些中间件在代理请求流之前使用它，例如，如果您将请求的正文读入名为“req.rawbody”的字段中，则可以在缓冲区选项中重新传输该字段，有效值类型：stream.Stream、undefined。<br />
-           * const streamify = require('stream-array');
-           * const HttpProxy = require('http-proxy');
-           * const proxy = new HttpProxy();
-           *
-           * module.exports = (req, res, next) => {
-           * 
-           *   proxy.web(req, res, {
-           *     target: 'http://localhost:4003/',
-           *     buffer: streamify(req.rawBody)
-           *   }, next);
-           * 
-           * };
-           */
-          // buffer,
-
-          // http-proxy options End
-
-          /**
-           * 配置代理服务器（例如侦听事件）。
-           *
-           * @param proxy {HttpProxy.Server} 'http-proxy'的实例。
-           *
-           * @param options {ProxyOptions}
-           *
-           * @returns {void}
-           */
-          configure( proxy, options ){
-            // http-proxy events Start
-
-            /**
-             * 在发送数据之前发出此事件。它使您有机会更改proxyReq请求对象。适用于“web”连接。<br />
-             *
-             * @param {http.ClientRequest} proxyReq
-             * @param {Request} req
-             * @param {Response} res
-             * @param {httpProxy.ServerOptions} options
-             *
-             * @returns {void} 无返回值。
-             */
-            proxy.on( 'proxyReq', ( proxyReq, req, res, options ) => {
-              const arr001 = Reflect.ownKeys( proxyReq ).filter( item => typeof item === 'symbol' );
-
-              logWriteStream.write( `HTTP代理--->${ req.originalUrl }<---Start
-原请求方法：${ req.method }
-原请求头：
-${ JSON.stringify( req.headers, null, ' ' ) }
-
-代理请求方法：${ proxyReq.method }
-代理请求的protocol：${ proxyReq.protocol }
-代理请求的host：${ proxyReq.host }
-代理请求的path：${ proxyReq.path }
-代理的请求头：
-${ JSON.stringify( Object.fromEntries( Object.values( proxyReq[ arr001[ arr001.findIndex( item => item.toString() === 'Symbol(kOutHeaders)' ) ] ] ) ), null, ' ' ) }
-HTTP代理--->${ req.originalUrl }<---End
-\n\n` );
-            } );
-
-            /**
-             * 在发送数据之前发出此事件。它使您有机会更改proxyReq请求对象。适用于“websocket”连接。<br />
-             *
-             * @param {http.ClientRequest} proxyReq
-             * @param {Request} req
-             * @param {net.Socket} socket
-             * @param {httpProxy.ServerOptions} options
-             * @param {any} head
-             *
-             * @returns {void} 无返回值。
-             */
-            proxy.on( 'proxyReqWs', ( proxyReq, req, socket, options, head ) => {
-            } );
-
-            /**
-             * 如果对目标的请求得到响应，则会发出此事件。<br />
-             *
-             * @param {http.IncomingMessage} proxyRes
-             * @param {Request} req
-             * @param {Response} res
-             *
-             * @returns {void} 无返回值。
-             */
-            proxy.on( 'proxyRes', ( proxyRes, req, res ) => {
-            } );
-
-            /**
-             * 一旦创建代理websocket并将其通过管道传输到目标websocket，就会发出此事件。<br />
-             * PS：<br />
-             * 1、“proxySocket”事件已经被废弃了现在是用当前这个事件代替它了。<br />
-             *
-             * @param {net.Socket} proxySocket
-             *
-             * @returns {void} 无返回值。
-             */
-            proxy.on( 'open', proxySocket => {
-            } );
-
-            /**
-             * 一旦代理websocket关闭，就会发出此事件。<br />
-             *
-             * @param {Response} proxyRes
-             * @param {net.Socket} proxySocket
-             * @param {any} proxyHead
-             *
-             * @returns {void} 无返回值。
-             */
-            proxy.on( 'close', ( proxyRes, proxySocket, proxyHead ) => {
-            } );
-
-            /**
-             * 如果对目标的请求失败，则会发出错误事件。我们不对客户端和代理之间传递的消息以及代理和目标之间传递的消息进行任何错误处理，因此建议您侦听错误并进行处理。<br />
-             *
-             * @param {Error} err
-             * @param {Request} req
-             * @param {Response} res
-             * @param {string|Partial<url.Url>} target 可选的参数，不一定都有存在。<br />
-             *
-             * @returns {void} 无返回值。
-             */
-            proxy.on( 'error', ( err, req, res, target ) => {
-            } );
-
-            // http-proxy events End
-          },
-        },
-      },
-      cors: {
-        origin: [
-          '*',
-        ],
-        methods: [
-          'GET',
-          'HEAD',
-          'POST',
-          'PUT',
-          'DELETE',
-          'CONNECT',
-          'OPTIONS',
-          'TRACE',
-          'PATCH',
-        ],
-        allowedHeaders: [
-          'X-Custom-Header-File-SRI',
-          'Authorization',
-          'Accept',
-          'Content-Type',
-          'Content-Language',
-          'Accept-Language',
-        ],
-        exposedHeaders: [
-          'X-Custom-Header-File-SRI',
-          'Authorization',
-          'Content-Encoding',
-          'Cache-Control',
-          'Content-Language',
-          'Content-Length',
-          'Content-Type',
-          'Expires',
-          'Last-Modified',
-          'Pragma',
-        ],
-        credentials: true,
-        maxAge: 2 * 60 * 60,
-        preflightContinue: false,
-        optionsSuccessStatus: 200,
-      },
-      /**
-       * 1、关于跨域请求头。<br />
-       *   1)当Access-Control-Allow-Origin:*时，不允许使用凭证（即withCredentials:true）。<br />
-       *   2)当Access-Control-Allow-Origin:*时，只需确保客户端在发出CORS请求时凭据标志的值为false就可以了：<br />
-       *     如果请求使用XMLHttpRequest发出，请确保withCredentials为false。<br />
-       *     如果使用服务器发送事件，确保EventSource.withCredentials是false（这是默认值）。<br />
-       *     如果使用Fetch API，请确保Request.credentials是"omit"。<br />
-       */
-      headers: {
-        // 'Content-Security-Policy': 'require-sri-for script style',
-        /**
-         * Clear-Site-Data：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Clear-Site-Data
-         * 1、该标头的值的格式比较特别，必需是用“双引号”括起来，这时就会出现字符串嵌套字符串的情况。
-         */
-        // 'Clear-Site-Data': '"cache"',
-        'Service-Worker-Allowed': '/',
-        /**
-         * Cache-Control：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
-         */
-        'Cache-Control': 'no-store',
-        /**
-         * Expires：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Expires
-         */
-        'Expires': 0,
-        /**
-         * Allow：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Allow
-         */
-        'Allow': 'GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH',
-        /**
-         * X-DNS-Prefetch-Control：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-DNS-Prefetch-Control
-         */
-        'X-DNS-Prefetch-Control': 'on',
-        /**
-         * Access-Control-Allow-Credentials：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials
-         * 1、Access-Control-Allow-Credentials响应标头告诉浏览器是否在包含请求的凭据模式(Request.credentials)时将响应公开给前端JavaScript代码。
-         * 2、当包含请求的凭据模式(Request.credentials)时，如果Access-Control-Allow-Credentials值为true，浏览器只会将响应公开给前端JavaScript代码。
-         * 3、凭据是cookies、授权标头（authorization headers）或TLS客户端证书（TLS client certificates）。
-         * 4、当用作对预检请求的响应的一部分时，这表明是否可以使用凭据进行实际请求。
-         * 5、请注意，简单的GET请求不会进行预检。因此，如果对具有凭据的资源发出请求，并且如果此标头未随资源一起返回，则浏览器将忽略响应，并且不会将其返回到Web内容。
-         * 6、Access-Control-Allow-Credentials标头与XMLHttpRequest.withCredentials属性或Fetch API的Request()构造函数中的credentials选项结合使用。
-         * 7、对于带有证书的CORS请求，浏览器要将响应暴露给前端JavaScript代码，服务器（使用Access-Control-Allow-Credentials标头）和客户端（通过为XHR、Fetch或Ajax请求设置证书模式）都必须表明他们选择包括证书。
-         * 8、此标头的唯一有效值为true（区分大小写）。如果您不需要凭据，请完全省略此标头（而不是将其值设置为 false）。
-         * 9、当此标头设置为true时，客户端发起的请求，相应的也要设置：如果请求使用XMLHttpRequest发出，请确保withCredentials为true、如果使用Fetch API，请确保Request.credentials是"include"。
-         */
-        'Access-Control-Allow-Credentials': true,
-        /**
-         * Access-Control-Allow-Headers：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers
-         * 1、Access-Control-Allow-Headers响应标头用于响应预检请求，其中包括Access-Control-Request-Headers以指示在实际请求期间可以使用哪些HTTP标头。
-         * 2、如果请求具有Access-Control-Request-Headers标头，则此标头是必需的。
-         * 3、注意：始终允许使用CORS安全列表请求标头，并且通常不会在Access-Control-Allow-Headers中列出（除非需要规避安全列表附加限制）。
-         * 4、对于没有凭据的请求（没有HTTP cookie或HTTP身份验证信息的请求），值“*”仅算作一个特殊的通配符值。
-         * 5、在带有凭据的请求中，它被视为没有特殊语义的文字标头名称“*”。请注意，授权标头（Authorization header）不能使用通配符，并且始终需要明确列出。
-         * 6、CORS安全列表请求标头：Accept、Content-Type、Content-Language、Accept-Language。
-         * 7、当仅包含CORS安全列表请求标头（以及满足下面列出的附加要求的值）时，请求不需要在CORS上下文中发送预检请求（OPTIONS请求）。
-         * 8、您可以使用Access-Control-Allow-Headers标头将更多标头列入安全列表，并在那里列出上述标头以规避以下附加限制：
-         *   附加限制，CORS安全列表标头还必须满足以下要求才能成为CORS安全列表请求标头：
-         *   1）对于Accept-Language和Content-Language：只能有由0-9、A-Z、a-z、空格或*,-.;=组成的值。
-         *   2）对于Accept和Content-Type：不能包含CORS不安全请求标头字节：0x00-0x1F（除了0x09 (HT)，它是允许的）、"():<>?@[\]{}、0x7F (DEL)。
-         *   3）对于Content-Type：需要其解析值（忽略参数）的MIME类型为：application/x-www-form-urlencoded、multipart/form-data或text/plain。
-         *   4）对于任何标头：值的长度不能大于128个字符。
-         */
-        'Access-Control-Allow-Headers': 'X-Custom-Header-File-SRI, Authorization, Accept, Content-Type, Content-Language, Accept-Language',
-        /**
-         * Access-Control-Allow-Methods：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods
-         * 1、Access-Control-Allow-Methods响应标头指定访问资源以响应预检请求时允许的一种或多种方法。
-         * 2、对于没有凭据的请求（没有HTTP cookie或HTTP身份验证信息的请求），值“*”仅算作一个特殊的通配符值。
-         * 3、在带有凭据的请求中，它被视为没有特殊语义的文字方法名称“*”。
-         */
-        'Access-Control-Allow-Methods': 'GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH',
-        /**
-         * Access-Control-Allow-Origin：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
-         * 1、Access-Control-Allow-Origin响应标头指示是否可以与来自给定来源的请求代码共享响应。
-         * 2、对于没有凭据的请求，可以指定字面值“*”作为通配符；该值告诉浏览器允许来自任何来源的请求代码访问资源。但是尝试将通配符与凭据一起使用会导致错误。
-         * 3、Access-Control-Allow-Origin: <origin>：只能指定一个来源。如果服务器支持来自多个来源的客户端，它必须返回发出请求的特定客户端的来源。
-         */
-        'Access-Control-Allow-Origin': '*',
-        /**
-         * Access-Control-Expose-Headers：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers
-         * 1、CORS安全列表响应标头是CORS响应中的HTTP标头，它被认为可以安全地暴露给客户端脚本。只有列入安全列表的响应标头可用于网页。
-         * 2、默认情况下，安全列表包含以下响应标头：Cache-Control、Content-Language、Content-Length、Content-Type、Expires、Last-Modified、Pragma。
-         * 3、可以使用Access-Control-Expose-Headers将其他标头添加到安全列表。
-         * 4、注意：Content-Length不是原始安全列表响应标头集的一部分。
-         * 5、Access-Control-Expose-Headers 响应标头允许服务器指示哪些响应标头应提供给浏览器中运行的脚本，以响应跨域请求。
-         * 6、对于没有凭据的请求（没有 HTTP cookie 或 HTTP 身份验证信息的请求），值“*”仅算作一个特殊的通配符值。
-         * 7、在带有凭据的请求中，它被视为没有特殊语义的文字标头名称“*”。
-         */
-        'Access-Control-Expose-Headers': 'X-Custom-Header-File-SRI, Authorization, Content-Encoding, Cache-Control, Content-Language, Content-Length, Content-Type, Expires, Last-Modified, Pragma',
-        /**
-         * Access-Control-Max-Age：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Max-Age
-         * 1、Access-Control-Max-Age响应标头指示预检请求的结果（即Access-Control-Allow-Methods和Access-Control-Allow-Headers标头中包含的信息）可以缓存多长时间（单位：秒）。默认值为5秒。
-         * 2、可以缓存结果的最大秒数，作为无符号非负整数。Firefox的上限为24小时（86400秒）。
-         * 3、Chromium（v76之前）的上限为10分钟（600秒）。Chromium（从v76开始）的上限为2小时（7200秒）。
-         */
-        'Access-Control-Max-Age': 2 * 60 * 60,
-        /**
-         * Access-Control-Request-Headers：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Request-Headers
-         * 1、浏览器在发出预检请求时使用Access-Control-Request-Headers请求标头，让服务器知道在发出实际请求时客户端可能发送哪些HTTP标头（例如使用setRequestHeader()）。
-         * 2、Access-Control-Allow-Headers的补充服务器端标头将回答此浏览器端标头。
-         * 3、该标头系用于客户端发起的请求中的标头，而不是用于服务器的响应中的标头。
-         */
-        // 'Access-Control-Request-Headers': 'X-Custom-Header-File-SRI, Authorization, Accept, Content-Type, Content-Language, Accept-Language',
-        /**
-         * Access-Control-Request-Method：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Request-Method
-         * 1、浏览器在发出预检请求时使用Access-Control-Request-Method请求标头，让服务器知道在发出实际请求时将使用哪种HTTP方法。
-         * 2、这个标头是必需的，因为预检请求始终是一个选项，并且不使用与实际请求相同的方法。
-         * 3、该标头系用于客户端发起的请求中的标头，而不是用于服务器的响应中的标头。
-         */
-        // 'Access-Control-Request-Method': 'GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH',
-      },
-      hmr: {
-        overlay: true,
-      },
-      fs: {
-        strict: true,
-        allow: [
-          resolve( __dirname, `./` ),
-        ],
-        deny: [],
-      },
-      // base: `/${ env_platform }/`,
-      /**
-       * 使用该选项会报错，导致无法启动！
-       * Setting server.middlewareMode to 'html' is deprecated, set server.middlewareMode to `true` instead
-       */
-      // middlewareMode: true,
-    };
+    root = resolve( __dirname, `./` );
 
   /**
    * 开发配置，“vite preview”也会用该配置。
@@ -2436,7 +1526,325 @@ HTTP代理--->${ req.originalUrl }<---End
         preserveSymlinks: false,
       },
       root,
-      server,
+      /**
+       * @type {ServerOptions} 开发服务器选项。<br />
+       * 详细见：<br />
+       * node_modules/vite/dist/node/index.d.ts:2079
+       * node_modules/vite/dist/node/index.d.ts:318
+       */
+      server: {
+        /**
+         * @type {string | boolean} 默认值：'localhost'，指定服务器应该监听哪个IP地址。如果将此设置为0.0.0.0或者true将监听所有地址，包括局域网和公网地址。<br />
+         * 注意：<br />
+         * 在某些情况下，可能响应的是其他服务器而不是Vite：<br />
+         * 第1种情况是：<br />
+         * localhost被使用了。Node.js在v17以下版本中默认会对DNS解析地址的结果进行重新排序。当访问localhost时，浏览器使用DNS来解析地址，这个地址可能与Vite正在监听的地址不同。<br />
+         * 当地址不一致时，Vite会打印出来。<br />
+         * 你可以设置dns.setDefaultResultOrder('verbatim')来禁用这个重新排序的行为。Vite会将地址打印为localhost。<br />
+         * 例如：<br />
+         * // vite.config.js
+         * import { defineConfig, } from 'vite';
+         * import dns from 'dns';
+         *
+         * dns.setDefaultResultOrder( 'verbatim' );
+         *
+         * export default defineConfig({
+         *   // omit
+         * });
+         *
+         * 第2种情况是：<br />
+         * 使用了通配主机地址（例如 0.0.0.0）。这是因为侦听非通配符主机的服务器优先于侦听通配符主机的服务器。<br />
+         */
+        host: true,
+        /**
+         * @type {number} 默认值：5173，指定开发服务器端口。<br />
+         * 注意：如果端口已经被使用，Vite会自动尝试下一个可用的端口，所以这可能不是开发服务器最终监听的实际端口。<br />
+         */
+        port: devServerGlobalParameters[ env_platform ]?.port ?? 5173,
+        /**
+         * @type {boolean} 设为true时若端口已被占用则会直接退出，而不是尝试下一个可用端口。<br />
+         */
+        strictPort: true,
+        /**
+         * @type {boolean | https.ServerOptions} 启用TLS + HTTP/2。注意：当server.proxy选项也被使用时，将会仅使用TLS。<br />
+         * 这个值也可以是一个传递给https.createServer()的选项对象。<br />
+         * 详细见：<br />
+         * https://nodejs.org/api/https.html#httpscreateserveroptions-requestlistener
+         * https://nodejs.org/api/tls.html#tlscreateserveroptions-secureconnectionlistener
+         * https://nodejs.org/api/tls.html#tlscreatesecurecontextoptions
+         * https://nodejs.org/api/http.html#httpcreateserveroptions-requestlistener
+         * https://nodejs.org/api/net.html#netcreateserveroptions-connectionlistener
+         */
+        https: {
+          /**
+           * 使用一个不安全的HTTP解析器，在真实时接受无效的HTTP头。应该避免使用不安全的解析器。参见--insecure-http-parser获取更多信息。默认值：false。
+           */
+          insecureHTTPParser: true,
+
+          /**
+           * 可选择覆盖该服务器收到的请求的--max-http-header-size的值，即请求头的最大长度（字节）。默认值：16384（16 KiB）。
+           */
+          maxHeaderSize: 1024000,
+
+          /**
+           * 覆盖受信任的CA证书。<br />
+           * 默认情况是信任Mozilla策划的知名CA。<br />
+           * 当使用此选项显式指定CA时，Mozilla的CA将被完全替换。<br />
+           *
+           * PS：<br />
+           * 1、一般指的是“根CA证书，HTTPSSL001_Root_CA.crt”，“根CA证书，HTTPSSL001_Root_CA.crt”用于安装到系统、浏览器（尤其是火狐浏览器，它有自己的证书列表，也要给它安装）的证书列表中，手机、平板等非电脑的移动设备，只要安装这个“根CA证书”即可。<br />
+           */
+          ca: [
+            readFileSync( join( __dirname, './configures/openssl/HTTPSSL001/001根CA证书/HTTPSSL001_Root_CA.crt' ), 'utf8' ),
+          ],
+
+          /**
+           * PEM格式的私钥（“HTTPSSL001_Root_CA_Key.key”）。<br />
+           * PEM允许选择加密私钥，加密密钥将使用“options.passphrase”（用于单个私钥或PFX的共享密码）解密。<br />
+           *
+           * 注意：<br />
+           * 1、在生成“服务端CA证书，HTTPSSL001_Servers_192_168_2_7_CA.crt”的“HTTPSSL001_Root_CA_Key.key”文件时，除了用.key作为文件的扩展后缀，也可以用.pem做后缀，一般首选.key。<br />
+           * 2、当前“HTTPSSL001_Root_CA_Key.key”没使用加密。<br />
+           */
+          key: readFileSync( join( __dirname, './configures/openssl/HTTPSSL001/001根CA证书/HTTPSSL001_Root_CA_Key.key' ), 'utf8' ),
+
+          /**
+           * PEM格式的证书链（服务端CA证书，HTTPSSL001_Servers_192_168_2_7_CA.crt）。<br />
+           */
+          cert: readFileSync( join( __dirname, './configures/openssl/HTTPSSL001/002服务端CA证书/HTTPSSL001_Servers_192_168_2_7_CA.crt' ), 'utf8' ),
+
+          /**
+           * 如果SSL/TLS握手未在指定的毫秒数内完成，则中止连接。只要握手超时，就会在tls.Server对象上发出“tlsClientError”。默认值：120000（120000毫秒 = 120秒）。<br />
+           */
+          handshakeTimeout: 120000,
+
+          /**
+           * 如果为true，服务器将从连接的客户端请求证书并尝试验证该证书。默认值：false。<br />
+           *
+           * PS：<br />
+           * 启用该项会导致浏览器无法从https加载，因为服务器将从连接的客户端请求证书并尝试验证该证书，如果客户端没能提供“证书”，那么就会报错，这通常出现在浏览器端。<br />
+           */
+          requestCert: false,
+
+          /**
+           * （可选）设置允许的最低TLS版本。“TLSv1.3”、“TLSv1.2”、“TLSv1.1”或“TLSv1”之一。不能与“secureProtocol”选项一起指定。<br />
+           * 使用一个或另一个。避免设置为低于TLSv1.2，但互操作性可能需要它。默认值：tls.DEFAULT_MIN_VERSION（也就是：TLSv1.2）。<br />
+           */
+          minVersion: 'TLSv1.2',
+
+          /**
+           * （可选）设置允许的最大TLS版本。“TLSv1.3”、“TLSv1.2”、“TLSv1.1”或“TLSv1”之一。不能与“secureProtocol”选项一起指定。<br />
+           * 使用一个或另一个。默认值：tls.DEFAULT_MAX_VERSION（也就是：TLSv1.3）。<br />
+           */
+          maxVersion: 'TLSv1.3',
+
+          /**
+           * 用于单个私钥和/或PFX的共享密码。<br />
+           */
+          passphrase: '@HTTPSSL001.2023#',
+
+          /**
+           * PEM格式的CRL（证书吊销列表）。<br />
+           */
+          // crl: readFileSync( join( __dirname, './configures/openssl/HTTPSSL001/证书吊销列表/证书吊销列表.pem' ), 'utf8' ),
+
+          /**
+           * PFX或PKCS12编码的私钥和证书链。<br />
+           * pfx是单独提供密钥和证书的替代方案。<br />
+           * PFX通常是加密的，如果是，将使用“options.passphrase”（用于单个私钥或PFX的共享密码）解密。<br />
+           *
+           * 该选项跟上面的“key”、“cert”选项是互斥的，也就是不要同时设置该选项跟“key”、“cert”选项，否则会报错，说什么太长了。<br />
+           */
+          // pfx: readFileSync( join( __dirname, './configures/openssl/HTTPSSL001/001根CA证书/HTTPSSL001_Root_CA.p12' ), 'utf8' ),
+        },
+        /**
+         * @type {boolean | string} 开发服务器启动时，自动在浏览器中打开应用程序。<br />
+         * 当该值为字符串时，它将被用作URL的路径名。<br />
+         * 如果你想在你喜欢的某个浏览器打开该开发服务器，你可以设置环境变量process.env.BROWSER（例如：Windows上的msedge）。<br />
+         * 你还可以设置process.env.BROWSER_ARGS来传递额外的参数，例如：--incognito（以隐私模式打开浏览器），--new-window（在新窗口中打开浏览器）。<br />
+         * BROWSER和BROWSER_ARGS都是特殊的环境变量，你可以将它们放在.env文件中进行设置，欲了解更多打开浏览器的更多内部细节，请参阅open包的源码（https://github.com/sindresorhus/open#app）。<br />
+         */
+        open: `https://${ devServerGlobalParameters[ env_platform ]?.host }:${ devServerGlobalParameters[ env_platform ]?.port }/${ env_platform }/index.html`,
+        /**
+         * @type {Record<string, string | ProxyOptions>} 为开发服务器配置自定义代理规则。<br />
+         * 期望接收一个{ key: ProxyOptions }对象。<br />
+         * 任何请求路径以key值开头的请求将被代理到对应的目标。<br />
+         * 如果key值以“^”开头，将被识别为RegExp。ProxyOptions.configure选项可用于访问proxy实例。<br />
+         * 详细见：<br />
+         * node_modules/vite/dist/node/index.d.ts:365
+         * node_modules/vite/dist/node/index.d.ts:1657
+         * node_modules/vite/dist/node/index.d.ts:1063
+         * node_modules/vite/dist/node/index.d.ts:922
+         */
+        proxy: ProxyConfig( {
+          env_platform,
+        } ),
+        cors: {
+          origin: [
+            '*',
+          ],
+          methods: [
+            'GET',
+            'HEAD',
+            'POST',
+            'PUT',
+            'DELETE',
+            'CONNECT',
+            'OPTIONS',
+            'TRACE',
+            'PATCH',
+          ],
+          allowedHeaders: [
+            'X-Custom-Header-File-SRI',
+            'Authorization',
+            'Accept',
+            'Content-Type',
+            'Content-Language',
+            'Accept-Language',
+          ],
+          exposedHeaders: [
+            'X-Custom-Header-File-SRI',
+            'Authorization',
+            'Content-Encoding',
+            'Cache-Control',
+            'Content-Language',
+            'Content-Length',
+            'Content-Type',
+            'Expires',
+            'Last-Modified',
+            'Pragma',
+          ],
+          credentials: true,
+          maxAge: 2 * 60 * 60,
+          preflightContinue: false,
+          optionsSuccessStatus: 200,
+        },
+        /**
+         * 1、关于跨域请求头。<br />
+         *   1)当Access-Control-Allow-Origin:*时，不允许使用凭证（即withCredentials:true）。<br />
+         *   2)当Access-Control-Allow-Origin:*时，只需确保客户端在发出CORS请求时凭据标志的值为false就可以了：<br />
+         *     如果请求使用XMLHttpRequest发出，请确保withCredentials为false。<br />
+         *     如果使用服务器发送事件，确保EventSource.withCredentials是false（这是默认值）。<br />
+         *     如果使用Fetch API，请确保Request.credentials是"omit"。<br />
+         */
+        headers: {
+          // 'Content-Security-Policy': 'require-sri-for script style',
+          /**
+           * Clear-Site-Data：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Clear-Site-Data
+           * 1、该标头的值的格式比较特别，必需是用“双引号”括起来，这时就会出现字符串嵌套字符串的情况。
+           */
+          // 'Clear-Site-Data': '"cache"',
+          'Service-Worker-Allowed': '/',
+          /**
+           * Cache-Control：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
+           */
+          'Cache-Control': 'no-store',
+          /**
+           * Expires：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Expires
+           */
+          'Expires': 0,
+          /**
+           * Allow：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Allow
+           */
+          'Allow': 'GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH',
+          /**
+           * X-DNS-Prefetch-Control：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-DNS-Prefetch-Control
+           */
+          'X-DNS-Prefetch-Control': 'on',
+          /**
+           * Access-Control-Allow-Credentials：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials
+           * 1、Access-Control-Allow-Credentials响应标头告诉浏览器是否在包含请求的凭据模式(Request.credentials)时将响应公开给前端JavaScript代码。
+           * 2、当包含请求的凭据模式(Request.credentials)时，如果Access-Control-Allow-Credentials值为true，浏览器只会将响应公开给前端JavaScript代码。
+           * 3、凭据是cookies、授权标头（authorization headers）或TLS客户端证书（TLS client certificates）。
+           * 4、当用作对预检请求的响应的一部分时，这表明是否可以使用凭据进行实际请求。
+           * 5、请注意，简单的GET请求不会进行预检。因此，如果对具有凭据的资源发出请求，并且如果此标头未随资源一起返回，则浏览器将忽略响应，并且不会将其返回到Web内容。
+           * 6、Access-Control-Allow-Credentials标头与XMLHttpRequest.withCredentials属性或Fetch API的Request()构造函数中的credentials选项结合使用。
+           * 7、对于带有证书的CORS请求，浏览器要将响应暴露给前端JavaScript代码，服务器（使用Access-Control-Allow-Credentials标头）和客户端（通过为XHR、Fetch或Ajax请求设置证书模式）都必须表明他们选择包括证书。
+           * 8、此标头的唯一有效值为true（区分大小写）。如果您不需要凭据，请完全省略此标头（而不是将其值设置为 false）。
+           * 9、当此标头设置为true时，客户端发起的请求，相应的也要设置：如果请求使用XMLHttpRequest发出，请确保withCredentials为true、如果使用Fetch API，请确保Request.credentials是"include"。
+           */
+          'Access-Control-Allow-Credentials': true,
+          /**
+           * Access-Control-Allow-Headers：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers
+           * 1、Access-Control-Allow-Headers响应标头用于响应预检请求，其中包括Access-Control-Request-Headers以指示在实际请求期间可以使用哪些HTTP标头。
+           * 2、如果请求具有Access-Control-Request-Headers标头，则此标头是必需的。
+           * 3、注意：始终允许使用CORS安全列表请求标头，并且通常不会在Access-Control-Allow-Headers中列出（除非需要规避安全列表附加限制）。
+           * 4、对于没有凭据的请求（没有HTTP cookie或HTTP身份验证信息的请求），值“*”仅算作一个特殊的通配符值。
+           * 5、在带有凭据的请求中，它被视为没有特殊语义的文字标头名称“*”。请注意，授权标头（Authorization header）不能使用通配符，并且始终需要明确列出。
+           * 6、CORS安全列表请求标头：Accept、Content-Type、Content-Language、Accept-Language。
+           * 7、当仅包含CORS安全列表请求标头（以及满足下面列出的附加要求的值）时，请求不需要在CORS上下文中发送预检请求（OPTIONS请求）。
+           * 8、您可以使用Access-Control-Allow-Headers标头将更多标头列入安全列表，并在那里列出上述标头以规避以下附加限制：
+           *   附加限制，CORS安全列表标头还必须满足以下要求才能成为CORS安全列表请求标头：
+           *   1）对于Accept-Language和Content-Language：只能有由0-9、A-Z、a-z、空格或*,-.;=组成的值。
+           *   2）对于Accept和Content-Type：不能包含CORS不安全请求标头字节：0x00-0x1F（除了0x09 (HT)，它是允许的）、"():<>?@[\]{}、0x7F (DEL)。
+           *   3）对于Content-Type：需要其解析值（忽略参数）的MIME类型为：application/x-www-form-urlencoded、multipart/form-data或text/plain。
+           *   4）对于任何标头：值的长度不能大于128个字符。
+           */
+          'Access-Control-Allow-Headers': 'X-Custom-Header-File-SRI, Authorization, Accept, Content-Type, Content-Language, Accept-Language',
+          /**
+           * Access-Control-Allow-Methods：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods
+           * 1、Access-Control-Allow-Methods响应标头指定访问资源以响应预检请求时允许的一种或多种方法。
+           * 2、对于没有凭据的请求（没有HTTP cookie或HTTP身份验证信息的请求），值“*”仅算作一个特殊的通配符值。
+           * 3、在带有凭据的请求中，它被视为没有特殊语义的文字方法名称“*”。
+           */
+          'Access-Control-Allow-Methods': 'GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH',
+          /**
+           * Access-Control-Allow-Origin：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
+           * 1、Access-Control-Allow-Origin响应标头指示是否可以与来自给定来源的请求代码共享响应。
+           * 2、对于没有凭据的请求，可以指定字面值“*”作为通配符；该值告诉浏览器允许来自任何来源的请求代码访问资源。但是尝试将通配符与凭据一起使用会导致错误。
+           * 3、Access-Control-Allow-Origin: <origin>：只能指定一个来源。如果服务器支持来自多个来源的客户端，它必须返回发出请求的特定客户端的来源。
+           */
+          'Access-Control-Allow-Origin': '*',
+          /**
+           * Access-Control-Expose-Headers：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers
+           * 1、CORS安全列表响应标头是CORS响应中的HTTP标头，它被认为可以安全地暴露给客户端脚本。只有列入安全列表的响应标头可用于网页。
+           * 2、默认情况下，安全列表包含以下响应标头：Cache-Control、Content-Language、Content-Length、Content-Type、Expires、Last-Modified、Pragma。
+           * 3、可以使用Access-Control-Expose-Headers将其他标头添加到安全列表。
+           * 4、注意：Content-Length不是原始安全列表响应标头集的一部分。
+           * 5、Access-Control-Expose-Headers 响应标头允许服务器指示哪些响应标头应提供给浏览器中运行的脚本，以响应跨域请求。
+           * 6、对于没有凭据的请求（没有 HTTP cookie 或 HTTP 身份验证信息的请求），值“*”仅算作一个特殊的通配符值。
+           * 7、在带有凭据的请求中，它被视为没有特殊语义的文字标头名称“*”。
+           */
+          'Access-Control-Expose-Headers': 'X-Custom-Header-File-SRI, Authorization, Content-Encoding, Cache-Control, Content-Language, Content-Length, Content-Type, Expires, Last-Modified, Pragma',
+          /**
+           * Access-Control-Max-Age：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Max-Age
+           * 1、Access-Control-Max-Age响应标头指示预检请求的结果（即Access-Control-Allow-Methods和Access-Control-Allow-Headers标头中包含的信息）可以缓存多长时间（单位：秒）。默认值为5秒。
+           * 2、可以缓存结果的最大秒数，作为无符号非负整数。Firefox的上限为24小时（86400秒）。
+           * 3、Chromium（v76之前）的上限为10分钟（600秒）。Chromium（从v76开始）的上限为2小时（7200秒）。
+           */
+          'Access-Control-Max-Age': 2 * 60 * 60,
+          /**
+           * Access-Control-Request-Headers：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Request-Headers
+           * 1、浏览器在发出预检请求时使用Access-Control-Request-Headers请求标头，让服务器知道在发出实际请求时客户端可能发送哪些HTTP标头（例如使用setRequestHeader()）。
+           * 2、Access-Control-Allow-Headers的补充服务器端标头将回答此浏览器端标头。
+           * 3、该标头系用于客户端发起的请求中的标头，而不是用于服务器的响应中的标头。
+           */
+          // 'Access-Control-Request-Headers': 'X-Custom-Header-File-SRI, Authorization, Accept, Content-Type, Content-Language, Accept-Language',
+          /**
+           * Access-Control-Request-Method：https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Request-Method
+           * 1、浏览器在发出预检请求时使用Access-Control-Request-Method请求标头，让服务器知道在发出实际请求时将使用哪种HTTP方法。
+           * 2、这个标头是必需的，因为预检请求始终是一个选项，并且不使用与实际请求相同的方法。
+           * 3、该标头系用于客户端发起的请求中的标头，而不是用于服务器的响应中的标头。
+           */
+          // 'Access-Control-Request-Method': 'GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH',
+        },
+        hmr: {
+          overlay: true,
+        },
+        fs: {
+          strict: true,
+          allow: [
+            resolve( __dirname, `./` ),
+          ],
+          deny: [],
+        },
+        // base: `/${ env_platform }/`,
+        /**
+         * 使用该选项会报错，导致无法启动！
+         * Setting server.middlewareMode to 'html' is deprecated, set server.middlewareMode to `true` instead
+         */
+        // middlewareMode: true,
+      },
     };
   }
   /**
