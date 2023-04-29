@@ -254,7 +254,7 @@ async function ProxyConfig( {
        * }<br />
        *
        * 当设置为'0.0.0.0'时的注意事项：<br />
-       * 1、关于浏览器通过node服务代理请求本deno服务时，node的代理设置（target、router选项）得指向'0.0.0.0'，否者node会报错误：<br />
+       * 1、关于浏览器通过node服务代理请求本deno服务时，node的代理设置（target选项）得指向'0.0.0.0'，否者node会报错误：<br />
        * ECONNREFUSED (Connection refused): No connection could be made because the target machine actively refused it. This usually results from trying to connect to a service that is inactive on the foreign host.<br />
        * 2、如上类比，当任何非浏览器端访问、代理到本deno服务时，都得保证其目标指向'0.0.0.0'，否则，大概率会报错。<br />
        * 3、Windows系统上，浏览器不支持对0.0.0.0的直接访问，例如无法访问：https://0.0.0.0:9000。<br />
@@ -286,9 +286,14 @@ async function ProxyConfig( {
 
       /**
        * 要传递给https.createServer()的对象。<br />
-       * 保证跟服务端（webpack-dev-server、Deno）设置的各个证书一样就行。<br />
-       * 该选项里头的各个有效属性其实可以参考webpack的顶级配置项“devServer”中的“server.options”选项里的各个属性。<br />
-       * 因为它们都是属于“tls.createSecureContext([options])”中的“options”选项，具体的选项说明可见：https://nodejs.org/dist/latest/docs/api/tls.html#tlscreatesecurecontextoptions。<br />
+       * 保证跟服务端（Vite的配置项server.https、Deno）设置的各个证书一样就行。<br />
+       * 该选项里头的各个有效属性其实可以参考Vite的配置项server.https选项里的各个属性。<br />
+       * 因为它们都是属于“tls.createSecureContext([options])”中的“options”选项，具体的选项说明可见：<br />
+       * https://nodejs.org/api/https.html#httpscreateserveroptions-requestlistener
+       * https://nodejs.org/api/tls.html#tlscreateserveroptions-secureconnectionlistener
+       * https://nodejs.org/api/tls.html#tlscreatesecurecontextoptions
+       * https://nodejs.org/api/http.html#httpcreateserveroptions-requestlistener
+       * https://nodejs.org/api/net.html#netcreateserveroptions-connectionlistener
        */
       ssl: {
         /**
@@ -764,7 +769,7 @@ HTTP代理--->${ req.originalUrl }<---End
 
       /**
        * 要传递给https.createServer()的对象。<br />
-       * 保证跟服务端（webpack-dev-server、Deno）设置的各个证书一样就行。<br />
+       * 保证跟服务端（Vite的配置项server.https、Deno）设置的各个证书一样就行。<br />
        * 该选项里头的各个有效属性其实可以参考webpack的顶级配置项“devServer”中的“server.options”选项里的各个属性。<br />
        * 因为它们都是属于“tls.createSecureContext([options])”中的“options”选项，具体的选项说明可见：https://nodejs.org/dist/latest/docs/api/tls.html#tlscreatesecurecontextoptions。<br />
        */
