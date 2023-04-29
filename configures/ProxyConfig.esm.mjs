@@ -530,19 +530,29 @@ async function ProxyConfig( {
       // http-proxy events Start
 
       /**
-       * 在发送数据之前发出此事件。它使您有机会更改proxyReq请求对象。适用于“web”连接。<br />
+       * 配置代理服务器（例如，侦听各种事件）。
        *
-       * @param {http.ClientRequest} proxyReq
-       * @param {Request} req
-       * @param {Response} res
-       * @param {httpProxy.ServerOptions} options
+       * @param proxy {HttpProxy.Server} 'http-proxy'的实例。
        *
-       * @returns {void} 无返回值。
+       * @param options {ProxyOptions}
+       *
+       * @returns {void}
        */
-      onProxyReq: ( proxyReq, req, res, options ) => {
-        const arr001 = Reflect.ownKeys( proxyReq ).filter( item => typeof item === 'symbol' );
+      configure( proxy, options ){
+        /**
+         * 在发送数据之前发出此事件。它使您有机会更改proxyReq请求对象。适用于“web”连接。<br />
+         *
+         * @param {http.ClientRequest} proxyReq
+         * @param {Request} req
+         * @param {Response} res
+         * @param {httpProxy.ServerOptions} options
+         *
+         * @returns {void} 无返回值。
+         */
+        proxy.on( 'proxyReq', ( proxyReq, req, res, options ) => {
+          const arr001 = Reflect.ownKeys( proxyReq ).filter( item => typeof item === 'symbol' );
 
-        logWriteStream.write( `HTTP代理--->${ req.originalUrl }<---Start
+          logWriteStream.write( `HTTP代理--->${ req.originalUrl }<---Start
 原请求方法：${ req.method }
 原请求头：
 ${ JSON.stringify( req.headers, null, ' ' ) }
@@ -555,69 +565,70 @@ ${ JSON.stringify( req.headers, null, ' ' ) }
 ${ JSON.stringify( Object.fromEntries( Object.values( proxyReq[ arr001[ arr001.findIndex( item => item.toString() === 'Symbol(kOutHeaders)' ) ] ] ) ), null, ' ' ) }
 HTTP代理--->${ req.originalUrl }<---End
 \n\n` );
-      },
+        } );
 
-      /**
-       * 在发送数据之前发出此事件。它使您有机会更改proxyReq请求对象。适用于“websocket”连接。<br />
-       *
-       * @param {http.ClientRequest} proxyReq
-       * @param {Request} req
-       * @param {net.Socket} socket
-       * @param {httpProxy.ServerOptions} options
-       * @param {any} head
-       *
-       * @returns {void} 无返回值。
-       */
-      onProxyReqWs: ( proxyReq, req, socket, options, head ) => {
-      },
+        /**
+         * 在发送数据之前发出此事件。它使您有机会更改proxyReq请求对象。适用于“websocket”连接。<br />
+         *
+         * @param {http.ClientRequest} proxyReq
+         * @param {Request} req
+         * @param {net.Socket} socket
+         * @param {httpProxy.ServerOptions} options
+         * @param {any} head
+         *
+         * @returns {void} 无返回值。
+         */
+        proxy.on( 'proxyReqWs', ( proxyReq, req, socket, options, head ) => {
+        } );
 
-      /**
-       * 如果对目标的请求得到响应，则会发出此事件。<br />
-       *
-       * @param {http.IncomingMessage} proxyRes
-       * @param {Request} req
-       * @param {Response} res
-       *
-       * @returns {void} 无返回值。
-       */
-      onProxyRes: ( proxyRes, req, res ) => {
-      },
+        /**
+         * 如果对目标的请求得到响应，则会发出此事件。<br />
+         *
+         * @param {http.IncomingMessage} proxyRes
+         * @param {Request} req
+         * @param {Response} res
+         *
+         * @returns {void} 无返回值。
+         */
+        proxy.on( 'proxyRes', ( proxyRes, req, res ) => {
+        } );
 
-      /**
-       * 一旦创建代理websocket并将其通过管道传输到目标websocket，就会发出此事件。<br />
-       * PS：<br />
-       * 1、“proxySocket”事件已经被废弃了现在是用当前这个事件代替它了。<br />
-       *
-       * @param {net.Socket} proxySocket
-       *
-       * @returns {void} 无返回值。
-       */
-      onOpen: proxySocket => {
-      },
+        /**
+         * 一旦创建代理websocket并将其通过管道传输到目标websocket，就会发出此事件。<br />
+         * PS：<br />
+         * 1、“proxySocket”事件已经被废弃了现在是用当前这个事件代替它了。<br />
+         *
+         * @param {net.Socket} proxySocket
+         *
+         * @returns {void} 无返回值。
+         */
+        proxy.on( 'open', proxySocket => {
+        } );
 
-      /**
-       * 一旦代理websocket关闭，就会发出此事件。<br />
-       *
-       * @param {Response} proxyRes
-       * @param {net.Socket} proxySocket
-       * @param {any} proxyHead
-       *
-       * @returns {void} 无返回值。
-       */
-      onClose: ( proxyRes, proxySocket, proxyHead ) => {
-      },
+        /**
+         * 一旦代理websocket关闭，就会发出此事件。<br />
+         *
+         * @param {Response} proxyRes
+         * @param {net.Socket} proxySocket
+         * @param {any} proxyHead
+         *
+         * @returns {void} 无返回值。
+         */
+        proxy.on( 'close', ( proxyRes, proxySocket, proxyHead ) => {
+        } );
 
-      /**
-       * 如果对目标的请求失败，则会发出错误事件。我们不对客户端和代理之间传递的消息以及代理和目标之间传递的消息进行任何错误处理，因此建议您侦听错误并进行处理。<br />
-       *
-       * @param {Error} err
-       * @param {Request} req
-       * @param {Response} res
-       * @param {string|Partial<url.Url>} target 可选的参数，不一定都有存在。<br />
-       *
-       * @returns {void} 无返回值。
-       */
-      onError: ( err, req, res, target ) => {
+        /**
+         * 如果对目标的请求失败，则会发出错误事件。我们不对客户端和代理之间传递的消息以及代理和目标之间传递的消息进行任何错误处理，因此建议您侦听错误并进行处理。<br />
+         *
+         * @param {Error} err
+         * @param {Request} req
+         * @param {Response} res
+         * @param {string|Partial<url.Url>} target 可选的参数，不一定都有存在。<br />
+         *
+         * @returns {void} 无返回值。
+         */
+        proxy.on( 'error', ( err, req, res, target ) => {
+        } );
       },
 
       // http-proxy events End
