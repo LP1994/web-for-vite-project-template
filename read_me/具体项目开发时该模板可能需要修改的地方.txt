@@ -2,9 +2,9 @@
 
 
 
-webpack.base.esm.mjs的开头有说明。
+vite.config.mjs的开头有说明。
 
-webpack.base.esm.mjs里头的各个配置。
+vite.config.mjs里头的各个配置。
 
 configures文件夹下的各个文件，尤其是如下几个：
 configures/EntryConfig.esm.mjs
