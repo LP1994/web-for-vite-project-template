@@ -51,7 +51,20 @@ function Get__filename( import_meta_url = import.meta.url ){
 const __dirname = Get__dirname( import.meta.url );
 
 /**
- * Vite的build.rollupOptions.input的配置，也就是“entry points”的配置。<br />
+ * @type {string | string []| { [entryName: string]: string }} Vite的build.rollupOptions.input的配置，也就是“entry points”的配置。<br />
+ * 1、捆绑的入口点（例如，你的main.js或app.js或index.js）。<br />
+ * 2、如果你提供了一个入口点的数组或一个将名字映射到入口点的对象，它们将被捆绑到独立的输出块中。<br />
+ * 3、除非使用output.file选项，否则生成的块的名称将遵循output.entryFileNames选项。<br />
+ * 4、当使用对象形式时，文件名的[name]部分将是对象属性的名称，而对于数组形式，它将是入口点的文件名。<br />
+ * 5、请注意，在使用对象形式时，可以通过在名称中添加一个/来将入口点放入不同的子文件夹。<br />
+ * 下面将生成至少两个名称为entry-a.js和entry-b/index.js的入口块，即文件index.js被放在entry-b文件夹中：<br />
+ * input: {
+ *   a: 'src/main-a.js',
+ *   'b/index': 'src/main-b.js'
+ * }
+ *
+ * 详细见：<br />
+ * https://rollupjs.org/configuration-options/#input
  */
 const entryConfig = {
   // 这个也将作为标准模板配置供参考，复制它后再改改某些具体的参数值即可。
