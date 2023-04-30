@@ -499,6 +499,20 @@ export default defineConfig( async ( {
      * @type {object}
      */
     build = {
+      target: esbuildMinify_target,
+      modulePreload: {
+        polyfill: true,
+      },
+      /**
+       * @type {boolean} 已废弃，是否自动注入一个模块预加载polyfill。请使用build.modulePreload.polyfill代替，默认值：true。<br />
+       */
+      // polyfillModulePreload: true,
+      /**
+       * @type {string} 指定输出路径。<br />
+       */
+      outDir: resolve( __dirname, `./dist/${ env_platform }/` ),
+      assetsDir: resolve( __dirname, `./dist/${ env_platform }/assets7788/` ),
+      assetsInlineLimit: 10 * 1024,
       /**
        * @type {string | string []| { [entryName: string]: string }} Vite的build.rollupOptions.input的配置，也就是“entry points”的配置。<br />
        * 1、捆绑的入口点（例如，你的main.js或app.js或index.js）。<br />
@@ -519,10 +533,6 @@ export default defineConfig( async ( {
         input: entryConfig,
       },
       minify: isProduction,
-      /**
-       * @type {string} 指定输出路径。<br />
-       */
-      outDir: resolve( __dirname, `./dist/${ env_platform }/` ),
     },
     /**
      * @type {CSSOptions} 配置CSS相关的行为。<br />
