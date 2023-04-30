@@ -40,6 +40,10 @@ import vue from '@vitejs/plugin-vue';
 import DefineConfig from './configures/DefineConfig.esm.mjs';
 
 import {
+  entryConfig,
+} from './configures/EntryConfig.esm.mjs';
+
+import {
   devServerGlobalParameters,
   httpHeaders,
   postcssViewportHeightCorrectionCustomViewportCorrectionVariable,
@@ -495,6 +499,9 @@ export default defineConfig( async ( {
      * @type {object}
      */
     build = {
+      rollupOptions: {
+        input: entryConfig,
+      },
       minify: isProduction,
       /**
        * @type {string} 指定输出路径。<br />
