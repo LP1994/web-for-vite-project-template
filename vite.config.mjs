@@ -511,8 +511,13 @@ export default defineConfig( async ( {
        * @type {string} 指定输出路径。<br />
        */
       outDir: resolve( __dirname, `./dist/${ env_platform }/` ),
-      assetsDir: resolve( __dirname, `./dist/${ env_platform }/assets7788/` ),
+      // 只能是相对于上面的选项outDir设置的文件夹的相对路径，该值要么是以“./”开头的相对路径，要么是“assets/”这种形式的相对路径。
+      assetsDir: `./assets/`,
       assetsInlineLimit: 10 * 1024,
+      cssCodeSplit: true,
+      cssTarget: esbuildMinify_target,
+      cssMinify: isProduction,
+      sourcemap: isProduction,
       /**
        * @type {string | string []| { [entryName: string]: string }} Vite的build.rollupOptions.input的配置，也就是“entry points”的配置。<br />
        * 1、捆绑的入口点（例如，你的main.js或app.js或index.js）。<br />
@@ -532,7 +537,175 @@ export default defineConfig( async ( {
       rollupOptions: {
         input: entryConfig,
       },
-      minify: isProduction,
+      /**
+       * 一个用于将CommonJS模块转换为ES6的Rollup插件，因此它们可以被包含在一个Rollup包中。
+       * 详细见：https://github.com/rollup/plugins/tree/master/packages/commonjs#options
+       */
+      commonjsOptions: {
+        // strictRequires: 'auto',
+        // 已放弃支持！！！
+        // dynamicRequireTargets: [],
+        // dynamicRequireRoot: process.cwd(),
+        // exclude: null,
+        include: [
+          `*.cjs`,
+          `*.cts`,
+        ],
+        extensions: [
+          '.cjs',
+          '.cts',
+        ],
+        // ignoreGlobal: false,
+        sourceMap: isProduction,
+        // transformMixedEsModules: false,
+        // ignore: [],
+        // ignoreTryCatch: true,
+        // ignoreDynamicRequires: false,
+        // esmExternals: false,
+        // defaultIsModuleExports: 'auto',
+        // requireReturnsDefault: false,
+      },
+      /**
+       * 一个支持Rollup动态导入中的变量的Rollup插件。
+       * 详细见：https://github.com/rollup/plugins/tree/master/packages/dynamic-import-vars#options
+       */
+      dynamicImportVarsOptions: {
+        // include: [],
+        // exclude: [],
+        warnOnError: true,
+      },
+      manifest: `vite_assets_manifest.json`,
+      // ssrManifest: `vite_ssr_assets_manifest.json`,
+      ssr: false,
+      minify: 'esbuild',
+      /**
+       * 额外的minify选项，以传递给Terser。
+       * 详细见：
+       * https://terser.org/docs/api-reference#minify-options
+       */
+      terserOptions: {
+        ecma: 2022,
+        parse: {
+          bare_returns: true,
+          html5_comments: true,
+          shebang: true,
+        },
+        compress: {
+          // 传递false来禁用大多数默认启用的压缩转换。当你只想启用几个压缩选项而禁用其他选项时，这很有用。
+          defaults: false,
+          // true表示转换成箭头函数
+          arrows: false,
+          // true表示尽可能地用函数参数名代替arguments[index]。
+          arguments: true,
+          // true表示进行诸如这样的转换：!!a ? b : c → a ? b : c
+          booleans: false,
+          booleans_as_integers: false,
+          collapse_vars: true,
+          comparisons: false,
+          computed_props: true,
+          conditionals: true,
+          dead_code: true,
+          directives: true,
+          drop_console: isProduction && env_platform !== 'test',
+          drop_debugger: isProduction && env_platform !== 'test',
+          ecma: 2022,
+          evaluate: true,
+          expression: false,
+          global_defs: {},
+          hoist_funs: false,
+          hoist_props: true,
+          hoist_vars: false,
+          if_return: true,
+          inline: true,
+          join_vars: true,
+          keep_classnames: true,
+          keep_fargs: true,
+          keep_fnames: true,
+          keep_infinity: true,
+          loops: true,
+          module: true,
+          negate_iife: true,
+          passes: 1,
+          properties: false,
+          pure_getters: 'strict',
+          // 遗留选项，为了向后兼容而安全地忽略。
+          // reduce_funcs
+          reduce_vars: true,
+          sequences: false,
+          side_effects: true,
+          switches: true,
+          toplevel: true,
+          // top_retain: null,
+          typeofs: false,
+          // https://terser.org/docs/api-reference#the-unsafe-compress-option
+          unsafe: false,
+          unsafe_arrows: false,
+          unsafe_comps: false,
+          unsafe_Function: false,
+          unsafe_math: false,
+          unsafe_symbols: false,
+          unsafe_methods: false,
+          unsafe_proto: false,
+          unsafe_regexp: false,
+          unsafe_undefined: false,
+          unused: true,
+        },
+        mangle: {
+          eval: false,
+          keep_classnames: true,
+          keep_fnames: true,
+          module: false,
+          // reserved: [],
+          toplevel: false,
+          safari10: false,
+          properties: {
+            builtins: false,
+            debug: false,
+            keep_quoted: true,
+            // regex: null,
+            // reserved: [],
+            undeclared: false,
+          },
+        },
+        module: true,
+        format: {
+          ascii_only: false,
+          beautify: isProduction,
+          braces: false,
+          comments: false,
+          ecma: 2022,
+          indent_level: 0,
+          indent_start: 0,
+          inline_script: true,
+          keep_numbers: true,
+          keep_quoted_props: true,
+          max_line_len: false,
+          // preamble: null,
+          quote_keys: false,
+          quote_style: 0,
+          preserve_annotations: false,
+          safari10: false,
+          semicolons: true,
+          shebang: true,
+          webkit: false,
+          wrap_iife: false,
+          wrap_func_args: true,
+        },
+        sourceMap: false,
+        toplevel: true,
+        // nameCache: null,
+        ie8: false,
+        keep_classnames: true,
+        keep_fnames: true,
+        safari10: false,
+      },
+      write: true,
+      emptyOutDir: true,
+      copyPublicDir: false,
+      reportCompressedSize: true,
+      // KB
+      chunkSizeWarningLimit: 1 * 1024,
+      // watch: null,
     },
     /**
      * @type {CSSOptions} 配置CSS相关的行为。<br />
