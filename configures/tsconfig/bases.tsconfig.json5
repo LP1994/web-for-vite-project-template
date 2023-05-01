@@ -420,8 +420,9 @@ CreateDate: 2022-01-01 00:00:00 星期六
     1、这一设置在2种情况下是有用的：
     你正在使用TypeScript以外的转码器来生成你的JavaScript。
     你正在使用TypeScript只为你的消费者生成d.ts文件。
+    2、当跟Vite以及vite-plugin-checker一起使用时，该选项要设置为false，并且noEmit选项要设置为true。
     */
-    "emitDeclarationOnly": true,
+    "emitDeclarationOnly": false,
     /*
     允许在每个项目中从tslib导入一次助手函数，而不是在每个文件中包含它们。
     1、对于某些降级操作，TypeScript使用一些帮助代码进行扩展类、扩展数组或对象以及异步操作等操作。
@@ -468,8 +469,9 @@ CreateDate: 2022-01-01 00:00:00 星期六
     1、不要发出编译器输出文件，如JavaScript源代码、源映射或声明。
     2、这为Babel或swc等其他工具腾出空间来处理将TypeScript文件转换为可以在JavaScript环境中运行的文件。
     3、然后，您可以将TypeScript用作提供编辑器集成的工具，并用作源代码类型检查器。
+    4、当跟Vite以及vite-plugin-checker一起使用时，该选项要设置为true，并且emitDeclarationOnly选项要设置为false。
     */
-    "noEmit": false,
+    "noEmit": true,
     /*
     禁用在编译输出中生成自定义帮助程序函数，如“__extends”。
     1、您可以在全局范围内为您使用的助手提供实现，并完全关闭助手函数的发射，而不是使用importHelpers导入助手。
@@ -582,8 +584,9 @@ CreateDate: 2022-01-01 00:00:00 星期六
     5、但是，其他转译器一次只对单个文件进行操作，这意味着它们不能应用依赖于对完整类型系统的理解的代码转换。
     6、此限制也适用于某些构建工具使用的TypeScript的ts.transpileModule API。
     7、isolatedModules选项不能与选项'verbatimModuleSyntax'一起指定。
+    8、当跟Vite以及vite-plugin-checker一起使用时，该选项要设置为true。
     */
-    // "isolatedModules": false,
+    "isolatedModules": true,
     /*
     这是为了在Node.js中反映相同的标志；它不解析符号链接的实际路径。
     1、此标志还显示与Webpack的resolve.symlinks选项相反的行为（即将TypeScript的preserveSymlinks设置为true与将Webpack的resolve.symlinks设置为false并行，反之亦然）。
@@ -861,8 +864,9 @@ CreateDate: 2022-01-01 00:00:00 星期六
     rootDir选项设置，如果没有明确设置，默认为包含tsconfig.json文件的目录。
     所有实现文件必须由包含模式匹配或列在文件数组中。如果违反此约束，tsc 将通知您未指定哪些文件。
     declaration选项值默认为true。
+    3、当跟Vite以及vite-plugin-checker一起使用时，该选项要设置为false。
     */
-    "composite": true,
+    "composite": false,
     /*
     减少TypeScript自动加载的项目数。
     1、在多项目TypeScript程序中，TypeScript会将所有可用项目加载到内存中，以便为需要完整知识图的编辑器响应提供准确的结果，例如“查找所有参考”。
@@ -887,8 +891,9 @@ CreateDate: 2022-01-01 00:00:00 星期六
     3、告诉TypeScript将上次编译的项目图信息保存到磁盘上存储的文件中。这会在编译输出所在的文件夹中创建一系列.tsbuildinfo文件。
     4、您的JavaScript在运行时不使用它们，可以安全地删除它们。您可以在3.4发行说明中阅读有关该标志的更多信息。
     5、要控制要将文件构建到哪些文件夹，请使用配置选项tsBuildInfoFile。
+    6、当跟Vite以及vite-plugin-checker一起使用时，该选项要设置为false。
     */
-    "incremental": true,
+    "incremental": false,
     /*
     此设置允许您指定用于存储增量编译信息的文件作为复合项目的一部分，从而可以更快地构建更大的TypeScript代码库。您可以在手册中阅读有关复合项目的更多信息。
     1、此选项提供了一种配置TypeScript跟踪其存储在磁盘上的文件以指示项目的构建状态的位置的方法——默认情况下，它们与您发出的JavaScript位于同一文件夹中。
