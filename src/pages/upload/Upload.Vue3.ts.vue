@@ -177,9 +177,11 @@ main {
   lang = 'ts'>
 'use strict';
 
-import {
-  sha3_512,
-} from 'js-sha3';
+import * as JS_SHA3 from 'js-sha3';
+
+const {
+  sha3_512
+} = JS_SHA3;
 
 import {
   reactive,
