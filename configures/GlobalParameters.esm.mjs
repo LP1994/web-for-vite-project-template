@@ -54,6 +54,11 @@ const devServerGlobalParameters = {
        * 1、有效值类型有：number。<br />
        */
       port: 8500,
+      /**
+       * 用于指定开发模式下，构建完成后，自动打开浏览器时，要打开的页面路径。注意，该选项值不是指一个标准网址！
+       * 1、该选项值指的是页面路径，是相对于输出文件夹的。如：'pages/HelloWorld.html'，表示要打开的页面是存在于输出文件夹“dist/production”下的，有一个“pages”文件夹，其下有一个"HelloWorld.html"文件。
+       */
+      openPage: `src/pages/upload/Upload.html`,
     },
     /**
      * 环境local_server用。<br />
@@ -69,6 +74,11 @@ const devServerGlobalParameters = {
        * 1、有效值类型有：number。<br />
        */
       port: 8600,
+      /**
+       * 用于指定开发模式下，构建完成后，自动打开浏览器时，要打开的页面路径。注意，该选项值不是指一个标准网址！
+       * 1、该选项值指的是页面路径，是相对于输出文件夹的。如：'pages/HelloWorld.html'，表示要打开的页面是存在于输出文件夹“dist/production”下的，有一个“pages”文件夹，其下有一个"HelloWorld.html"文件。
+       */
+      openPage: `src/pages/upload/Upload.html`,
     },
   },
   /**
