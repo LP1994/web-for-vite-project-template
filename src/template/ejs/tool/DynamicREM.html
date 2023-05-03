@@ -1,13 +1,13 @@
 <!--
 Project: web-for-vite-project-template
-FileDirPath: src/template/ejs/tool/DynamicREM.ejs
+FileDirPath: src/template/ejs/tool/DynamicREM.html
 Author: 12278
 Email: 1227839175@qq.com
 IDE: WebStorm
 CreateDate: 2022-10-10 13:00:18 星期一
 -->
 <!--
-简版的动态计算“rem”的JS代码，一般被用来注入到.ejs模板中。
+简版的动态计算“rem”的JS代码，一般被用来注入到.html模板中。
 1、全局可用的dynamicREM函数接受一个number类型的参数，默认值是375，表示以iPhone 6为基准设计稿的尺寸。
 -->
 <% if(dynamicREM !== null && dynamicREM !== undefined && ( dynamicREM === true || ( Object.prototype.toString.call( dynamicREM ) === '[object Number]' && dynamicREM > 0 ) )){ %>

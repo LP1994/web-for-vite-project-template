@@ -8,36 +8,36 @@ CreateDate: 2022-07-30 14:08:53 星期六
 -->
 <%
 const htmlWebpackPluginOptions = htmlWebpackPlugin.options,
-        htmlWebpackPluginOptionsData = htmlWebpackPluginOptions.data;
+        VitePluginHTMLConfigData = htmlWebpackPluginOptions.data;
 %>
 <!DOCTYPE html>
 <html
         class = 'css-reset full-screen overflow-hidden'
-        lang = '<%= htmlWebpackPluginOptionsData.lang ?? 'zh-CN' %>'
-<% if(htmlWebpackPluginOptionsData.prefix !== null && htmlWebpackPluginOptionsData.prefix !== undefined){ %>
-    prefix = '<%= htmlWebpackPluginOptionsData.prefix %>'
+        lang = '<%= VitePluginHTMLConfigData.lang ?? 'zh-CN' %>'
+<% if(VitePluginHTMLConfigData.prefix !== null && VitePluginHTMLConfigData.prefix !== undefined){ %>
+    prefix = '<%= VitePluginHTMLConfigData.prefix %>'
         <% } %>
 >
 <head>
-    <%= require( 'ejsDir/head_meta/MainMeta001.ejs' )( htmlWebpackPluginOptionsData ) %>
-    <%= require( 'ejsDir/head_meta/MetaHttpEquiv001.ejs' )( htmlWebpackPluginOptionsData ) %>
-    <%= require( 'ejsDir/head_meta/MetaName001.ejs' )( htmlWebpackPluginOptionsData ) %>
+    <%= require( 'ejsDir/head_meta/MainMeta001.ejs' )( VitePluginHTMLConfigData ) %>
+    <%= require( 'ejsDir/head_meta/MetaHttpEquiv001.ejs' )( VitePluginHTMLConfigData ) %>
+    <%= require( 'ejsDir/head_meta/MetaName001.ejs' )( VitePluginHTMLConfigData ) %>
     <!--以上3个必须，且顺序有严格的要求：MainMeta001.ejs、MetaHttpEquiv001.ejs、MetaName001.ejs-->
     <!--可选 Start-->
-    <%= require( 'ejsDir/tool/WebpackAssetsManifest.ejs' )( htmlWebpackPluginOptionsData ) %>
-    <%= require( 'ejsDir/head_meta/Meta_PreOperation_001.ejs' )( htmlWebpackPluginOptionsData ) %>
-    <%= require( 'ejsDir/head_meta/Meta_itemprop_001.ejs' )( htmlWebpackPluginOptionsData ) %>
-    <%= require( 'ejsDir/head_meta/Meta_og_001.ejs' )( htmlWebpackPluginOptionsData ) %>
-    <%= require( 'ejsDir/head_meta/Meta_Facebook_001.ejs' )( htmlWebpackPluginOptionsData ) %>
-    <%= require( 'ejsDir/head_meta/Meta_twitter_001.ejs' )( htmlWebpackPluginOptionsData ) %>
-    <%= require( 'ejsDir/head_meta/Meta_AppLinks_001.ejs' )( htmlWebpackPluginOptionsData ) %>
-    <%= require( 'ejsDir/head_meta/Meta_alternate_001.ejs' )( htmlWebpackPluginOptionsData ) %>
-    <%= require( 'ejsDir/head_meta/Common001.ejs' )( htmlWebpackPluginOptionsData ) %>
-    <%= require( 'ejsDir/head_meta/Meta_icon_001.ejs' )( htmlWebpackPluginOptionsData ) %>
-    <%= require( 'ejsDir/head_meta/StartupImgForApple.ejs' )( htmlWebpackPluginOptionsData ) %>
+    <%= require( 'ejsDir/tool/WebpackAssetsManifest.ejs' )( VitePluginHTMLConfigData ) %>
+    <%= require( 'ejsDir/head_meta/Meta_PreOperation_001.ejs' )( VitePluginHTMLConfigData ) %>
+    <%= require( 'ejsDir/head_meta/Meta_itemprop_001.ejs' )( VitePluginHTMLConfigData ) %>
+    <%= require( 'ejsDir/head_meta/Meta_og_001.ejs' )( VitePluginHTMLConfigData ) %>
+    <%= require( 'ejsDir/head_meta/Meta_Facebook_001.ejs' )( VitePluginHTMLConfigData ) %>
+    <%= require( 'ejsDir/head_meta/Meta_twitter_001.ejs' )( VitePluginHTMLConfigData ) %>
+    <%= require( 'ejsDir/head_meta/Meta_AppLinks_001.ejs' )( VitePluginHTMLConfigData ) %>
+    <%= require( 'ejsDir/head_meta/Meta_alternate_001.ejs' )( VitePluginHTMLConfigData ) %>
+    <%= require( 'ejsDir/head_meta/Common001.ejs' )( VitePluginHTMLConfigData ) %>
+    <%= require( 'ejsDir/head_meta/Meta_icon_001.ejs' )( VitePluginHTMLConfigData ) %>
+    <%= require( 'ejsDir/head_meta/StartupImgForApple.ejs' )( VitePluginHTMLConfigData ) %>
     <!--可选 End-->
     <title><%= htmlWebpackPluginOptions.title ?? '' %></title>
-    <%= require( 'ejsDir/tool/DynamicREM.ejs' )( htmlWebpackPluginOptionsData ) %>
+    <%= require( 'ejsDir/tool/DynamicREM.ejs' )( VitePluginHTMLConfigData ) %>
 </head>
 <body class = 'css-reset full-screen overflow-hidden'>
 <!--LocalScroll节点说明：局部滚动容器，用于避免全局滚动下出现的滚动穿透BUG！-->
@@ -69,6 +69,6 @@ const htmlWebpackPluginOptions = htmlWebpackPlugin.options,
         </main>
     </div>
 </div>
-<%= require( 'ejsDir/tool/WeinreTool.ejs' )( htmlWebpackPluginOptionsData ) %>
+<%= require( 'ejsDir/tool/WeinreTool.ejs' )( VitePluginHTMLConfigData ) %>
 </body>
 </html>

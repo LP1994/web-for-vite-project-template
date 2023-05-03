@@ -8,7 +8,7 @@
  */
 
 /**
- * 一般用于为“HTMLWebpackPluginConfig.esm.mjs”中“html-webpack-plugin”插件配置HTML模板中的head标签里的图片类link标签。
+ * 一般用于为“VitePluginHTMLConfig.esm.mjs”中“vite-plugin-html”插件配置HTML模板中的head标签里的图片类link标签。
  */
 
 'use strict';

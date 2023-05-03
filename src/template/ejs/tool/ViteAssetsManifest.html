@@ -1,16 +1,16 @@
 <!--
 Project: web-for-vite-project-template
-FileDirPath: src/template/ejs/tool/WebpackAssetsManifest.ejs
+FileDirPath: src/template/ejs/tool/ViteAssetsManifest.html
 Author: 12278
 Email: 1227839175@qq.com
 IDE: WebStorm
 CreateDate: 2022-10-11 12:56:10 星期二
 -->
-<% if(webpackAssetsManifest !== null && webpackAssetsManifest !== undefined){ %>
+<% if(viteAssetsManifest !== null && viteAssetsManifest !== undefined){ %>
     <link
             rel = 'preload'
             crossorigin = 'anonymous'
             as = 'fetch'
             type = 'application/json'
-            href = '<%= webpackAssetsManifest %>' />
+            href = '<%= viteAssetsManifest %>' />
 <% } %>

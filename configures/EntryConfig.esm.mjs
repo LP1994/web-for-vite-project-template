@@ -51,7 +51,7 @@ function Get__filename( import_meta_url = import.meta.url ){
 const __dirname = Get__dirname( import.meta.url );
 
 /**
- * @type {string | string []| { [entryName: string]: string }} Vite的build.rollupOptions.input的配置，也就是“entry points”的配置。<br />
+ * Vite的build.rollupOptions.input的配置，也就是“entry points”的配置。<br />
  * 1、捆绑的入口点（例如，你的main.js或app.js或index.js）。<br />
  * 2、如果你提供了一个入口点的数组或一个将名字映射到入口点的对象，它们将被捆绑到独立的输出块中。<br />
  * 3、除非使用output.file选项，否则生成的块的名称将遵循output.entryFileNames选项。<br />
@@ -65,16 +65,32 @@ const __dirname = Get__dirname( import.meta.url );
  *
  * 详细见：<br />
  * https://rollupjs.org/configuration-options/#input
+ *
+ * @param {object} config 对象参数。
+ *
+ * @param {string} config.appType 默认值为'spa'，必需。无论你的应用是一个单页应用（SPA）还是一个多页应用（MPA），亦或是一个定制化应用（SSR和自定义HTML处理的框架）：<br />
+ * 'spa'：包含HTML中间件以及使用SPA回退。在预览中将sirv配置为single: true。<br />
+ * 'mpa'：包含HTML中间件。<br />
+ * 'custom'：不包含HTML中间件。<br />
+ *
+ * @returns {string | string []| { [entryName: string]: string }} Vite的build.rollupOptions.input的配置，也就是“entry points”的配置。
  */
-const entryConfig = {
-  // 这个也将作为标准模板配置供参考，复制它后再改改某些具体的参数值即可。
-  HelloWorld: resolve( __dirname, '../src/pages/hello_world/HelloWorld.html' ),
+function EntryConfig( {
+  appType,
+} ){
+  const isSPA = appType === 'spa';
 
-  Upload: resolve( __dirname, '../src/pages/upload/Upload.html' ),
-};
+  return isSPA
+         ? resolve( __dirname, '../src/pages/upload/Upload.mts' )
+         : {
+      HelloWorld: resolve( __dirname, '../src/pages/hello_world/HelloWorld.mjs' ),
+
+      Upload: resolve( __dirname, '../src/pages/upload/Upload.mts' ),
+    };
+}
 
 export {
-  entryConfig,
+  EntryConfig,
 };
 
-export default entryConfig;
+export default EntryConfig;
