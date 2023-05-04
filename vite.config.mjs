@@ -59,7 +59,7 @@ import {
   ProxyConfig,
 } from './configures/ProxyConfig.esm.mjs';
 
-import tsconfig_json from './tsconfig.json' assert { type: 'json', };
+import tsconfig_vite_json from './tsconfig.vite.json' assert { type: 'json', };
 
 import {
   VitePluginHTMLConfig,
@@ -1430,10 +1430,10 @@ export default defineConfig( async ( {
        * 4、esbuild仅支持tsconfig选项的子集（请参阅TransformOptions接口，也就是只支持tsconfig.json文件中的compilerOptions选项）并且不进行类型检查。<br />
        * 5、esbuild文档还建议在您的tsconfig中启用isolatedModules和esModuleInterop选项。<br />
        * 6、如：tsconfigRaw: string | { compilerOptions: {} }。<br />
-       * 7、必须在项目根目录存在一个有效的tsconfig.json文件。<br />
+       * 7、必须在项目根目录存在一个有效的tsconfig.json、tsconfig.vite.json文件。<br />
        */
       tsconfigRaw: ( tsconfigPath => {
-        let obj1 = tsconfig_json,
+        let obj1 = tsconfig_vite_json,
           resultCompilerOptionsObj = Object.prototype.toString.call( obj1.compilerOptions ) === '[object Object]'
                                      ? obj1.compilerOptions
                                      : {},
@@ -1460,7 +1460,7 @@ export default defineConfig( async ( {
             // isolatedModules: true,
           },
         } );
-      } )( './tsconfig.json' ),
+      } )( './tsconfig.vite.json' ),
       minifyWhitespace: isProduction,
       minifyIdentifiers: isProduction,
       minifySyntax: isProduction,
@@ -1676,14 +1676,14 @@ export default defineConfig( async ( {
         enableBuild: true,
         typescript: {
           root: resolve( __dirname, `./` ),
-          tsconfigPath: './tsconfig.json',
+          tsconfigPath: './tsconfig.vite.json',
           // Add --build to tsc flag, note that noEmit does NOT work if buildMode is true
           buildMode: false,
         },
         // 供Vue3使用。
         vueTsc: {
           root: resolve( __dirname, `./` ),
-          tsconfigPath: './tsconfig.json',
+          tsconfigPath: './tsconfig.vite.json',
         },
         // 供Vue2使用。
         // vls: true,
