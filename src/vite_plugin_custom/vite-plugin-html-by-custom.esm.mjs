@@ -177,7 +177,14 @@ function createPlugin( {
         }
 
         const parsedUrl = rqst._parsedUrl,
-          rewrite = rewrites.find( r => parsedUrl.path.match( r.from ) );
+          rewrite = rewrites.find( r => {
+            if( parsedUrl.path.startsWith( baseUrl ) ){
+              return parsedUrl.path.replace( baseUrl, '/' ).match( r.from );
+            }
+            else{
+              return parsedUrl.path.match( r.from );
+            }
+          } );
 
         if( !rewrite ){
           if( parsedUrl.pathname.lastIndexOf( '.' ) <= parsedUrl.pathname.lastIndexOf( '/' ) ){
@@ -210,7 +217,7 @@ function createPlugin( {
         } );
       } );
     },
-    // rollup钩子，获取文件地址
+    // rollup钩子，获取文件地址。生产模式才会执行到！
     resolveId( source, importer ){
       const rewrite = rewrites.find( r => source.match( r.from ) );
 
@@ -244,7 +251,14 @@ function createPlugin( {
           pageEntry;
 
         const rewrite = rewrites.filter( r => typeof r.to !== 'string' )
-        .find( r => path.resolve( viteConfig.root, r.to.filename ) === ctx.filename );
+        .find( r => {
+          if( ctx.server && ctx.filename.includes( ctx.server.config.base ) ){
+            return path.resolve( viteConfig.root, r.to.filename ) === ctx.filename.replace( ctx.server.config.base, '/' );
+          }
+          else{
+            return path.resolve( viteConfig.root, r.to.filename ) === ctx.filename;
+          }
+        } );
 
         if( rewrite ){
           injectOptions = rewrite.to.injectOptions || {};
