@@ -284,7 +284,7 @@ function createPlugin( {
           }
 
           html = root.toString()
-          .replace( /<\/body>/, `<script type="module" src="${ normalizePath( `${ pageEntry }` ) }"><\/script>\n</body>` );
+          .replace( /<\/body>/, `<script defer type="module" src="${ normalizePath( `${ pageEntry }` ) }"><\/script>\n</body>` );
         }
 
         return {

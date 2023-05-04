@@ -1,6 +1,6 @@
 <!--
 Project: web-for-vite-project-template
-FileDirPath: src/template/ejs/HelloWorld.html
+FileDirPath: src/template/ejs/HelloWorld.ejs
 Author: 12278
 Email: 1227839175@qq.com
 IDE: WebStorm
@@ -15,27 +15,27 @@ prefix = '<%= VitePluginHTMLData.prefix %>'
 <% } %>
 >
 <head>
-  <%- include( '/head_meta/MainMeta001.html', VitePluginHTMLData ) %>
-  <%- include( '/head_meta/MetaHttpEquiv001.html', VitePluginHTMLData ) %>
-  <%- include( '/head_meta/MetaName001.html', VitePluginHTMLData ) %>
-  <!--以上3个必须，且顺序有严格的要求：MainMeta001.html、MetaHttpEquiv001.html、MetaName001.html-->
+  <%- include( '/head_meta/MainMeta001.ejs', VitePluginHTMLData ) %>
+  <%- include( '/head_meta/MetaHttpEquiv001.ejs', VitePluginHTMLData ) %>
+  <%- include( '/head_meta/MetaName001.ejs', VitePluginHTMLData ) %>
+  <!--以上3个必须，且顺序有严格的要求：MainMeta001.ejs、MetaHttpEquiv001.ejs、MetaName001.ejs-->
   <!--可选 Start-->
   <% if( isProduction === 'true' ){ %>
-  <%- include( '/tool/ViteAssetsManifest.html', VitePluginHTMLData ) %>
+  <%- include( '/tool/ViteAssetsManifest.ejs', VitePluginHTMLData ) %>
   <% } %>
-  <%- include( '/head_meta/Meta_PreOperation_001.html', VitePluginHTMLData ) %>
-  <%- include( '/head_meta/Meta_itemprop_001.html', VitePluginHTMLData ) %>
-  <%- include( '/head_meta/Meta_og_001.html', VitePluginHTMLData ) %>
-  <%- include( '/head_meta/Meta_Facebook_001.html', VitePluginHTMLData ) %>
-  <%- include( '/head_meta/Meta_twitter_001.html', VitePluginHTMLData ) %>
-  <%- include( '/head_meta/Meta_AppLinks_001.html', VitePluginHTMLData ) %>
-  <%- include( '/head_meta/Meta_alternate_001.html', VitePluginHTMLData ) %>
-  <%- include( '/head_meta/Common001.html', VitePluginHTMLData ) %>
-  <%- include( '/head_meta/Meta_icon_001.html', VitePluginHTMLData ) %>
-  <%- include( '/head_meta/StartupImgForApple.html', VitePluginHTMLData ) %>
+  <%- include( '/head_meta/Meta_PreOperation_001.ejs', VitePluginHTMLData ) %>
+  <%- include( '/head_meta/Meta_itemprop_001.ejs', VitePluginHTMLData ) %>
+  <%- include( '/head_meta/Meta_og_001.ejs', VitePluginHTMLData ) %>
+  <%- include( '/head_meta/Meta_Facebook_001.ejs', VitePluginHTMLData ) %>
+  <%- include( '/head_meta/Meta_twitter_001.ejs', VitePluginHTMLData ) %>
+  <%- include( '/head_meta/Meta_AppLinks_001.ejs', VitePluginHTMLData ) %>
+  <%- include( '/head_meta/Meta_alternate_001.ejs', VitePluginHTMLData ) %>
+  <%- include( '/head_meta/Common001.ejs', VitePluginHTMLData ) %>
+  <%- include( '/head_meta/Meta_icon_001.ejs', VitePluginHTMLData ) %>
+  <%- include( '/head_meta/StartupImgForApple.ejs', VitePluginHTMLData ) %>
   <!--可选 End-->
   <title><%= VitePluginHTMLData.title ?? '' %></title>
-  <%- include( '/tool/DynamicREM.html', VitePluginHTMLData ) %>
+  <%- include( '/tool/DynamicREM.ejs', VitePluginHTMLData ) %>
 </head>
 <body class = 'css-reset full-screen overflow-hidden'>
 <!--LocalScroll节点说明：局部滚动容器，用于避免全局滚动下出现的滚动穿透BUG！-->
@@ -56,6 +56,6 @@ prefix = '<%= VitePluginHTMLData.prefix %>'
     <main class = 'css-reset full-screen overflow-hidden-auto'></main>
   </div>
 </div>
-<%- include( '/tool/WeinreTool.html', VitePluginHTMLData ) %>
+<%- include( '/tool/WeinreTool.ejs', VitePluginHTMLData ) %>
 </body>
 </html>

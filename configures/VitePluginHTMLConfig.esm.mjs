@@ -288,7 +288,7 @@ function VitePluginHTMLConfig( {
      */
          ? GenerateSPAConfig( {
       entry: 'src/pages/upload/Upload.mts',
-      template: 'src/pages/upload/Upload.html',
+      template: 'src/pages/upload/Upload.ejs',
       filename: 'Upload.html',
       data: {
         VitePluginHTMLData: {
@@ -354,7 +354,7 @@ function VitePluginHTMLConfig( {
          : GenerateMPAConfig( [
       {
         entry: 'src/pages/hello_world/HelloWorld.mjs',
-        template: 'src/template/ejs/HelloWorld.html',
+        template: 'src/template/ejs/HelloWorld.ejs',
         filename: 'HelloWorld.html',
         data: {
           VitePluginHTMLData: {
@@ -366,7 +366,7 @@ function VitePluginHTMLConfig( {
 
       {
         entry: 'src/pages/upload/Upload.mts',
-        template: 'src/pages/upload/Upload.html',
+        template: 'src/pages/upload/Upload.ejs',
         filename: 'Upload.html',
         data: {
           VitePluginHTMLData: {
