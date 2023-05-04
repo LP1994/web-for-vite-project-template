@@ -2002,7 +2002,7 @@ export default defineConfig( async ( {
          * 你还可以设置process.env.BROWSER_ARGS来传递额外的参数，例如：--incognito（以隐私模式打开浏览器），--new-window（在新窗口中打开浏览器）。<br />
          * BROWSER和BROWSER_ARGS都是特殊的环境变量，你可以将它们放在.env文件中进行设置，欲了解更多打开浏览器的更多内部细节，请参阅open包的源码（https://github.com/sindresorhus/open#app）。<br />
          */
-        open: `https://${ devServerGlobalParameters[ env_platform ]?.host }:${ devServerGlobalParameters[ env_platform ]?.port }/${ env_platform }/${ devServerGlobalParameters[ env_platform ]?.openPage }`,
+        open: `https://${ devServerGlobalParameters[ env_platform ]?.host }:${ devServerGlobalParameters[ env_platform ]?.port }/${ devServerGlobalParameters[ env_platform ]?.openPage }`,
         /**
          * @type {Record<string, string | ProxyOptions>} 为开发服务器配置自定义代理规则。<br />
          * 期望接收一个{ key: ProxyOptions }对象。<br />
