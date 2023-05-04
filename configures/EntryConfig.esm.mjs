@@ -81,12 +81,8 @@ function EntryConfig( {
   const isSPA = appType === 'spa';
 
   return isSPA
-         ? resolve( __dirname, '../src/pages/upload/Upload.mts' )
-         : {
-      HelloWorld: resolve( __dirname, '../src/pages/hello_world/HelloWorld.mjs' ),
-
-      Upload: resolve( __dirname, '../src/pages/upload/Upload.mts' ),
-    };
+         ? 'src/pages/upload/Upload.mts'
+         : {};
 }
 
 export {
