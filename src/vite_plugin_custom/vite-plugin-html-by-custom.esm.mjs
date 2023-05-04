@@ -192,7 +192,7 @@ function createPlugin( {
           return next();
         }
 
-        // 遗留内容，貌似没什么用
+        // 用于开发环境的代理。只要发起的任何请求的URL符合开发环境设置的定义的代理映射（viteConfig.server.proxy），就交由代理处理。
         if( proxyKeys.some( k => parsedUrl.pathname.startsWith( path.resolve( baseUrl, k ) ) ) ){
           rqst.url = parsedUrl.pathname.replace( baseUrl, '/' );
 
