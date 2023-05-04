@@ -177,10 +177,11 @@ main {
   lang = 'ts'>
 'use strict';
 
-import * as JS_SHA3 from 'js-sha3';
+import JS_SHA3 from 'pagesDir/upload/sha3.min.js';
 
 const {
-  sha3_512
+  // @ts-ignore
+  sha3_512,
 } = JS_SHA3;
 
 import {
