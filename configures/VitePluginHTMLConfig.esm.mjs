@@ -214,6 +214,9 @@ function VitePluginHTMLConfig( {
       root: [
         resolve( __dirname, '../src/template/ejs/' ),
       ],
+      views: [
+        resolve( __dirname, '../src/template/ejs/' ),
+      ],
     };
 
   /**
@@ -284,8 +287,8 @@ function VitePluginHTMLConfig( {
      * https://github.com/vbenjs/vite-plugin-html
      */
          ? GenerateSPAConfig( {
-      entry: './src/pages/upload/Upload.mts',
-      template: './src/pages/upload/Upload.html',
+      entry: 'src/pages/upload/Upload.mts',
+      template: 'src/pages/upload/Upload.html',
       filename: 'Upload.html',
       data: {
         VitePluginHTMLData: {
@@ -350,8 +353,8 @@ function VitePluginHTMLConfig( {
      */
          : GenerateMPAConfig( [
       {
-        entry: './src/pages/hello_world/HelloWorld.mjs',
-        template: './src/template/ejs/HelloWorld.html',
+        entry: 'src/pages/hello_world/HelloWorld.mjs',
+        template: 'src/template/ejs/HelloWorld.html',
         filename: 'HelloWorld.html',
         data: {
           VitePluginHTMLData: {
@@ -362,8 +365,8 @@ function VitePluginHTMLConfig( {
       },
 
       {
-        entry: './src/pages/upload/Upload.mts',
-        template: './src/pages/upload/Upload.html',
+        entry: 'src/pages/upload/Upload.mts',
+        template: 'src/pages/upload/Upload.html',
         filename: 'Upload.html',
         data: {
           VitePluginHTMLData: {
