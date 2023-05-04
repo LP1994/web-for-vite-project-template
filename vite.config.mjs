@@ -571,7 +571,7 @@ export default defineConfig( async ( {
      */
     base = isProduction
            ? './'
-           : './'/*`/${ env_platform }/`*/,
+           : './',
     // ToDo
     /**
      * @type {object}
