@@ -39,9 +39,7 @@ import vue from '@vitejs/plugin-vue';
 
 import checker from 'vite-plugin-checker';
 
-import {
-  createHtmlPlugin,
-} from 'vite-plugin-html';
+import VitePluginHTMLByCustom from './src/vite_plugin_custom/vite-plugin-html-by-custom.esm.mjs';
 
 // 这些个必需保持这各种顺序。End
 
@@ -426,7 +424,7 @@ export default defineConfig( async ( {
      * 'mpa'：包含HTML中间件。<br />
      * 'custom'：不包含HTML中间件。<br />
      */
-    appType = 'spa',
+    appType = 'mpa',
     /**
      * @type {string|RegExp|(string|RegExp)[]} 详细见：https://cn.vitejs.dev/config/shared-options.html#assetsinclude
      */
@@ -572,8 +570,8 @@ export default defineConfig( async ( {
      * 3、空字符串“”或“./”（用于嵌入形式的开发）
      */
     base = isProduction
-           ? ''
-           : ''/*`/${ env_platform }/`*/,
+           ? './'
+           : './'/*`/${ env_platform }/`*/,
     // ToDo
     /**
      * @type {object}
@@ -598,26 +596,65 @@ export default defineConfig( async ( {
       cssTarget: esbuildMinify_target,
       cssMinify: isProduction,
       sourcemap: isProduction,
-      /**
-       * @type {string | string []| { [entryName: string]: string }} Vite的build.rollupOptions.input的配置，也就是“entry points”的配置。<br />
-       * 1、捆绑的入口点（例如，你的main.js或app.js或index.js）。<br />
-       * 2、如果你提供了一个入口点的数组或一个将名字映射到入口点的对象，它们将被捆绑到独立的输出块中。<br />
-       * 3、除非使用output.file选项，否则生成的块的名称将遵循output.entryFileNames选项。<br />
-       * 4、当使用对象形式时，文件名的[name]部分将是对象属性的名称，而对于数组形式，它将是入口点的文件名。<br />
-       * 5、请注意，在使用对象形式时，可以通过在名称中添加一个/来将入口点放入不同的子文件夹。<br />
-       * 下面将生成至少两个名称为entry-a.js和entry-b/index.js的入口块，即文件index.js被放在entry-b文件夹中：<br />
-       * input: {
-       *   a: 'src/main-a.js',
-       *   'b/index': 'src/main-b.js'
-       * }
-       *
-       * 详细见：<br />
-       * https://rollupjs.org/configuration-options/#input
-       */
       rollupOptions: {
+        // https://rollupjs.org/configuration-options/#external
+        external: [
+          'axios',
+          'echarts',
+          'jquery',
+          'swiper',
+        ],
+        /**
+         * @type {string | string []| { [entryName: string]: string }} Vite的build.rollupOptions.input的配置，也就是“entry points”的配置。<br />
+         * 1、捆绑的入口点（例如，你的main.js或app.js或index.js）。<br />
+         * 2、如果你提供了一个入口点的数组或一个将名字映射到入口点的对象，它们将被捆绑到独立的输出块中。<br />
+         * 3、除非使用output.file选项，否则生成的块的名称将遵循output.entryFileNames选项。<br />
+         * 4、当使用对象形式时，文件名的[name]部分将是对象属性的名称，而对于数组形式，它将是入口点的文件名。<br />
+         * 5、请注意，在使用对象形式时，可以通过在名称中添加一个/来将入口点放入不同的子文件夹。<br />
+         * 下面将生成至少两个名称为entry-a.js和entry-b/index.js的入口块，即文件index.js被放在entry-b文件夹中：<br />
+         * input: {
+         *   a: 'src/main-a.js',
+         *   'b/index': 'src/main-b.js'
+         * }
+         *
+         * 详细见：<br />
+         * https://rollupjs.org/configuration-options/#input
+         */
         input: EntryConfig( {
           appType,
         } ),
+        output: {
+          // inlineDynamicImports: false,
+          dir: resolve( __dirname, `./dist/${ env_platform }/` ),
+          // format: 'iife',
+          globals: {
+            axios: 'axios',
+            echarts: 'echarts',
+            jquery: '$',
+            swiper: 'Swiper',
+          },
+          assetFileNames: `assets/[name]-[hash:16][extname]`,
+          chunkFileNames: `js/[name]-[hash:16].js`,
+          // compact: isProduction,
+          //dynamicImportInCjs: true,
+          //externalImportAssertions: true,
+          /*generatedCode: {
+           preset: 'es2015',
+           arrowFunctions: true,
+           constBindings: true,
+           objectShorthand: true,
+           reservedNamesAsProps: true,
+           symbols: true,
+           },*/
+          //interop: 'auto',
+          //minifyInternalExports: isProduction,
+          //sourcemap: isProduction,
+          //sourcemapExcludeSources: isProduction,
+        },
+        //cache: true,
+        //makeAbsoluteExternalsRelative: 'ifRelativeSource',
+        //maxParallelFileOps: 200,
+        //experimentalCacheExpiry: 10,
       },
       /**
        * 一个用于将CommonJS模块转换为ES6的Rollup插件，因此它们可以被包含在一个Rollup包中。
@@ -1651,7 +1688,7 @@ export default defineConfig( async ( {
         // 供Vue2使用。
         // vls: true,
       } ),
-      createHtmlPlugin( VitePluginHTMLConfig( {
+      VitePluginHTMLByCustom( VitePluginHTMLConfig( {
         appType,
         entryConfig: EntryConfig( {
           appType,
