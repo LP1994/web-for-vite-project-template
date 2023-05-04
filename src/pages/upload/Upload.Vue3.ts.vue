@@ -177,7 +177,7 @@ main {
   lang = 'ts'>
 'use strict';
 
-import JS_SHA3 from 'pagesDir/upload/sha3.min.js';
+import JS_SHA3 from 'jsDir/third_party_modules/sha3.min.js';
 
 const {
   // @ts-ignore
