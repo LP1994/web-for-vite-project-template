@@ -277,7 +277,7 @@ export default defineConfig( async ( {
          : 'development';
 
   /**
-   * @type {object}
+   * @type {object} HTML压缩配置。
    * 详细见：
    * node_modules/@types/html-minifier-terser/index.d.ts:15
    */
@@ -597,12 +597,35 @@ export default defineConfig( async ( {
     base = isProduction
            ? ``
            : `/${ env_platform }/`,
-    // ToDo
     /**
-     * @type {object}
+     * @type {object} 构建选项。
      */
     build = {
+      /**
+       * @type {string | string[]} 默认值：'modules'。<br />
+       * 1、最终捆绑包的浏览器兼容性目标。默认值是Vite的一个特殊值'modules'，它的目标是具有本地ES模块、本地ESM动态导入和import.meta支持的浏览器。
+       * Vite会将'modules'替换为['es2020', 'edge88', 'firefox78', 'chrome87', 'safari14']。<br />
+       * 2、另一个特殊的值是'esnext'--它假定支持本地动态导入，并将尽可能少地转译：<br />
+       * 如果build.minify选项是'terser'，并且安装的Terser版本低于5.16.0，'esnext'将被强制降为'es2021'。<br />
+       * 在其他情况下，它将完全不执行转译。<br />
+       * 3、该转换是通过esbuild进行的，其值应该是一个有效的esbuild目标选项。<br />
+       * 自定义目标可以是一个ES版本（如es2015），一个带版本的浏览器（如chrome58），或者是一个多个目标字符串的数组。<br />
+       * 注意，如果代码中包含esbuild无法安全转译的特性，则构建会失败。<br />
+       */
       target: esbuildMinify_target,
+      /**
+       * @type {boolean | { polyfill?: boolean, resolveDependencies?: ResolveModulePreloadDependenciesFn }} 默认值：{ polyfill: true }。<br />
+       * 1、默认情况下，一个模块预加载polyfill是自动注入的。<br />
+       * polyfill被自动注入到每个index.html条目的代理模块中。<br />
+       * 如果通过build.rollupOptions.input将构建配置为使用非HTML的自定义条目，那么就有必要在你的自定义条目中手动导入polyfill：<br />
+       * import 'vite/modulepreload-polyfill'
+       * 2、注意：polyfill并不适用于库模式。<br />
+       * 如果你需要支持没有本地动态导入的浏览器，你可能应该避免在你的库中使用它。<br />
+       * 可以用{ polyfill: false }来禁用polyfill。<br />
+       * 3、为每个动态导入预加载的块的列表由Vite计算。<br />
+       * 默认情况下，在加载这些依赖关系时，将使用包括基础在内的绝对路径。<br />
+       * 如果基数是相对的（''或'./'），import.meta.url会在运行时使用，以避免依赖最终部署基数的绝对路径。<br />
+       */
       modulePreload: {
         polyfill: true,
       },
@@ -611,16 +634,47 @@ export default defineConfig( async ( {
        */
       // polyfillModulePreload: true,
       /**
-       * @type {string} 指定输出路径。<br />
+       * @type {string} 指定输出路径。默认值：'dist'。<br />
        */
       outDir: resolve( __dirname, `./dist/${ env_platform }/` ),
-      // 只能是相对于上面的选项outDir设置的文件夹的相对路径，该值要么是以“./”开头的相对路径，要么是“assets/”这种形式的相对路径。
+      /**
+       * @type {string} 默认值：'assets'，只能是相对于上面的选项outDir设置的文件夹的相对路径，该值要么是以“./”开头的相对路径，要么是“assets/”这种形式的相对路径。
+       */
       assetsDir: `./assets/`,
+      /**
+       * @type {number} 默认值：4096 (4kb)。单位：字节。
+       * 1、导入或引用的资产如果小于这个阈值，将被内联为base64 URLs，以避免额外的http请求。设置为0可以完全禁止内联。<br />
+       * 2、Git LFS占位符会被自动排除在内联之外，因为它们不包含它们所代表的文件的内容。<br />
+       * 3、如果你指定build.lib，build.assetsInlineLimit将被忽略，资产将始终被内联，无论文件大小或是否为Git LFS占位符。<br />
+       */
       assetsInlineLimit: 10 * 1024,
-      cssCodeSplit: isProduction,
+      /**
+       * @type {boolean} 默认值：true。启用/禁用CSS代码拆分。当启用时，在异步块中导入的CSS将被内联到异步块本身，并在该块被加载时插入。<br />
+       * 1、如果禁用，整个项目中的所有CSS将被提取到一个单一的CSS文件中。<br />
+       * 2、如果你指定build.lib，build.cssCodeSplit将默认为假。<br />
+       */
+      cssCodeSplit: true,
+      /**
+       * @type {string | string[]} 默认值同选项build.target的值。<br />
+       * 1、这个选项允许用户为CSS最小化设置一个不同的浏览器目标，而不是用于JavaScript转写的目标。<br />
+       * 2、它只应该在你以非主流浏览器为目标时使用。<br />
+       * 一个例子是安卓微信WebView，它支持大多数现代JavaScript功能，但不支持CSS中的#RGBA十六进制颜色符号。<br />
+       * 在这种情况下，你需要将build.cssTarget设置为chrome61，以防止vite将rgba()颜色转化为#RGBA十六进制符号。<br />
+       */
       cssTarget: esbuildMinify_target,
+      /**
+       * @type {boolean} 默认值同选项build.minify的值。<br />
+       * 1、这个选项允许用户特别覆盖CSS的最小化，而不是默认为build.minify，因此你可以分别配置JS和CSS的最小化。Vite使用esbuild来最小化CSS。<br />
+       */
       cssMinify: isProduction,
+      /**
+       * @type {boolean | 'inline' | 'hidden'} 默认值：false。生成生产源码图。<br />
+       * 1、如果为真，将创建一个单独的源码图文件。<br />
+       * 2、如果是'inline'，源码表将作为一个数据URI附加到生成的输出文件中。<br />
+       * 3、如果是'hidden'，则与true类似，只是捆绑文件中相应的源码图注释会被抑制。<br />
+       */
       sourcemap: isProduction,
+      // ToDo
       rollupOptions: {
         // https://rollupjs.org/configuration-options/#external
         external: [
@@ -682,7 +736,7 @@ export default defineConfig( async ( {
         //experimentalCacheExpiry: 10,
       },
       /**
-       * 一个用于将CommonJS模块转换为ES6的Rollup插件，因此它们可以被包含在一个Rollup包中。
+       * @type {RollupCommonJSOptions} 一个用于将CommonJS模块转换为ES6的Rollup插件，因此它们可以被包含在一个Rollup包中。<br />
        * 详细见：https://github.com/rollup/plugins/tree/master/packages/commonjs#options
        */
       commonjsOptions: {
@@ -1837,131 +1891,6 @@ export default defineConfig( async ( {
        */
       // rollupOptions: {},
     };
-
-  /**
-   * 额外的minify选项，以传递给Terser。<br />
-   * build.terserOptions被指定，但build.minify没有被设置为使用Terser。注意Vite现在默认使用esbuild进行最小化。如果你仍然喜欢Terser，请将build.minify设置为 "teriser"。<br />
-   * 详细见：
-   * https://terser.org/docs/api-reference#minify-options
-   */
-  if( isProduction && build.minify === 'terser' ){
-    build.terserOptions = {
-      ecma: 2022,
-      parse: {
-        bare_returns: true,
-        html5_comments: true,
-        shebang: true,
-      },
-      compress: {
-        // 传递false来禁用大多数默认启用的压缩转换。当你只想启用几个压缩选项而禁用其他选项时，这很有用。
-        defaults: false,
-        // true表示转换成箭头函数
-        arrows: false,
-        // true表示尽可能地用函数参数名代替arguments[index]。
-        arguments: true,
-        // true表示进行诸如这样的转换：!!a ? b : c → a ? b : c
-        booleans: false,
-        booleans_as_integers: false,
-        collapse_vars: true,
-        comparisons: false,
-        computed_props: true,
-        conditionals: true,
-        dead_code: true,
-        directives: true,
-        drop_console: isProduction && env_platform !== 'test',
-        drop_debugger: isProduction && env_platform !== 'test',
-        ecma: 2022,
-        evaluate: true,
-        expression: false,
-        global_defs: {},
-        hoist_funs: false,
-        hoist_props: true,
-        hoist_vars: false,
-        if_return: true,
-        inline: true,
-        join_vars: true,
-        keep_classnames: true,
-        keep_fargs: true,
-        keep_fnames: true,
-        keep_infinity: true,
-        loops: true,
-        module: true,
-        negate_iife: true,
-        passes: 1,
-        properties: false,
-        pure_getters: 'strict',
-        // 遗留选项，为了向后兼容而安全地忽略。
-        // reduce_funcs
-        reduce_vars: true,
-        sequences: false,
-        side_effects: true,
-        switches: true,
-        toplevel: true,
-        // top_retain: null,
-        typeofs: false,
-        // https://terser.org/docs/api-reference#the-unsafe-compress-option
-        unsafe: false,
-        unsafe_arrows: false,
-        unsafe_comps: false,
-        unsafe_Function: false,
-        unsafe_math: false,
-        unsafe_symbols: false,
-        unsafe_methods: false,
-        unsafe_proto: false,
-        unsafe_regexp: false,
-        unsafe_undefined: false,
-        unused: true,
-      },
-      mangle: {
-        eval: false,
-        keep_classnames: true,
-        keep_fnames: true,
-        module: false,
-        // reserved: [],
-        toplevel: false,
-        safari10: false,
-        properties: {
-          builtins: false,
-          debug: false,
-          keep_quoted: true,
-          // regex: null,
-          // reserved: [],
-          undeclared: false,
-        },
-      },
-      module: true,
-      format: {
-        ascii_only: false,
-        beautify: isProduction,
-        braces: false,
-        comments: false,
-        ecma: 2022,
-        indent_level: 0,
-        indent_start: 0,
-        inline_script: true,
-        keep_numbers: true,
-        keep_quoted_props: true,
-        max_line_len: false,
-        // preamble: null,
-        quote_keys: false,
-        quote_style: 0,
-        preserve_annotations: false,
-        safari10: false,
-        semicolons: true,
-        shebang: true,
-        webkit: false,
-        wrap_iife: false,
-        wrap_func_args: true,
-      },
-      sourceMap: false,
-      toplevel: true,
-      // nameCache: null,
-      ie8: false,
-      keep_classnames: true,
-      keep_fnames: true,
-      safari10: false,
-    };
-  }
 
   /**
    * 开发配置，“vite preview”也会用该配置。
