@@ -752,7 +752,7 @@ export default defineConfig( async ( {
         getJSON( cssFileName, json, outputFileName ){
           writeFileSync( resolve( __dirname, `./dist/${ basename( cssFileName )
           .replace( new URL( cssFileName ).search, '' ) }.json` ), JSON.stringify( json ), {
-            flag: 'a+',
+            flag: 'w+',
           } );
         },
         /**
