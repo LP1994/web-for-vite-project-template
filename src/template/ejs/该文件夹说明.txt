@@ -3,3 +3,19 @@ src/template/ejs/head_meta文件夹下都是HTML文件中<head>标签中公共<m
 
 PS：
 src/template/ejs/HelloWorld.ejs是个参考的模板，实际开发时只要先复制，然后改完文件名再修改里面的几个变量就能使用了。
+
+
+
+使用注意：
+1、在.ejs模板中，可以使用如下被注入的Vite环境特有的值：
+env_platform: '"dev_server"',
+VITE_USER_NODE_ENV: 'development',
+BASE_URL: '/',
+MODE: 'dev_server',
+DEV: true,
+PROD: false,
+isProduction: 'false',
+devURL001: '"/devURL001"',
+ws4DevURL001: '( location.protocol === "http:" ? "ws:" : "wss:" ) + "//" + location.hostname + ":" + location.port + "/ws4DevURL001"',
+__VUE_OPTIONS_API__: true,
+__VUE_PROD_DEVTOOLS__: false,

@@ -41,6 +41,10 @@ import checker from 'vite-plugin-checker';
 
 import VitePluginHTMLByCustom from './src/vite_plugin_custom/vite-plugin-html-by-custom.esm.mjs';
 
+import {
+  viteStaticCopy,
+} from 'vite-plugin-static-copy';
+
 // 这些个必需保持这各种顺序。End
 
 import DefineConfig from './configures/DefineConfig.esm.mjs';
@@ -1696,6 +1700,43 @@ export default defineConfig( async ( {
         isProduction,
         HTMLMinifyConfig,
       } ) ),
+      /**
+       * node_modules/vite-plugin-static-copy/dist/index.d.ts:56
+       * node_modules/chokidar/types/index.d.ts:68
+       */
+      viteStaticCopy( {
+        targets: [
+          {
+            src: `./favicon.ico`,
+            dest: `./`,
+            preserveTimestamps: false,
+            dereference: true,
+          },
+          {
+            src: `./src/static`,
+            dest: `./`,
+            preserveTimestamps: false,
+            dereference: true,
+          },
+        ],
+        // 是否扁平化文件夹。
+        flatten: true,
+        silent: false,
+        watch: {
+          options: {
+            persistent: true,
+            ignored: [
+              '**/.gitignore',
+              '**/*.gitignore',
+              '**/该文件夹说明.txt',
+            ],
+            cwd: resolve( __dirname, './' ),
+            depth: 1000,
+            ignorePermissionErrors: false,
+          },
+          reloadPageOnChange: !isProduction,
+        },
+      } ),
     ],
     // ToDo 考虑使用类似copy插件的工具来复制静态资源文件夹。
     /**
