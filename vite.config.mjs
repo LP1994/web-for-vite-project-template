@@ -11,8 +11,11 @@
 
 import {
   readFileSync,
-  writeFileSync,
 } from 'node:fs';
+
+import {
+  writeFile,
+} from 'node:fs/promises';
 
 import {
   basename,
@@ -740,6 +743,8 @@ export default defineConfig( async ( {
       modules: {
         /**
          * 默认情况下，一个带有导出类的JSON文件将被放在相应的CSS旁边。但你可以自由地使用导出的类来做你想做的一切，只要使用getJSON回调。getJSON也可以返回一个Promise。<br />
+         * 注意：<br />
+         * 1、目前，有一个问题，就是在生产模式下，该选项生成的.JSON文件在生成后会被清除掉，因为生产模式在构建前，会清除输出目录，显然该选项的生成操作在“清除”操作之前了。<br />
          *
          * @param {string} cssFileName 如：G:/WebStormWS/xxx/Upload.Vue3.ts.vue?used&vue&type=style&index=1&lang.module.scss
          *
@@ -749,8 +754,8 @@ export default defineConfig( async ( {
          *
          * @returns {void | Promise<any>}
          */
-        getJSON( cssFileName, json, outputFileName ){
-          writeFileSync( resolve( __dirname, `./dist/${ basename( cssFileName )
+        getJSON: async ( cssFileName, json, outputFileName ) => {
+          await writeFile( resolve( __dirname, `./dist/${ env_platform }/styles/${ basename( cssFileName )
           .replace( new URL( cssFileName ).search, '' ) }.json` ), JSON.stringify( json ), {
             flag: 'w+',
           } );
