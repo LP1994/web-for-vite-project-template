@@ -45,6 +45,8 @@ import {
   viteStaticCopy,
 } from 'vite-plugin-static-copy';
 
+import VitePluginSRI from 'vite-plugin-sri';
+
 // 这些个必需保持这各种顺序。End
 
 import DefineConfig from './configures/DefineConfig.esm.mjs';
@@ -1737,6 +1739,7 @@ export default defineConfig( async ( {
           reloadPageOnChange: !isProduction,
         },
       } ),
+      VitePluginSRI(),
     ],
     // ToDo 考虑使用类似copy插件的工具来复制静态资源文件夹。
     /**
