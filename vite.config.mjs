@@ -11,9 +11,11 @@
 
 import {
   readFileSync,
+  writeFileSync,
 } from 'node:fs';
 
 import {
+  basename,
   dirname,
   join,
   resolve,
@@ -21,6 +23,7 @@ import {
 
 import {
   fileURLToPath,
+  URL,
 } from 'node:url';
 
 import chalk from 'chalk';
@@ -39,13 +42,13 @@ import vue from '@vitejs/plugin-vue';
 
 import checker from 'vite-plugin-checker';
 
-import VitePluginHTMLByCustom from './src/vite_plugin_custom/vite-plugin-html-by-custom.esm.mjs';
+import VitePluginHTMLByCustom from './configures/vite_plugin_custom/vite-plugin-html-by-custom.esm.mjs';
 
 import {
   viteStaticCopy,
 } from 'vite-plugin-static-copy';
 
-import VitePluginSRI from './src/vite_plugin_custom/vite-plugin-sri-by-custom.esm.mjs';
+import VitePluginSRIByCustom from './configures/vite_plugin_custom/vite-plugin-sri-by-custom.esm.mjs';
 
 // 这些个必需保持这各种顺序。End
 
@@ -263,6 +266,9 @@ export default defineConfig( async ( {
      */
     isProduction = command === 'build';
 
+  /**
+   * @type {string} 'development'代表开发模式，'production'代表生产模式。
+   */
   mode = isProduction
          ? 'production'
          : 'development';
@@ -336,7 +342,7 @@ export default defineConfig( async ( {
   };
 
   /**
-   * @type {object} 设置路径别名。<br />
+   * @type {Record<string, string> | Array<{ find: string | RegExp, replacement: string, customResolver?: ResolverFunction | ResolverObject }>} 设置路径别名。<br />
    * 1、路径别名到底是路径别名，别用于直接指向具体的文件，尤其是JS文件，因为会导致无法根据导入语法的不同自行加载到相应的模块文件，致使报错；但是CSS一类的文件倒是可以直接指向到具体的文件。<br />
    * 2、也可以指定完整路径：xxx: path.resolve(path.join(__dirname, 'src/module1'))。<br />
    * 3、path.resolve和path.join的区别在于：<br />
@@ -571,9 +577,14 @@ export default defineConfig( async ( {
     ],
     /**
      * @type {string} 默认：“/”，开发或生产环境服务的公共基础路径。合法的值包括以下3种：<br />
-     * 1、绝对URL路径名，例如：/foo/
-     * 2、完整的URL，例如：https://foo.com/
-     * 3、空字符串“”或“./”（用于嵌入形式的开发）
+     * 1、绝对URL路径名，例如：/foo/。<br />
+     * 2、完整的URL，例如：https://foo.com/。<br />
+     * 3、空字符串“”或“./”（用于嵌入形式的开发）。<br />
+     *
+     * 注意：<br />
+     * 1、强烈建议在生产模式时将其设置为空字符串即可。<br />
+     * 2、为了能正常配合“src/vite_plugin_custom/vite-plugin-html-by-custom.esm.mjs”使用，强烈建议将其设置为以“/”打头并且以“/”结尾的字符串。<br />
+     * 例如：将其设置为：'dev_server'，这样在浏览器中打开页面的地址可为：https://127.0.0.1:8500/dev_server/Upload.html
      */
     base = isProduction
            ? ``
@@ -714,7 +725,7 @@ export default defineConfig( async ( {
       // watch: null,
     },
     /**
-     * @type {CSSOptions} 配置CSS相关的行为。<br />
+     * @type {CSSOptions} CSS相关选项（预处理器和CSS模块）。<br />
      * 详细见：<br />
      * node_modules/vite/dist/node/index.d.ts:526
      * https://cn.vitejs.dev/config/shared-options.html#css-modules
@@ -727,6 +738,23 @@ export default defineConfig( async ( {
        * https://github.com/css-modules/postcss-modules
        */
       modules: {
+        /**
+         * 默认情况下，一个带有导出类的JSON文件将被放在相应的CSS旁边。但你可以自由地使用导出的类来做你想做的一切，只要使用getJSON回调。getJSON也可以返回一个Promise。<br />
+         *
+         * @param {string} cssFileName 如：G:/WebStormWS/xxx/Upload.Vue3.ts.vue?used&vue&type=style&index=1&lang.module.scss
+         *
+         * @param {Record<string, string>} json 如：{"red001":"Upload-Vue3-ts-vue-used-vue-type-style-index-1-lang-module_red001_4b19293a"}
+         *
+         * @param {string} outputFileName 如：G:/WebStormWS/xxx/Upload.Vue3.ts.vue?used&vue&type=style&index=1&lang.module.scss
+         *
+         * @returns {void | Promise<any>}
+         */
+        getJSON( cssFileName, json, outputFileName ){
+          writeFileSync( resolve( __dirname, `./dist/${ basename( cssFileName )
+          .replace( new URL( cssFileName ).search, '' ) }.json` ), JSON.stringify( json ), {
+            flag: 'a+',
+          } );
+        },
         /**
          * @type {'global' | 'local'} 默认情况下，该插件假定所有的类都是'local'。值有：'global'、'local'。
          */
@@ -1231,13 +1259,16 @@ export default defineConfig( async ( {
       devSourcemap: false,
     },
     /**
-     * @type {object} Vite的顶级配置项define的配置。在编译时用其他值或表达式替换代码中的变量。这对于允许开发构建和生产构建之间的不同行为很有用。<br />
+     * @type {Record<string, any>} Vite的顶级配置项define的配置。在编译时用其他值或表达式替换代码中的变量。这对于允许开发构建和生产构建之间的不同行为很有用。<br />
      * 1、传递给define的每个键都是一个标识符或多个用.连接的标识符：'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)。<br />
      * 2、如果该值是一个字符串，它将被用作代码片段：TWO: '1+1'。<br />
      * 3、如果值不是字符串，它将被字符串化（包括函数）。<br />
      * 4、如果你在key前加上typeof前缀，它只为typeof调用定义：'typeof window': JSON.stringify('object111')。<br />
      * 5、如果需要定义一个值是字符串值，得单引号内部嵌套双引号，如：'"例子"'（或者JSON.stringify('例子')），否则没法真正输出这个字符串。<br />
      * 6、如果值不是字符串，它将被字符串化，相当于使用JSON.stringify处理，但是如果是函数，直接这么设置就行，别用JSON.stringify：'fun1': () => {}。<br />
+     *
+     * 注意：<br />
+     * 在这里定义的全局常量，当在TS中使用时，一般会被“TS类型检查”鉴定为未定义的错误！可以在“src/custom_declare_types/define.d.ts”这里定义这些全局常量的类型描述。这样就不会报类型错误了。<br />
      */
     define = DefineConfig( {
       env_platform,
@@ -1600,7 +1631,7 @@ export default defineConfig( async ( {
       stringify: false,
     },
     /**
-     * @type {string[]} 导入时想要省略的扩展名列表。注意，不 建议忽略自定义导入类型的扩展名（例如：.vue），因为它会影响 IDE 和类型支持。<br />
+     * @type {string[]} 导入时想要省略的扩展名列表。注意，不建议忽略自定义导入类型的扩展名（例如：.vue），因为它会影响IDE和类型支持。<br />
      * 默认值：['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json']。<br />
      */
     extensions = [
@@ -1621,9 +1652,8 @@ export default defineConfig( async ( {
 
       '.vue',
     ],
-    // ToDo
     /**
-     * @type {[]} 插件配置。<br />
+     * @type {(Plugin | Plugin[] | Promise<Plugin | Plugin[]>)[]} 要使用的插件数组。Falsy插件会被忽略，而插件的数组会被扁平化。如果返回一个承诺，它将在运行前被解决。<br />
      * 官方插件信息：https://cn.vitejs.dev/plugins/
      * 社区插件列表：https://github.com/vitejs/awesome-vite#plugins
      * 兼容Rollup官方插件列表：https://vite-rollup-plugins.patak.dev/
@@ -1636,13 +1666,14 @@ export default defineConfig( async ( {
      * @rollup/plugin-commonjs：https://github.com/rollup/plugins/tree/master/packages/commonjs
      */
     plugins = [
-      // ToDo
       /**
        * 该插件的详细配置选项见：<br />
        * node_modules/@vitejs/plugin-vue/dist/index.d.ts:20
        * https://github.com/vitejs/vite-plugin-vue/tree/main/packages/plugin-vue#options
        */
       vue( {
+        // ToDo
+
         // vue-loader v16+才有的选项。Start
 
         /**
@@ -1678,12 +1709,12 @@ export default defineConfig( async ( {
           // panelStyle: ``,
         },
         terminal: true,
-        // Enable checking in build mode
+        // Enable checking in build mode.
         enableBuild: true,
         typescript: {
           root: resolve( __dirname, `./` ),
           tsconfigPath: './tsconfig.vite.json',
-          // Add --build to tsc flag, note that noEmit does NOT work if buildMode is true
+          // Add --build to tsc flag, note that noEmit does NOT work if buildMode is true.
           buildMode: false,
         },
         // 供Vue3使用。
@@ -1703,25 +1734,19 @@ export default defineConfig( async ( {
         HTMLMinifyConfig,
       } ) ),
       /**
+       * 拷贝插件。<br />
+       * 1、当前被设置为只监听文件夹“src/static”下的文件变动，有需要可以修改该设置。<br />
+       *
+       * 详细见：<br />
        * node_modules/vite-plugin-static-copy/dist/index.d.ts:56
        * node_modules/chokidar/types/index.d.ts:68
        */
-      viteStaticCopy( {
-        targets: [
-          {
-            src: `./favicon.ico`,
-            dest: `./`,
-            preserveTimestamps: false,
-            dereference: true,
-          },
-          {
-            src: `./src/static`,
-            dest: `./`,
-            preserveTimestamps: false,
-            dereference: true,
-          },
-        ],
-        // 是否扁平化文件夹。
+      viteStaticCopy( ( targets => ( {
+        targets: targets.map( item => ( {
+          preserveTimestamps: false,
+          dereference: true,
+          ...item,
+        } ) ),
         flatten: true,
         silent: false,
         watch: {
@@ -1732,18 +1757,33 @@ export default defineConfig( async ( {
               '**/*.gitignore',
               '**/该文件夹说明.txt',
             ],
-            cwd: resolve( __dirname, './' ),
+            cwd: resolve( __dirname, './src/static' ),
             depth: 1000,
             ignorePermissionErrors: false,
           },
           reloadPageOnChange: !isProduction,
         },
-      } ),
-      VitePluginSRI( {
+      } ) )( [
+        // 该设置会将项目根目录下的文件“favicon.ico”复制到Vite的顶级选项build.outDir设置的文件夹下。
+        {
+          // 该选项值是相对于项目根目录的。
+          src: `./favicon.ico`,
+          // 该值是相对于Vite的顶级选项build.outDir设置的值。
+          dest: `./`,
+        },
+
+        // 该设置会将文件夹“src/static”整个原样复制到Vite的顶级选项build.outDir设置的文件夹下。
+        {
+          // 该选项值是相对于项目根目录的。
+          src: `./src/static`,
+          // 该值是相对于Vite的顶级选项build.outDir设置的值。
+          dest: `./`,
+        },
+      ] ) ),
+      VitePluginSRIByCustom( {
         hashFuncNames: 'sha512',
       } ),
     ],
-    // ToDo 考虑使用类似copy插件的工具来复制静态资源文件夹。
     /**
      * @type {string|boolean} 默认值：“public”。作为“静态资源服务”的文件夹。<br />
      * 该目录中的文件在“开发期间”在“/”处提供，并在“构建期间”复制到选项build.outDir设置的文件夹下，并且始终按原样提供或复制而无需进行转换。<br />
@@ -1752,9 +1792,29 @@ export default defineConfig( async ( {
      */
     publicDir = false,
     /**
-     * @type {string} 表示项目根目录，一个绝对路径。<br />
+     * @type {string} 项目根目录。可以是一个绝对路径，也可以是相对于当前工作目录的路径。默认值：process.cwd()。<br />
      */
-    root = resolve( __dirname, `./` );
+    root = resolve( __dirname, `./` ),
+    /**
+     * @type {object} 与“Web Workers”有关的选项。<br />
+     * 详细见：<br />
+     * https://vitejs.dev/config/worker-options.html#worker-options
+     */
+    worker = {
+      /**
+       * @type {'es' | 'iife'} “Web Workers”捆绑的输出格式。默认值为：'iife'。
+       */
+      format: 'iife',
+      /**
+       * @type {(Plugin | Plugin[])[]} 适用于worker bundle的Vite插件。请注意，Vite的顶级配置plugins选项只适用于dev中的worker，对于build，应该在这里进行配置。
+       */
+      // plugins: [],
+      // ToDo
+      /**
+       * @type {RollupOptions} Rollup选项，建立worker bundle。注意，这个rollupOptions选项，是用来捆绑、压缩、编译“worker”中的代码。
+       */
+      // rollupOptions: {},
+    };
 
   /**
    * 额外的minify选项，以传递给Terser。<br />
@@ -1906,9 +1966,13 @@ export default defineConfig( async ( {
       resolve: {
         alias,
         extensions,
+        /**
+         * @type {boolean} 默认值为：false，启用此设置后，vite将通过原始文件路径（即不跟随符号链接的路径）而不是真正的文件路径（即跟随符号链接后的路径）确定文件身份。
+         */
         preserveSymlinks: false,
       },
       root,
+      worker,
       /**
        * @type {ServerOptions} 开发服务器选项。<br />
        * 详细见：<br />
@@ -2042,7 +2106,7 @@ export default defineConfig( async ( {
           // pfx: readFileSync( join( __dirname, './configures/openssl/HTTPSSL001/001根CA证书/HTTPSSL001_Root_CA.p12' ), 'utf8' ),
         },
         /**
-         * @type {boolean | string} 开发服务器启动时，自动在浏览器中打开应用程序。<br />
+         * @type {boolean | string} 开发服务器启动时，自动在浏览器中打开设置好的页面。<br />
          * 当该值为字符串时，它将被用作URL的路径名。<br />
          * 如果你想在你喜欢的某个浏览器打开该开发服务器，你可以设置环境变量process.env.BROWSER（例如：Windows上的msedge）。<br />
          * 你还可以设置process.env.BROWSER_ARGS来传递额外的参数，例如：--incognito（以隐私模式打开浏览器），--new-window（在新窗口中打开浏览器）。<br />
@@ -2063,10 +2127,21 @@ export default defineConfig( async ( {
         proxy: await ProxyConfig( {
           env_platform,
         } ),
+        /**
+         * @type {boolean | CorsOptions} 为开发服务器配置CORS。这在默认情况下是启用的，允许任何来源。传递一个选项对象来微调行为，或传递false来禁用。<br />
+         * 详细见：<br />
+         * https://github.com/expressjs/cors#configuration-options
+         */
         cors: {
+          /**
+           * @type {boolean | string | regExp | ((string | regExp)[]) | function} 配置Access-Control-Allow-Origin CORS头。
+           */
           origin: [
             '*',
           ],
+          /**
+           * @type {string | string[]} 配置Access-Control-Allow-Methods CORS头。希望是一个以逗号分隔的字符串（例如：'GET,PUT,POST'）或一个数组（例如：['GET', 'PUT', 'POST']）。
+           */
           methods: [
             'GET',
             'HEAD',
@@ -2078,6 +2153,9 @@ export default defineConfig( async ( {
             'TRACE',
             'PATCH',
           ],
+          /**
+           * @type {string | string[]} 配置Access-Control-Allow-Headers CORS头。希望是一个以逗号分隔的字符串（例如：'Content-Type,Authorization'）或一个数组（例如：['Content-Type', 'Authorization']）。如果没有指定，默认为反映请求的Access-Control-Request-Headers头中指定的头。
+           */
           allowedHeaders: [
             'X-Custom-Header-File-SRI',
             'Authorization',
@@ -2086,6 +2164,9 @@ export default defineConfig( async ( {
             'Content-Language',
             'Accept-Language',
           ],
+          /**
+           * @type {string | string[]} 配置Access-Control-Expose-Headers CORS标头。期待一个以逗号分隔的字符串（例如：'Content-Range,X-Content-Range'）或一个数组（例如：['Content-Range', 'X-Content-Range']）。如果不指定，就不会有自定义的头文件被暴露。
+           */
           exposedHeaders: [
             'X-Custom-Header-File-SRI',
             'Authorization',
@@ -2098,12 +2179,25 @@ export default defineConfig( async ( {
             'Last-Modified',
             'Pragma',
           ],
+          /**
+           * @type {boolean} 配置Access-Control-Allow-Credentials CORS头。设置为true以传递该头信息，否则就省略。
+           */
           credentials: true,
+          /**
+           * @type {number} 配置Access-Control-Max-Age CORS头。设置为整数以通过该头，否则省略。
+           */
           maxAge: 2 * 60 * 60,
+          /**
+           * @type {boolean} 将CORS预检响应传递给下一个处理程序。默认值为：false。
+           */
           preflightContinue: false,
+          /**
+           * @type {number} 提供一个用于成功的OPTIONS请求的状态代码，因为一些传统的浏览器（IE11，各种智能电视）在204上被扼杀。
+           */
           optionsSuccessStatus: 200,
         },
         /**
+         * @type {OutgoingHttpHeaders} 指定服务器响应头。<br />
          * 1、关于跨域请求头。<br />
          *   1)当Access-Control-Allow-Origin:*时，不允许使用凭证（即withCredentials:true）。<br />
          *   2)当Access-Control-Allow-Origin:*时，只需确保客户端在发出CORS请求时凭据标志的值为false就可以了：<br />
@@ -2112,22 +2206,87 @@ export default defineConfig( async ( {
          *     如果使用Fetch API，请确保Request.credentials是"omit"。<br />
          */
         headers: httpHeaders,
+        /**
+         * @type {boolean | { protocol?: string, host?: string, port?: number, path?: string, timeout?: number, overlay?: boolean, clientPort?: number, server?: Server }} 禁用或配置HMR连接（在HMR websocket必须使用与http服务器不同的地址的情况下）。<br />
+         * 1、设置server.hmr.overlay为false，以禁用服务器错误覆盖。<br />
+         */
         hmr: {
-          overlay: true,
+          overlay: false,
         },
+        /**
+         * @type {object} 文件系统观察者的选项要传递给chokidar。设置后，浏览器打开页面一直处于加载状态！看来不用设置该选项了。<br />
+         * 详细见：<br />
+         * https://github.com/paulmillr/chokidar#api
+         */
+        //  watch: {
+        //    persistent: true,
+        //    ignored: [
+        //      '**/该文件夹说明.txt',
+        //      '**/.gitignore',
+        //      '**/graphQL/doc/**',
+        //      '**/graphQL/test/**',
+        //      '**/type_doc/**',
+        //      '**/unit_test/**',
+        //      '**/wasm/source_codes/**',
+        //    ],
+        //    cwd: resolve( __dirname, `./src` ),
+        //    depth: 100,
+        //    ignorePermissionErrors: false,
+        //  },
+        /**
+         * @type {boolean} 默认值为：false，在中间件模式下创建Vite服务器。
+         */
+        // middlewareMode: false,
+        /**
+         * @type {string | undefined} 在http请求中预留此文件夹，用于代理vite作为子文件夹时使用。应该以/字符开头。
+         */
+        // base: '',
+        /**
+         * @type {object}
+         */
         fs: {
+          /**
+           * @type {boolean} 默认值：true。从Vite 2.7开始默认启用。
+           */
           strict: true,
+          /**
+           * @type {string[]} 限制可以通过/@fs/提供的文件。当server.fs.strict设置为 "true "时，访问这个目录列表之外的、不是从允许的文件中导入的文件将导致403的出现。<br />
+           * 1、Vite将搜索潜在工作区的根，并将其作为默认使用。一个有效的工作区满足以下条件，否则将退回到项目根。<br />
+           * 2、接受一个路径来指定自定义工作区根。可以是一个绝对路径或相对于项目根的路径。<br />
+           * 3、当server.fs.allow被指定时，自动工作区根检测将被禁用。为了扩展原来的行为，暴露了一个搜索工作区根的工具：<br />
+           * fs: {
+           *       allow: [
+           *         // search up for workspace root
+           *         searchForWorkspaceRoot(process.cwd()),
+           *
+           *         // your custom rules
+           *         '/path/to/custom/allow',
+           *       ],
+           *     }
+           */
           allow: [
             resolve( __dirname, `./` ),
           ],
+          /**
+           * @type {string[]} 默认值：['.env', '.env.*', '*.{crt,pem}']。敏感文件被限制由Vite开发服务器提供的封锁名单。这比server.fs.allow有更高的优先级。支持picomatch模式。
+           */
           deny: [],
         },
-        // base: `/${ env_platform }/`,
         /**
-         * 使用该选项会报错，导致无法启动！
-         * Setting server.middlewareMode to 'html' is deprecated, set server.middlewareMode to `true` instead
+         * @type {string} 定义开发期间生成的资产URL的来源。
          */
-        // middlewareMode: true,
+        // origin: `https://${ devServerGlobalParameters[ env_platform ]?.host }:${ devServerGlobalParameters[ env_platform ]?.port }`,
+        /**
+         * @type {false | (sourcePath: string, sourcemapPath: string) => boolean} 是否忽略服务器源地图中的源文件，用于填充x_google_ignoreList源地图扩展。默认值：(sourcePath) => sourcePath.includes('node_modules')。<br />
+         * 1、server.sourcemapIgnoreList等同于dev服务器的build.rollupOptions.output.sourcemapIgnoreList。<br />
+         * 这两个配置选项之间的区别是，rollup函数是用相对路径调用sourcePath的，而server.sourcemapIgnoreList是用绝对路径调用。<br />
+         * 在开发过程中，大多数模块的地图和源文件在同一个文件夹中，所以sourcePath的相对路径就是文件名本身。<br />
+         * 在这些情况下，绝对路径使得它可以被替代使用。<br />
+         * 2、默认情况下，它排除了所有包含node_modules的路径。<br />
+         * 你可以传入false来禁用这种行为，或者，为了完全控制，传入一个函数，接收源路径和sourcemap路径并返回是否忽略源路径。<br />
+         * 3、server.sourcemapIgnoreList和build.rollupOptions.output.sourcemapIgnoreList需要独立设置。server.sourcemapIgnoreList是一个只有服务器的配置，不会从定义的rollup选项中获得其默认值。<br />
+         */
+        // sourcemapIgnoreList: ( sourcePath, sourcemapPath ) => sourcePath.includes( 'node_modules' ),
       },
     };
   }
@@ -2156,9 +2315,13 @@ export default defineConfig( async ( {
       resolve: {
         alias,
         extensions,
+        /**
+         * @type {boolean} 默认值为：false，启用此设置后，vite将通过原始文件路径（即不跟随符号链接的路径）而不是真正的文件路径（即跟随符号链接后的路径）确定文件身份。
+         */
         preserveSymlinks: false,
       },
       root,
+      worker,
     };
   }
   else{

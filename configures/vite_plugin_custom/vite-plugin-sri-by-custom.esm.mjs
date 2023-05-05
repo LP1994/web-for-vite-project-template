@@ -1,6 +1,6 @@
 /**
  * Project: web-for-vite-project-template
- * FileDirPath: src/vite_plugin_custom/vite-plugin-sri-by-custom.esm.mjs
+ * FileDirPath: configures/vite_plugin_custom/vite-plugin-sri-by-custom.esm.mjs
  * Author: 12278
  * Email: 1227839175@qq.com
  * IDE: WebStorm
@@ -129,10 +129,10 @@ function sri( {
   };
 }
 
-const VitePluginSRI = sri;
+const VitePluginSRIByCustom = sri;
 
 export {
-  VitePluginSRI,
+  VitePluginSRIByCustom,
 };
 
-export default VitePluginSRI;
+export default VitePluginSRIByCustom;
