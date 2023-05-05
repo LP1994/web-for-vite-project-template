@@ -766,14 +766,19 @@ export default defineConfig( async ( {
         scopeBehaviour: 'local',
         /**
          * @type {string | ((name: string, filename: string, css: string) => string)}
+         * 例子：<br />
+         * 会生成这样的类名：Upload-Vue3-ts-vue-used-vue-type-style-index-1-lang-module_red001_4b19293a。<br />
+         *
+         * 详细见：<br />
+         * https://github.com/webpack/loader-utils#interpolatename
          */
         generateScopedName: '[name]_[local]_[sha512:contenthash:hex:8]',
         /**
          * @type {'camelCase' | 'camelCaseOnly' | 'dashes' | 'dashesOnly' | ((originalClassName: string, generatedClassName: string, inputFile: string) => string)} 输出类名的样式。<br />
-         * camelCase：class名称将被驼峰化（如：.apply-color -> applyColor），原来的class名称将不会被从local中删除。
-         * camelCaseOnly：class名称将被驼峰化（如：.apply-color -> applyColor），原来的class名称将会被从local中删除。
-         * dashes：只有class名中的破折号（“-”）会被驼峰化（如：.apply-color -> applyColor）。
-         * dashesOnly：class名中的破折号（“-”）将被驼峰化（如：.apply-color -> applyColor），原来的class名将被从local删除。
+         * camelCase：class名称将被驼峰化（如：.apply-color -> applyColor），原来的class名称将不会被从local中删除。<br />
+         * camelCaseOnly：class名称将被驼峰化（如：.apply-color -> applyColor），原来的class名称将会被从local中删除。<br />
+         * dashes：只有class名中的破折号（“-”）会被驼峰化（如：.apply-color -> applyColor）。<br />
+         * dashesOnly：class名中的破折号（“-”）将被驼峰化（如：.apply-color -> applyColor），原来的class名将被从local删除。<br />
          */
         localsConvention: 'dashes',
       },
