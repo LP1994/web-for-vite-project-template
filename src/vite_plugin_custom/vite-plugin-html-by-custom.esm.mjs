@@ -96,9 +96,23 @@ function createPlugin( {
         getInputStr = page => '/?' + pageKey + '=' + page;
       }
       else{
-        getRegStr = page => `^\\/${ page }(\\?\w.*|\\/[^\\.]*)?$`;
+        getRegStr = page => {
+          if( conf.base && conf.base.length > 2 && conf.base.startsWith( '/' ) && conf.base.endsWith( '/' ) ){
+            return `^${ conf.base.replaceAll( '/', '\\/' ) }${ page }(\\?\w.*|\\/[^\\.]*)?$`;
+          }
+          else{
+            return `^\\/${ page }(\\?\w.*|\\/[^\\.]*)?$`;
+          }
+        };
 
-        getInputStr = page => '/' + page;
+        getInputStr = page => {
+          if( conf.base && conf.base.length > 2 && conf.base.startsWith( '/' ) && conf.base.endsWith( '/' ) ){
+            return `${ conf.base }${ page }`;
+          }
+          else{
+            return `/${ page }`;
+          }
+        };
       }
 
       const input = {};
@@ -178,12 +192,7 @@ function createPlugin( {
 
         const parsedUrl = rqst._parsedUrl,
           rewrite = rewrites.find( r => {
-            if( parsedUrl.path.startsWith( baseUrl ) ){
-              return parsedUrl.path.replace( baseUrl, '/' ).match( r.from );
-            }
-            else{
-              return parsedUrl.path.match( r.from );
-            }
+            return parsedUrl.path.match( r.from );
           } );
 
         if( !rewrite ){
@@ -252,7 +261,7 @@ function createPlugin( {
 
         const rewrite = rewrites.filter( r => typeof r.to !== 'string' )
         .find( r => {
-          if( ctx.server && ctx.filename.includes( ctx.server.config.base ) ){
+          if( ctx.server && ctx.server.config?.base && ctx.server.config?.base?.length > 2 && ctx.server.config?.base?.startsWith( '/' ) && ctx.server.config?.base?.endsWith( '/' ) && ctx.filename.includes( ctx.server.config.base ) ){
             return path.resolve( viteConfig.root, r.to.filename ) === ctx.filename.replace( ctx.server.config.base, '/' );
           }
           else{
