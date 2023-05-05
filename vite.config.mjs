@@ -740,50 +740,265 @@ export default defineConfig( async ( {
        * 详细见：https://github.com/rollup/plugins/tree/master/packages/commonjs#options
        */
       commonjsOptions: {
-        // strictRequires: 'auto',
-        // 已放弃支持！！！
+        /**
+         * @type {"auto" | boolean | "debug" | string[]} 默认值："auto"，默认情况下，这个插件将尝试把require语句作为import挂在每个文件的顶部。<br />
+         * 1、虽然这对许多代码库来说效果很好，并允许非常有效的ESM输出，但它不能完美地捕捉CommonJS的语义，因为所需模块的初始化顺序会有所不同。<br />
+         * 由此产生的副作用可能包括日志语句以不同的顺序排放，一些依赖于require语句中polyfills的初始化顺序的代码可能无法工作。<br />
+         * 但是，当CommonJS模块之间存在循环的requirement调用时，问题就特别大了，因为这些模块往往依赖于嵌套requirement调用的懒惰执行。<br />
+         * 2、将此选项设置为 "true "将把所有的CommonJS文件包裹在函数中，在第一次需要它们时执行，保留了NodeJS的语义。<br />
+         * 这是最安全的设置，如果生成的代码在 "auto "下不能正常工作，就应该使用这个选项。<br />
+         * 请注意，strictRequires: true会对生成的代码的大小和性能产生小的影响，但如果代码被最小化了，则影响较小。<br />
+         * 3、默认值 "auto "将只包裹CommonJS文件，当它们是CommonJS依赖性循环的一部分，<br />
+         * 例如，一个索引文件被它的一些依赖性所要求，或者如果它们只是以一种潜在的 "条件 "方式被要求，<br />
+         * 如从一个if语句或一个函数中。所有其他的CommonJS文件都被吊起。这是对大多数代码库的推荐设置。<br />
+         * 请注意，如果同一个文件同时存在有条件和无条件的要求，那么对有条件的要求的检测可能会受到竞赛条件的影响，在边缘情况下，这可能会导致构建之间的不一致。<br />
+         * 如果你认为这对你来说是一个问题，你可以通过使用 "auto "或 "debug "以外的任何值来避免这个问题。<br />
+         * 4、false将完全防止包裹和吊起所有文件。这可能仍然有效，取决于循环依赖的性质，但往往会引起问题。<br />
+         * 5、你也可以提供一个picomatch模式或模式数组，只指定一个文件子集，该子集应该被包裹在函数中以获得正确的需求语义。<br />
+         * 6、"debug "的工作方式与 "auto "类似，但在捆绑之后，它将显示一个警告，其中包含一个已经被捆绑的id列表，可以作为picomatch模式用于微调或避免 "auto "提到的潜在竞赛条件。<br />
+         */
+        strictRequires: 'auto',
+        /**
+         * @type {string | string[]} 默认值：[]，已放弃支持！
+         *
+         * 详细见：<br />
+         * https://github.com/rollup/plugins/tree/master/packages/commonjs#dynamicrequiretargets
+         */
         // dynamicRequireTargets: [],
+        /**
+         * @type {string} 默认值：process.cwd()。<br />
+         * 1、为了避免在使用 dynamicRequireTargets 选项时出现长的路径，你可以使用这个选项来指定一个目录，这个目录是所有使用动态require语句的文件的共同父目录。<br />
+         * 使用一个更高的目录，如/，可能会导致生成的代码中出现不必要的长路径，并可能暴露你机器上的目录名称，如你的主目录名称。<br />
+         * 默认情况下，它使用当前工作目录。<br />
+         */
         // dynamicRequireRoot: process.cwd(),
+        /**
+         * @type {string | string[]} 默认值：null。<br />
+         * 1、一个picomatch模式或模式数组，用于指定插件应该忽略的构建中的文件。<br />
+         * 默认情况下，所有扩展名不在扩展名或".cjs "中的文件都被忽略，但你可以排除其他文件。参见include选项。<br />
+         */
         // exclude: null,
+        /**
+         * @type {string | string[]} 默认值：null。<br />
+         * 1、一个picomatch模式或模式数组，它指定了插件应该对构建中的文件进行操作。<br />
+         * 默认情况下，所有扩展名为".cjs "的文件或扩展中的文件都被包括在内，但你可以通过只包括特定文件来缩小这个列表。<br />
+         * 如果分析没有发现ES模块的特定语句或者transformMixedEsModules为真，这些文件将被分析和转码。<br />
+         */
         include: [
           `*.cjs`,
           `*.cts`,
         ],
+        /**
+         * @type {string[]} 默认值为：['.js']。<br />
+         * 1、对于无扩展名的导入，按照指定的顺序搜索.js以外的扩展名。注意，你需要确保非JavaScript文件先由另一个插件转译。<br />
+         */
         extensions: [
           '.cjs',
           '.cts',
         ],
+        /**
+         * @type {boolean} 默认值：false。如果为真，全局的使用将不会被这个插件处理。<br />
+         */
         // ignoreGlobal: false,
+        /**
+         * @type {boolean} 默认值：true。如果是false，则跳过CommonJS模块的源图生成。这将提高性能。<br />
+         */
         sourceMap: isProduction,
-        // transformMixedEsModules: false,
+        /**
+         * @type {boolean} 默认值：false。<br />
+         * 1、指示该插件是否启用混合模块转换。<br />
+         * 这在包含ES导入语句和CommonJS require表达式混合的模块的情况下很有用。<br />
+         * 如果require调用在混合模块中应被转换为导入，则设置为true；<br />
+         * 如果require表达式应在转换中存活，则设置为false。<br />
+         * 如果代码包含环境检测，或者你正在为一个对require调用有特殊处理的环境编码，如ElectronJS，后者可能很重要。<br />
+         * 也请看ignore选项。<br />
+         */
+        transformMixedEsModules: true,
+        /**
+         * @type {string[] | ((id: string) => boolean)} 默认值：[]。<br />
+         * 1、有时你必须让require语句不被转换。传递一个包含ID的数组或一个id => boolean函数。<br />
+         */
         // ignore: [],
+        /**
+         * @type {boolean | 'remove' | string[] | ((id: string) => boolean)} 默认值：true。<br />
+         * 1、在大多数情况下，如果require调用的外部依赖是在try-catch子句中，它们应该不被转换，因为它需要一个可选的依赖，可能安装在rolled的包旁边，也可能没有。<br />
+         * 由于require转换为静态import--该调用被提升到文件的顶部，在try-catch子句之外。<br />
+         * 2、true：所有在 try 中的外部 require 调用将不被转换。<br />
+         * 3、false：所有在 try 中的外部 require 调用将被转换为没有 try-catch 子句的情况。<br />
+         * 4、remove：删除任何try块中的所有外部requirement调用。<br />
+         * 5、string[]：传递一个包含ID的数组，不进行转换。<br />
+         * 6、((id: string) => boolean|'remove')：传递一个控制单个ID的函数。<br />
+         * 7、请注意，非外部的requires不会被这个选项忽略。<br />
+         */
         // ignoreTryCatch: true,
+        /**
+         * @type {boolean} 默认值：false。<br />
+         * 1、有些require的调用不能被静态地解决，以翻译成imports。<br />
+         * 2、当这个选项被设置为false时，当遇到这样的调用时，生成的代码将直接抛出一个错误，或者，当使用dynamicRequireTargets时，当这样的调用不能用配置的动态需求目标来解决。<br />
+         * 3、将此选项设置为 "true "将在代码中保留require调用，或将其作为dynamicRequireTargets的后备选项。<br />
+         */
         // ignoreDynamicRequires: false,
+        /**
+         * @type {boolean | string[] | ((id: string) => boolean)} 默认值：false。<br />
+         * 1、控制如何渲染来自外部依赖的导入。默认情况下，这个插件假设所有的外部依赖是CommonJS。这意味着它们被呈现为默认的导入，以便与NodeJS兼容。<br />
+         * 2、例如ES模块只能从CommonJS依赖中导入一个默认的导出：<br />
+         * // input
+         * const foo = require('foo');
+         * // output
+         * import foo from 'foo';
+         * 3、对于 ES 模块的依赖关系来说，这可能是不需要的：在这里，require通常应该返回命名空间，以便与处理捆绑模块的方式兼容。<br />
+         * 4、如果你把 esmExternals 设置为 true，这个插件就会假定所有的外部依赖都是 ES 模块，并且会遵守 requireReturnsDefault 选项。如果没有设置该选项，它们将被呈现为命名空间导入。<br />
+         * 5、你也可以提供一个id数组，将其视为ES模块，或者提供一个函数，通过每个外部id来确定它是否是ES模块。<br />
+         */
         // esmExternals: false,
+        /**
+         * @type {boolean | "auto"} 默认值："auto"。当从ES模块导入CommonJS文件时，控制什么是默认导出。<br />
+         * 1、true：默认导出的值是module.exports。目前这与Node.js在导入CommonJS文件时的行为一致。<br />
+         * 例子：<br />
+         * // mod.cjs
+         * exports.default = 3;
+         *
+         * import foo from './mod.cjs';
+         * console.log(foo); // { default: 3 }
+         *
+         * 2、false：默认出口的值是exports.default。<br />
+         * 例子：<br />
+         * // mod.cjs
+         * exports.default = 3;
+         *
+         * import foo from './mod.cjs';
+         * console.log(foo); // 3
+         *
+         * 3、"auto"：如果CommonJS文件有exports.__esModule === true属性，默认导出的值就是exports.default；否则就是module.exports。<br />
+         * 这使得导入编译到CommonJS的ES模块的默认出口成为可能，就像它们没有被编译一样。<br />
+         * 例子：
+         * // mod.cjs
+         * exports.default = 3;
+         *
+         * // mod-compiled.cjs
+         * exports.__esModule = true;
+         * exports.default = 3;
+         *
+         * import foo from './mod.cjs';
+         * import bar from './mod-compiled.cjs';
+         * console.log(foo); // { default: 3 }
+         * console.log(bar); // 3
+         */
         // defaultIsModuleExports: 'auto',
+        /**
+         * @type {boolean | "namespace" | "auto" | "preferred" | ((id: string) => boolean | "auto" | "preferred")} 默认值：false。<br />
+         * 1、控制当需要一个来自CommonJS文件的ES模块时，会返回什么。当使用esmExternals选项时，这也将适用于外部模块。默认情况下，这个插件将把这些导入呈现为命名空间导入。<br />
+         * 例如：<br />
+         * // input
+         * const foo = require('foo');
+         *
+         * // output
+         * import * as foo from 'foo';
+         *
+         * 2、这与其他捆绑程序处理这种情况的方式是一致的，也是在Node支持这种情况下最可能的行为。然而，在某些情况下，这可能是不可取的：<br />
+         * 在一个不能改变的外部依赖关系中存在代码，其中一个require语句期望从ES模块返回默认导出。<br />
+         * 如果导入的模块在同一个包中，Rollup将为导入的模块生成一个命名空间对象，这可能会不必要地增加包的大小：<br />
+         * // input: main.js
+         * const dep = require('./dep.js');
+         * console.log(dep.default);
+         *
+         * // input: dep.js
+         * export default 'foo';
+         *
+         * // output
+         * var dep = 'foo';
+         *
+         * var dep$1 = //#__PURE__// Object.freeze({
+         *   __proto__: null,
+         *   default: dep
+         * });
+         *
+         * console.log(dep$1.default);
+         *
+         * 3、对于这些情况，你可以在全局或每个模块上改变Rollup的行为。要在全局范围内改变它，将requireReturnsDefault选项设置为下列值之一：<br />
+         * false：这是默认的，要求ES模块返回其命名空间。这是唯一的选项，也会在命名空间中添加一个标记__esModule: true，以支持CommonJS模块的互操作模式，这些模块是转置的ES模块。<br />
+         * "namespace"：和false一样，要求一个ES模块返回它的命名空间，但该插件不添加__esModule标记，从而创建更有效的代码。对于使用esmExternals时的外部依赖：true，不产生额外的互操作代码。<br />
+         * "auto"：这是对output.exports的补充："auto "在Rollup中的作用：如果一个模块有一个默认的出口并且没有命名的出口，要求该模块返回默认的出口。在所有其他情况下，命名空间被返回。当使用esmExternals: true时，对于外部依赖，会添加一个相应的互操作帮助器。<br />
+         * "preferred"：如果一个模块有一个默认的导出，要求该模块总是返回默认的导出，无论是否存在额外的命名导出。这类似于这个插件以前版本的工作方式。同样，当使用esmExternals: true时，对于外部依赖性，增加了一个互操作帮助器。<br />
+         * true: 这将总是尝试在require时返回默认导出，而不检查它是否实际存在。如果没有默认出口，这可能会在构建时抛出。当不使用esmExternals时，这就是处理外部依赖的方式。与其他选项相比，它的优点是，像false一样，它不会为外部依赖添加一个互操作助手，以保持代码的精简。<br />
+         *
+         * 4、为了改变单个模块的情况，你可以为 requireReturnsDefault 提供一个函数。这个函数将为每个所需的ES模块或外部依赖的相应ID调用一次，并允许你为不同的模块返回不同的值。<br />
+         */
         // requireReturnsDefault: false,
       },
       /**
-       * 一个支持Rollup动态导入中的变量的Rollup插件。
+       * @type {RollupDynamicImportVarsOptions} 一个支持Rollup动态导入中的变量的Rollup插件。<br />
        * 详细见：https://github.com/rollup/plugins/tree/master/packages/dynamic-import-vars#options
        */
       dynamicImportVarsOptions: {
+        /**
+         * @type {string | string[]} 默认值：[]。要包含在这个插件中的文件（默认为所有）。<br />
+         */
         // include: [],
+        /**
+         * @type {string | string[]} 默认值：[]。在这个插件中要排除的文件（默认没有）。<br />
+         */
         // exclude: [],
+        /**
+         * @type {boolean} 默认值：false。默认情况下，该插件在遇到错误时将退出构建过程。如果你把这个选项设置为 "true"，它将抛出一个警告，而不触动代码。<br />
+         */
         warnOnError: true,
       },
+      /**
+       * @type {boolean | string} 默认值：false。<br />
+       * 1、设置为 "true "时，构建还将生成一个 manifest.json 文件，其中包含非哈希资产文件名与其哈希版本的映射，然后服务器框架可使用该映射来呈现正确的资产链接。<br />
+       * 2、当该值为字符串时，它将被用作清单文件的名称。<br />
+       * 3、最后会在输出目录下生成该文件。<br />
+       */
       manifest: `vite_assets_manifest.json`,
+      /**
+       * @type {boolean | string} 默认值：false。<br />
+       * 1、设置为 "true "时，构建也会生成 SSR 清单，用于确定生产中的样式链接和资产预加载指令。<br />
+       * 2、当该值为字符串时，它将被用作清单文件的名称。<br />
+       * 3、最后会在输出目录下生成该文件。<br />
+       */
       // ssrManifest: `vite_ssr_assets_manifest.json`,
+      /**
+       * @type {boolean | string} 默认值：false。生成面向SSR的构建。<br />
+       * 1、该值可以是一个字符串，以直接指定SSR条目，或者是true，这需要通过rollupOptions.input来指定SSR条目。<br />
+       */
       ssr: false,
+      /**
+       * @type {boolean | 'terser' | 'esbuild'} 默认值：'esbuild'。<br />
+       * 1、设置为false表示禁用最小化，或者指定要使用的最小化器。默认是esbuild，它比terser快20~40倍，压缩率只差1~2%。基准测试。<br />
+       * 2、注意build.minify选项在lib模式下使用'es'格式时不对空白处进行最小化，因为它删除了纯注释并破坏了树形摇动。<br />
+       * 3、当Terser被设置为'terser'时，必须安装它。<br />
+       */
       minify: isProduction
               ? 'esbuild'
               : false,
+      /**
+       * @type {boolean} 默认值：true。<br />
+       * 1、设置为false是为了禁止将bundle写到磁盘上。这主要用于程序化的build()调用，在写到磁盘之前需要对bundle进行进一步的后处理。<br />
+       */
       write: true,
+      /**
+       * @type {boolean} 默认值：如果outDir在根目录内，则为true。<br />
+       * 1、默认情况下，如果outDir在项目根目录内，Vite会在构建时清空它。<br />
+       * 2、如果outDir在根目录之外，它将发出警告，以避免意外地删除重要文件。<br />
+       * 3、你可以明确设置这个选项来抑制警告。这也可以通过命令行设置为--emptyOutDir。<br />
+       */
       emptyOutDir: true,
+      /**
+       * @type {boolean} 实验性。默认值：true。默认情况下，Vite会在构建时将文件从publicDir复制到outDir。设置为false则禁用。<br />
+       */
       copyPublicDir: false,
+      /**
+       * @type {boolean} 默认值：true。启用/禁用gzip压缩的大小报告。压缩大的输出文件可能会很慢，所以禁用它可能会提高大型项目的构建性能。<br />
+       */
       reportCompressedSize: true,
-      // KB
-      chunkSizeWarningLimit: 1 * 1024,
+      /**
+       * @type {number} 默认值：500。块大小警告的限制（单位：kbs）。它与未压缩的分块大小进行比较，因为JavaScript大小本身与执行时间有关。<br />
+       */
+      chunkSizeWarningLimit: 5 * 1024,
+      /**
+       * @type {WatcherOptions| null} 默认值：null。设置为{}以启用rollup观察器。这主要用于涉及只建立插件或整合过程的情况。<br />
+       */
       // watch: null,
     },
     /**
