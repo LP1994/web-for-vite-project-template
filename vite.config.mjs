@@ -45,7 +45,7 @@ import {
   viteStaticCopy,
 } from 'vite-plugin-static-copy';
 
-import VitePluginSRI from 'vite-plugin-sri';
+import VitePluginSRI from './src/vite_plugin_custom/vite-plugin-sri-by-custom.esm.mjs';
 
 // 这些个必需保持这各种顺序。End
 
@@ -1739,7 +1739,9 @@ export default defineConfig( async ( {
           reloadPageOnChange: !isProduction,
         },
       } ),
-      VitePluginSRI(),
+      VitePluginSRI( {
+        hashFuncNames: 'sha512',
+      } ),
     ],
     // ToDo 考虑使用类似copy插件的工具来复制静态资源文件夹。
     /**
