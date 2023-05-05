@@ -583,7 +583,7 @@ export default defineConfig( async ( {
      *
      * 注意：<br />
      * 1、强烈建议在生产模式时将其设置为空字符串即可。<br />
-     * 2、为了能正常配合“src/vite_plugin_custom/vite-plugin-html-by-custom.esm.mjs”使用，强烈建议将其设置为以“/”打头并且以“/”结尾的字符串。<br />
+     * 2、为了能正常配合“configures/vite_plugin_custom/vite-plugin-html-by-custom.esm.mjs”使用，强烈建议将其设置为以“/”打头并且以“/”结尾的字符串。<br />
      * 例如：将其设置为：'dev_server'，这样在浏览器中打开页面的地址可为：https://127.0.0.1:8500/dev_server/Upload.html
      */
     base = isProduction
