@@ -434,14 +434,19 @@ export default defineConfig( async ( {
       // workers文件夹 End
     },
     /**
-     * @type {string} 默认值为'spa'。无论你的应用是一个单页应用（SPA）还是一个多页应用（MPA），亦或是一个定制化应用（SSR和自定义HTML处理的框架）：<br />
+     * @type {'spa' | 'mpa' | 'custom'} 默认值为'spa'。无论你的应用是一个单页应用（SPA）还是一个多页应用（MPA），亦或是一个定制化应用（SSR和自定义HTML处理的框架）：<br />
      * 'spa'：包含HTML中间件以及使用SPA回退。在预览中将sirv配置为single: true。<br />
      * 'mpa'：包含HTML中间件。<br />
      * 'custom'：不包含HTML中间件。<br />
      */
     appType = 'mpa',
     /**
-     * @type {string|RegExp|(string|RegExp)[]} 详细见：https://cn.vitejs.dev/config/shared-options.html#assetsinclude
+     * @type {string|RegExp|(string|RegExp)[]} 指定额外的picomatch模式，作为静态资产处理，以便：<br />
+     * 当从HTML引用或通过fetch或XHR直接请求时，它们将被排除在插件转换管道之外。<br />
+     * 从JS中导入它们将返回其解析的URL字符串（如果你有一个强制：'pre'插件来处理不同的资产类型，这可以被覆盖）。<br />
+     *
+     * 详细见：<br />
+     * https://cn.vitejs.dev/config/shared-options.html#assetsinclude
      */
     assetsInclude = [
       ( () => {
@@ -1265,7 +1270,9 @@ export default defineConfig( async ( {
           };
         } )(),
       },
-      // 实验性，在开发过程中是否启用sourcemap。
+      /**
+       * @type {boolean} 实验性，在开发过程中是否启用sourcemap。默认值为false。
+       */
       devSourcemap: false,
     },
     /**
@@ -1302,8 +1309,8 @@ export default defineConfig( async ( {
       'env_',
     ],
     /**
-     * @type {ESBuildOptions | false} 默认情况下，esbuild会被应用在ts、jsx、tsx文件。
-     * 你可以通过esbuild.include和esbuild.exclude对要处理的文件类型进行配置，这两个配置的值可以是一个正则表达式、一个picomatch模式，或是一个值为这两种类型的数组。
+     * @type {ESBuildOptions | false} 默认情况下，esbuild会被应用在ts、jsx、tsx文件。ESBuildOptions扩展了esbuild自己的transform选项。<br />
+     * 1、你可以通过esbuild.include和esbuild.exclude对要处理的文件类型进行配置，这两个配置的值可以是一个正则表达式、一个picomatch模式，或是一个值为这两种类型的数组。<br />
      *
      * 详细配置见：<br />
      * https://cn.vitejs.dev/config/shared-options.html#esbuild
@@ -1629,14 +1636,17 @@ export default defineConfig( async ( {
       } )( false ),
     },
     /**
-     * @type {object}
+     * @type {object} 处理.json相关的配置。
      */
     json = {
-      // 是否支持从.json文件中进行按名导入。
+      /**
+       * @type {boolean} 是否支持从.json文件中进行按名导入。默认值为：true。
+       */
       namedExports: true,
       /**
-       * 若设置为true，导入的JSON会被转换为export default JSON.parse("...")，这样会比转译成对象字面量性能更好，尤其是当JSON文件较大的时候。
-       * 开启此项，则会禁用按名导入，也就是上面的“namedExports”选项。
+       * @type {boolean} 若设置为true，导入的JSON会被转换为export default JSON.parse("...")，这样会比转译成对象字面量性能更好，尤其是当JSON文件较大的时候。<br />
+       * 注意：<br />
+       * 1、开启此项，则会禁用按名导入，也就是上面的“namedExports”选项。默认值为：false。<br />
        */
       stringify: false,
     },
@@ -1662,6 +1672,8 @@ export default defineConfig( async ( {
 
       '.vue',
     ],
+    // ToDo
+    optimizeDeps = {},
     /**
      * @type {(Plugin | Plugin[] | Promise<Plugin | Plugin[]>)[]} 要使用的插件数组。Falsy插件会被忽略，而插件的数组会被扁平化。如果返回一个承诺，它将在运行前被解决。<br />
      * 官方插件信息：https://cn.vitejs.dev/plugins/
@@ -1960,6 +1972,9 @@ export default defineConfig( async ( {
       assetsInclude,
       base,
       build,
+      /**
+       * @type {boolean} 默认值为true，设置为false可以防止Vite在记录某些信息时清除终端屏幕。通过命令行，使用：--clearScreen false。
+       */
       clearScreen: false,
       css,
       define,
@@ -1967,8 +1982,12 @@ export default defineConfig( async ( {
       envPrefix,
       esbuild,
       json,
+      /**
+       * @type {'info' | 'warn' | 'error' | 'silent'} 调整控制台输出的粗略程度。默认为 "info"。
+       */
       logLevel: 'info',
       mode,
+      optimizeDeps,
       plugins: [
         ...plugins,
       ],
@@ -2309,6 +2328,9 @@ export default defineConfig( async ( {
       assetsInclude,
       base,
       build,
+      /**
+       * @type {boolean} 默认值为true，设置为false可以防止Vite在记录某些信息时清除终端屏幕。通过命令行，使用：--clearScreen false。
+       */
       clearScreen: false,
       css,
       define,
@@ -2316,8 +2338,12 @@ export default defineConfig( async ( {
       envPrefix,
       esbuild,
       json,
+      /**
+       * @type {'info' | 'warn' | 'error' | 'silent'} 调整控制台输出的粗略程度。默认为 "info"。
+       */
       logLevel: 'info',
       mode,
+      optimizeDeps,
       plugins: [
         ...plugins,
       ],
