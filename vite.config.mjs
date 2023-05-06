@@ -1971,7 +1971,17 @@ export default defineConfig( async ( {
        * 2、external选项也被省略了，使用Vite的optimizeDeps.exclude选项。<br />
        * plugins与Vite的dep插件进行合并。<br />
        */
-      esbuildOptions: esbuild,
+      esbuildOptions: ( esbuild => {
+        const obj = Object.assign( {}, esbuild );
+
+        delete obj.include;
+        delete obj.exclude;
+        delete obj.tsconfigRaw;
+
+        obj.tsconfig = resolve( __dirname, './tsconfig.vite.json' );
+
+        return obj;
+      } )( esbuild ),
       /**
        * @type {boolean} 设置为 "true "可以强制进行依赖性预捆绑，忽略之前缓存的优化依赖性。
        */
