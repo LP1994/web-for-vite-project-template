@@ -2045,6 +2045,7 @@ export default defineConfig( async ( {
             // ECMAScript proposals Start
 
             'doExpressions',
+            'explicitResourceManagement',
             // asyncDoExpressions依赖上面的doExpressions。
             'asyncDoExpressions',
             'decimal',
@@ -2066,6 +2067,7 @@ export default defineConfig( async ( {
             'functionBind',
             // importAssertions跟moduleAttributes不能同时使用，且importAssertions已经取代了moduleAttributes。
             'importAssertions',
+            'importReflection',
             // importAssertions跟moduleAttributes不能同时使用，且importAssertions已经取代了moduleAttributes。
             /*
              [
