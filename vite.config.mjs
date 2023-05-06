@@ -1941,8 +1941,46 @@ export default defineConfig( async ( {
 
       '.vue',
     ],
-    // ToDo
-    optimizeDeps = {},
+    /**
+     * @type {object} 当你第一次运行vite时，Vite会在本地加载你的网站之前预先捆绑你的项目依赖。这在默认情况下是自动和透明地进行的。<br />
+     * 详细见：<br />
+     * https://vitejs.dev/config/dep-optimization-options.html#dep-optimization-options
+     * https://vitejs.dev/guide/dep-pre-bundling.html
+     */
+    optimizeDeps = {
+      /**
+       * @type {string | string[]} 默认情况下，Vite会抓取你所有的.html文件来检测需要预先捆绑的依赖关系（忽略node_modules、build.outDir、__tests__和coverage）。<br />
+       * 1、如果指定了build.rollupOptions.input，Vite将抓取这些入口点。<br />
+       * 2、如果这两者都不符合你的需要，你可以使用这个选项指定自定义条目--其值应该是一个快速球状模式或相对于Vite项目根的模式阵列。<br />
+       * 这将覆盖默认条目推断。当明确定义了optimationDeps. entries时，默认情况下只有node_modules和build.outDir文件夹会被忽略。<br />
+       * 如果其他文件夹需要被忽略，你可以使用一个忽略模式作为条目列表的一部分，用一个初始的！标记。<br />
+       */
+      // entries: [],
+      /**
+       * @type {string[]} 要从预捆绑中排除的依赖关系。<br />
+       * 1、CommonJS依赖不应该被排除在优化之外。如果一个ESM依赖被排除在优化之外，但有一个嵌套的CommonJS依赖，CommonJS依赖应该被添加到optimationDeps.include中。<br />
+       */
+      // exclude: [],
+      /**
+       * @type {string[]} 默认情况下，不在node_modules内的链接包不会被预捆绑。使用这个选项可以强制一个被链接的软件包被预先捆绑起来。
+       */
+      // include: [],
+      /**
+       * @type {EsbuildBuildOptions} esbuild配置。<br />
+       * 1、在部署扫描和优化过程中传递给esbuild的选项。某些选项被省略了，因为改变它们会与Vite的部署优化不兼容。<br />
+       * 2、external选项也被省略了，使用Vite的optimizeDeps.exclude选项。<br />
+       * plugins与Vite的dep插件进行合并。<br />
+       */
+      esbuildOptions: esbuild,
+      /**
+       * @type {boolean} 设置为 "true "可以强制进行依赖性预捆绑，忽略之前缓存的优化依赖性。
+       */
+      // force: isProduction,
+      /**
+       * @type {boolean | 'build' | 'dev'} 实验性，默认值：'build'。禁用依赖性优化，true在构建和开发过程中禁用优化器。通过'build'或'dev'，只在其中一个模式中禁用优化器。依赖性优化默认只在开发中启用。<br />
+       */
+      disabled: 'build',
+    },
     /**
      * @type {(Plugin | Plugin[] | Promise<Plugin | Plugin[]>)[]} 要使用的插件数组。Falsy插件会被忽略，而插件的数组会被扁平化。如果返回一个承诺，它将在运行前被解决。<br />
      * 官方插件信息：https://cn.vitejs.dev/plugins/
