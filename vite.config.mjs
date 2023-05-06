@@ -1963,16 +1963,232 @@ export default defineConfig( async ( {
        * https://github.com/vitejs/vite-plugin-vue/tree/main/packages/plugin-vue#options
        */
       vue( {
-        // ToDo
+        isProduction,
+        script: {
+          babelParserPlugins: [
+            // Language extensions Start
 
-        // vue-loader v16+才有的选项。Start
+            /**
+             * 1、["pipelineOperator", { proposal: "hack" }]跟插件“placeholders”有冲突，二者只能取其一。
+             * 2、placeholders跟v8intrinsic不能同时使用。
+             */
+            // 'placeholders',
+            /**
+             * 1、["pipelineOperator", { proposal: "hack" }]跟插件“v8intrinsic”有冲突，二者只能取其一。
+             * 2、placeholders跟v8intrinsic不能同时使用。
+             */
+            // 'v8intrinsic',
+            // flow跟typescript不能同时使用。
+            /*
+             [
+             'flow',
+             {
+             // 默认值为：false。
+             all: false,
+             enums: true,
+             },
+             ],
+             */
+            // flow跟typescript不能同时使用。
+            [
+              'typescript',
+              {
+                // 默认值为：false。
+                dts: false,
+                // 默认值为：false。
+                disallowAmbiguousJSXLike: false,
+              },
+            ],
+            'flowComments',
+            'jsx',
 
-        /**
-         * 在使用Vue的反应性API时，引入一组编译器转换来改善人体工程学，特别是能够使用没有.value的refs。<br />
-         * 1、具体可阅https://github.com/vuejs/rfcs/discussions/369 <br />
-         * 2、仅在SFC中生效。<br />
-         */
-        reactivityTransform: true,
+            // Language extensions End
+
+            // ECMAScript proposals Start
+
+            'doExpressions',
+            // asyncDoExpressions依赖上面的doExpressions。
+            'asyncDoExpressions',
+            'decimal',
+            // decorators和decorators-legacy不能同时使用，建议使用decorators。
+            // 'decorators-legacy',
+            // decorators和decorators-legacy不能同时使用，建议使用decorators。
+            [
+              'decorators',
+              {
+                // 在2022年3月的TC39会议上就Stage 3达成共识的提案版本要求decoratorsBeforeExport为false，allowCallParenthesized也为false。
+                decoratorsBeforeExport: false,
+                // 在2022年3月的TC39会议上就Stage 3达成共识的提案版本要求decoratorsBeforeExport为false，allowCallParenthesized也为false。
+                allowCallParenthesized: false,
+              },
+            ],
+            'decoratorAutoAccessors',
+            'destructuringPrivate',
+            'exportDefaultFrom',
+            'functionBind',
+            // importAssertions跟moduleAttributes不能同时使用，且importAssertions已经取代了moduleAttributes。
+            'importAssertions',
+            // importAssertions跟moduleAttributes不能同时使用，且importAssertions已经取代了moduleAttributes。
+            /*
+             [
+             'moduleAttributes',
+             {
+             version: 'may-2020',
+             },
+             ],
+             */
+            'moduleBlocks',
+            'partialApplication',
+            [
+              'pipelineOperator',
+              {
+                /**
+                 * 1、["pipelineOperator", { proposal: "smart" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
+                 * 2、["pipelineOperator", { proposal: "hack" }]跟插件“placeholders”有冲突，二者只能取其一。
+                 * 3、["pipelineOperator", { proposal: "hack" }]跟插件“v8intrinsic”有冲突，二者只能取其一。
+                 * 4、["pipelineOperator", { proposal: "hack", topicToken: "#" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
+                 */
+                proposal: 'hack',
+                /**
+                 * 1、["pipelineOperator", { proposal: "hack", topicToken: "#" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
+                 */
+                topicToken: '^^',
+              },
+            ],
+            [
+              'recordAndTuple',
+              {
+                /**
+                 * 1、["pipelineOperator", { proposal: "hack", topicToken: "#" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
+                 * 2、["pipelineOperator", { proposal: "smart" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
+                 */
+                syntaxType: 'hash',
+              },
+            ],
+            'regexpUnicodeSets',
+            'throwExpressions',
+            'importMeta',
+            'estree',
+
+            // ECMAScript proposals End
+
+            // Latest ECMAScript features Start
+
+            'asyncGenerators',
+            'bigInt',
+            'classProperties',
+            'classPrivateProperties',
+            'classPrivateMethods',
+            // Enabled by default
+            'classStaticBlock',
+            'dynamicImport',
+            // deprecated
+            'exportNamespaceFrom',
+            'functionSent',
+            'logicalAssignment',
+            'moduleStringNames',
+            'nullishCoalescingOperator',
+            'numericSeparator',
+            'objectRestSpread',
+            'optionalCatchBinding',
+            'optionalChaining',
+            // Enabled by default
+            'privateIn',
+            'topLevelAwait',
+
+            // Latest ECMAScript features End
+          ],
+        },
+        template: {
+          /**
+           * @type {TemplateCompiler | string} 设置编译器，用于编译单文件组件中的<template>块。<br />
+           * 1、对于Vue 2.X使用“vue-template-compiler”，对于Vue 3.X使用“@vue/compiler-sfc”。<br />
+           * 2、该选项值可以是字符串的包名，如：'@vue/compiler-sfc'、'vue-template-compiler'。<br />
+           * 3、也可以是上面两个包导出的对象（该对象必需包含2个函数实现：compile、parse），详细见：node_modules/@vue/compiler-sfc/dist/compiler-sfc.d.ts:304<br />
+           * 该选项详细见：<br />
+           * node_modules/vue-loader/dist/index.d.ts:8
+           * node_modules/@vue/compiler-sfc/dist/compiler-sfc.d.ts:304
+           *
+           * PS：<br />
+           * 1、实际测试了一下，当该选项设置值为'@vue/compiler-sfc'时，会报错！因为没有找到“compile”函数！<br />
+           * 在'@vue/compiler-sfc'源码中发现，有“parse”函数的实现（见：node_modules/@vue/compiler-sfc/dist/compiler-sfc.d.ts:95）。<br />
+           * 但是没有“compile”函数的实现，貌似是被命名为“compileTemplate”（见：node_modules/@vue/compiler-sfc/dist/compiler-sfc.d.ts:61），<br />
+           * 但是该“compileTemplate”函数的声明不是符合规定的“compile”函数的声明（见：node_modules/@vue/compiler-sfc/dist/compiler-sfc.d.ts:305）。<br />
+           *
+           * 2、顺便查看了“vue-template-compiler”源码，发现了“compile”函数的实现，见：<br />
+           * node_modules/vue-template-compiler/types/index.d.ts:214
+           * node_modules/vue-template-compiler/types/index.d.ts:219
+           * 而“parse”函数的实现，貌似被重命名为“parseComponent”函数，见：node_modules/vue-template-compiler/types/index.d.ts:238
+           *
+           * 因此，该选项不用设置，貌似内部自动处理设置了。<br />
+           */
+          // compiler: '@vue/compiler-sfc',
+          compilerOptions: {
+            /**
+             * 值有："module"、"function"（默认值）。<br />
+             * `module`模式将为帮助器生成ES模块导入语句 并将渲染函数作为默认导出。<br />
+             * `function`模式将产生一个单一的“const { helpers... } = Vue”语句并返回渲染函数。它希望`Vue`是全局可用的（或者通过用IIFE包装代码来传递）。它是用来与`new Function(code)()`一起使用，在运行时生成一个渲染函数。<br />
+             *
+             * 当mode: 'function'时，会报“scopeId”错误，说是“scopeId”只能跟“mode: 'module'”一起使用，见：node_modules/@vue/compiler-core/dist/compiler-core.d.ts:1151
+             * 当在Vue的SFC里书写“<script type = 'module'>”时，就会使用“mode: 'module'”了。<br />
+             * 该选项一般不用设置，内部会自动设置。<br />
+             *
+             * 详细见：<br />
+             * node_modules/@vue/compiler-core/dist/compiler-core.d.ts:170
+             */
+            // mode: 'module',
+            /**
+             * 将表达式（如 {{ foo }} 转换为 _ctx.foo）。如果此选项为 false，则生成的代码将被包装在一个 with (this) { ... } 块中。<br />
+             * 这在mode === 'module'是强制启用的，因为模块默认是严格的，不能使用with。<br />
+             * 一般不要设置这个选项，交由内部自行处理。<br />
+             */
+            // prefixIdentifiers: true,
+            /**
+             * 缓存v-on处理程序以避免在每次渲染时创建新的内联函数，也避免了通过包装动态修补处理程序的需要。<br />
+             * 例如`@click="foo"`默认编译为`{onClick: foo }`。<br />
+             * 有了这个选项，它就被编译成：<br />
+             * { onClick: _cache[0] || (_cache[0] = e => _ctx.foo(e)) }
+             * 需要启用 "prefixIdentifiers"，因为它依靠范围分析来确定处理程序是否可以安全缓存。<br />
+             * 分析来确定一个处理程序是否可以安全地进行缓存。<br />
+             * 一般不要设置这个选项，交由内部自行处理。<br />
+             * 详细见：<br />
+             * node_modules/@vue/compiler-core/dist/compiler-core.d.ts:1141
+             */
+            // cacheHandlers: true,
+            /**
+             * 通过变量赋值优化帮助程序导入绑定的选项（仅用于webpack代码拆分），默认值为：false。<br />
+             * 一般不要设置这个选项，交由内部自行处理。<br />
+             * 详细见：node_modules/@vue/compiler-core/dist/compiler-core.d.ts:185
+             */
+            // optimizeImports: isProduction,
+            comments: !isProduction,
+            whitespace: !isProduction
+                        ? 'preserve'
+                        : 'condense',
+          },
+          // preprocessOptions: any,
+          // preprocessCustomRequire: (id: string) => any,
+          transformAssetUrls: {
+            video: [
+              'src',
+              'poster',
+            ],
+            source: 'src',
+            img: 'src',
+            image: [
+              'xlink:href',
+              'href',
+            ],
+            use: [
+              'xlink:href',
+              'href',
+            ],
+            audio: 'src',
+          },
+        },
+        style: {
+          trim: true,
+        },
         /**
          * 启用自定义元素模式。在自定义元素模式下加载的SFC将其<style>标记内联为组件样式选项下的字符串。<br />
          * 1、当与Vue核心的defineCustomElement一起使用时，样式将被注入到自定义元素的阴影根中。<br />
@@ -1981,8 +2197,14 @@ export default defineConfig( async ( {
          * 4、设置为true将以“自定义元素模式”处理所有.vue文件。<br />
          */
         // customElement: /\.ce\.vue$/,
-
-        // vue-loader v16+才有的选项。End
+        /**
+         * 在使用Vue的反应性API时，引入一组编译器转换来改善人体工程学，特别是能够使用没有.value的refs。<br />
+         * 1、具体可阅https://github.com/vuejs/rfcs/discussions/369 <br />
+         * 2、仅在SFC中生效。<br />
+         */
+        reactivityTransform: true,
+        // 使用自定义compiler-sfc实例。可用于强制使用特定版本。
+        // compiler: typeof _compiler,
       } ),
       checker( {
         overlay: {
