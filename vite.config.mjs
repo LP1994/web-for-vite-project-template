@@ -2002,143 +2002,163 @@ export default defineConfig( async ( {
        */
       vue( {
         isProduction,
-        script: {
-          babelParserPlugins: [
-            // Language extensions Start
+        /**
+         * 设置该选项后会报错！因为内部代码有BUG！
+         * 详细见：
+         * TypeError: Cannot read properties of undefined (reading 'name')
+         *     at registerBinding (G:\WebStormWS\web-for-vite-project-template\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:4653:19)
+         *     at walkObjectPattern (G:\WebStormWS\web-for-vite-project-template\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:4734:13)
+         *     at walkDeclaration (G:\WebStormWS\web-for-vite-project-template\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:4698:21)
+         *     at Object.compileScript (G:\WebStormWS\web-for-vite-project-template\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:4263:13)
+         *     at resolveScript (file:///G:/WebStormWS/web-for-vite-project-template/node_modules/@vitejs/plugin-vue/dist/index.mjs:283:31)
+         *     at genScriptCode (file:///G:/WebStormWS/web-for-vite-project-template/node_modules/@vitejs/plugin-vue/dist/index.mjs:2469:18)
+         *     at transformMain (file:///G:/WebStormWS/web-for-vite-project-template/node_modules/@vitejs/plugin-vue/dist/index.mjs:2282:54)
+         *     at Object.transform (file:///G:/WebStormWS/web-for-vite-project-template/node_modules/@vitejs/plugin-vue/dist/index.mjs:2785:16)
+         *     at file:///G:/WebStormWS/web-for-vite-project-template/node_modules/rollup/dist/es/shared/node-entry.js:24551:40
+         */
+        ...( isEnabled => {
+          return isEnabled
+                 ? {
+              script: {
+                babelParserPlugins: [
+                  // Language extensions Start
 
-            /**
-             * 1、["pipelineOperator", { proposal: "hack" }]跟插件“placeholders”有冲突，二者只能取其一。
-             * 2、placeholders跟v8intrinsic不能同时使用。
-             */
-            // 'placeholders',
-            /**
-             * 1、["pipelineOperator", { proposal: "hack" }]跟插件“v8intrinsic”有冲突，二者只能取其一。
-             * 2、placeholders跟v8intrinsic不能同时使用。
-             */
-            // 'v8intrinsic',
-            // flow跟typescript不能同时使用。
-            /*
-             [
-             'flow',
-             {
-             // 默认值为：false。
-             all: false,
-             enums: true,
-             },
-             ],
-             */
-            // flow跟typescript不能同时使用。
-            [
-              'typescript',
-              {
-                // 默认值为：false。
-                dts: false,
-                // 默认值为：false。
-                disallowAmbiguousJSXLike: false,
+                  /**
+                   * 1、["pipelineOperator", { proposal: "hack" }]跟插件“placeholders”有冲突，二者只能取其一。
+                   * 2、placeholders跟v8intrinsic不能同时使用。
+                   */
+                  // 'placeholders',
+                  /**
+                   * 1、["pipelineOperator", { proposal: "hack" }]跟插件“v8intrinsic”有冲突，二者只能取其一。
+                   * 2、placeholders跟v8intrinsic不能同时使用。
+                   */
+                  // 'v8intrinsic',
+                  // flow跟typescript不能同时使用。
+                  /*
+                   [
+                   'flow',
+                   {
+                   // 默认值为：false。
+                   all: false,
+                   enums: true,
+                   },
+                   ],
+                   */
+                  // flow跟typescript不能同时使用。
+                  [
+                    'typescript',
+                    {
+                      // 默认值为：false。
+                      dts: false,
+                      // 默认值为：false。
+                      disallowAmbiguousJSXLike: false,
+                    },
+                  ],
+                  'flowComments',
+                  'jsx',
+
+                  // Language extensions End
+
+                  // ECMAScript proposals Start
+
+                  'doExpressions',
+                  'explicitResourceManagement',
+                  // asyncDoExpressions依赖上面的doExpressions。
+                  'asyncDoExpressions',
+                  'decimal',
+                  // decorators和decorators-legacy不能同时使用，建议使用decorators。
+                  // 'decorators-legacy',
+                  // decorators和decorators-legacy不能同时使用，建议使用decorators。
+                  [
+                    'decorators',
+                    {
+                      // 在2022年3月的TC39会议上就Stage 3达成共识的提案版本要求decoratorsBeforeExport为false，allowCallParenthesized也为false。
+                      decoratorsBeforeExport: false,
+                      // 在2022年3月的TC39会议上就Stage 3达成共识的提案版本要求decoratorsBeforeExport为false，allowCallParenthesized也为false。
+                      allowCallParenthesized: false,
+                    },
+                  ],
+                  'decoratorAutoAccessors',
+                  'destructuringPrivate',
+                  'exportDefaultFrom',
+                  'functionBind',
+                  // importAssertions跟moduleAttributes不能同时使用，且importAssertions已经取代了moduleAttributes。
+                  'importAssertions',
+                  'importReflection',
+                  // importAssertions跟moduleAttributes不能同时使用，且importAssertions已经取代了moduleAttributes。
+                  /*
+                   [
+                   'moduleAttributes',
+                   {
+                   version: 'may-2020',
+                   },
+                   ],
+                   */
+                  'moduleBlocks',
+                  'partialApplication',
+                  [
+                    'pipelineOperator',
+                    {
+                      /**
+                       * 1、["pipelineOperator", { proposal: "smart" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
+                       * 2、["pipelineOperator", { proposal: "hack" }]跟插件“placeholders”有冲突，二者只能取其一。
+                       * 3、["pipelineOperator", { proposal: "hack" }]跟插件“v8intrinsic”有冲突，二者只能取其一。
+                       * 4、["pipelineOperator", { proposal: "hack", topicToken: "#" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
+                       */
+                      proposal: 'hack',
+                      /**
+                       * 1、["pipelineOperator", { proposal: "hack", topicToken: "#" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
+                       */
+                      topicToken: '^^',
+                    },
+                  ],
+                  [
+                    'recordAndTuple',
+                    {
+                      /**
+                       * 1、["pipelineOperator", { proposal: "hack", topicToken: "#" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
+                       * 2、["pipelineOperator", { proposal: "smart" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
+                       */
+                      syntaxType: 'hash',
+                    },
+                  ],
+                  'regexpUnicodeSets',
+                  'throwExpressions',
+                  'importMeta',
+                  'estree',
+
+                  // ECMAScript proposals End
+
+                  // Latest ECMAScript features Start
+
+                  'asyncGenerators',
+                  'bigInt',
+                  'classProperties',
+                  'classPrivateProperties',
+                  'classPrivateMethods',
+                  // Enabled by default
+                  'classStaticBlock',
+                  'dynamicImport',
+                  // deprecated
+                  'exportNamespaceFrom',
+                  'functionSent',
+                  'logicalAssignment',
+                  'moduleStringNames',
+                  'nullishCoalescingOperator',
+                  'numericSeparator',
+                  'objectRestSpread',
+                  'optionalCatchBinding',
+                  'optionalChaining',
+                  // Enabled by default
+                  'privateIn',
+                  'topLevelAwait',
+
+                  // Latest ECMAScript features End
+                ],
               },
-            ],
-            'flowComments',
-            'jsx',
-
-            // Language extensions End
-
-            // ECMAScript proposals Start
-
-            'doExpressions',
-            'explicitResourceManagement',
-            // asyncDoExpressions依赖上面的doExpressions。
-            'asyncDoExpressions',
-            'decimal',
-            // decorators和decorators-legacy不能同时使用，建议使用decorators。
-            // 'decorators-legacy',
-            // decorators和decorators-legacy不能同时使用，建议使用decorators。
-            [
-              'decorators',
-              {
-                // 在2022年3月的TC39会议上就Stage 3达成共识的提案版本要求decoratorsBeforeExport为false，allowCallParenthesized也为false。
-                decoratorsBeforeExport: false,
-                // 在2022年3月的TC39会议上就Stage 3达成共识的提案版本要求decoratorsBeforeExport为false，allowCallParenthesized也为false。
-                allowCallParenthesized: false,
-              },
-            ],
-            'decoratorAutoAccessors',
-            'destructuringPrivate',
-            'exportDefaultFrom',
-            'functionBind',
-            // importAssertions跟moduleAttributes不能同时使用，且importAssertions已经取代了moduleAttributes。
-            'importAssertions',
-            'importReflection',
-            // importAssertions跟moduleAttributes不能同时使用，且importAssertions已经取代了moduleAttributes。
-            /*
-             [
-             'moduleAttributes',
-             {
-             version: 'may-2020',
-             },
-             ],
-             */
-            'moduleBlocks',
-            'partialApplication',
-            [
-              'pipelineOperator',
-              {
-                /**
-                 * 1、["pipelineOperator", { proposal: "smart" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
-                 * 2、["pipelineOperator", { proposal: "hack" }]跟插件“placeholders”有冲突，二者只能取其一。
-                 * 3、["pipelineOperator", { proposal: "hack" }]跟插件“v8intrinsic”有冲突，二者只能取其一。
-                 * 4、["pipelineOperator", { proposal: "hack", topicToken: "#" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
-                 */
-                proposal: 'hack',
-                /**
-                 * 1、["pipelineOperator", { proposal: "hack", topicToken: "#" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
-                 */
-                topicToken: '^^',
-              },
-            ],
-            [
-              'recordAndTuple',
-              {
-                /**
-                 * 1、["pipelineOperator", { proposal: "hack", topicToken: "#" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
-                 * 2、["pipelineOperator", { proposal: "smart" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
-                 */
-                syntaxType: 'hash',
-              },
-            ],
-            'regexpUnicodeSets',
-            'throwExpressions',
-            'importMeta',
-            'estree',
-
-            // ECMAScript proposals End
-
-            // Latest ECMAScript features Start
-
-            'asyncGenerators',
-            'bigInt',
-            'classProperties',
-            'classPrivateProperties',
-            'classPrivateMethods',
-            // Enabled by default
-            'classStaticBlock',
-            'dynamicImport',
-            // deprecated
-            'exportNamespaceFrom',
-            'functionSent',
-            'logicalAssignment',
-            'moduleStringNames',
-            'nullishCoalescingOperator',
-            'numericSeparator',
-            'objectRestSpread',
-            'optionalCatchBinding',
-            'optionalChaining',
-            // Enabled by default
-            'privateIn',
-            'topLevelAwait',
-
-            // Latest ECMAScript features End
-          ],
-        },
+            }
+                 : {};
+        } )( false ),
         template: {
           /**
            * @type {TemplateCompiler | string} 设置编译器，用于编译单文件组件中的<template>块。<br />
