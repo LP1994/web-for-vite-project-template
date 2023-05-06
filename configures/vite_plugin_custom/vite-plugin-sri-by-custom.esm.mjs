@@ -34,6 +34,7 @@ import {
 
 function sri( {
   hashFuncNames = 'sha512',
+  warn = true,
 } = {} ){
   let config;
   const bundle = {};
@@ -87,7 +88,7 @@ function sri( {
           const t = Object.entries( bundle )
           .find( ( [ , bundleItem ] ) => bundleItem.fileName === resourcePath )?.[ 1 ];
           if( !t ){
-            config.logger.warn( `cannot find ${ resourcePath } in output bundle.` );
+            warn && config.logger.warn( `cannot find ${ resourcePath } in output bundle.` );
             try{
               source = readFileSync( resolve( options.dir, resourcePath ) );
             }

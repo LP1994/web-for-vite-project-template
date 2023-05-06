@@ -2355,6 +2355,7 @@ export default defineConfig( async ( {
       ] ) ),
       VitePluginSRIByCustom( {
         hashFuncNames: 'sha512',
+        warn: false,
       } ),
     ],
     /**
