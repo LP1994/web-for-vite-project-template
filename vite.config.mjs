@@ -18,8 +18,13 @@ import {
 } from 'node:fs/promises';
 
 import {
+  cpus,
+} from 'node:os';
+
+import {
   basename,
   dirname,
+  extname,
   join,
   resolve,
 } from 'node:path';
@@ -130,7 +135,7 @@ const browserslist = [
     // PC端各主流浏览器的最新版本，至20230504。Start
     'Chrome >= 113',
     // 这里的Edge是指新版的微软Edge，其基于Chromium，带有Blink和V8引擎，后来其最新的版本号，也基本跟Chrome版本号保持一致了。
-    'Edge >= 112',
+    'Edge >= 113',
     'Firefox >= 112',
     'Safari >= 16',
     'Opera >= 98',
@@ -173,7 +178,7 @@ const browserslist = [
 
     // PC端各主流浏览器的最新版本，至20230504。Start
     'chrome113',
-    'edge112',
+    'edge113',
     'firefox112',
     'safari16',
     'opera98',
@@ -233,6 +238,129 @@ const autoprefixerConfig = {
     // 默认值为false，允许将calc()用作选择器的一部分。
     selectors: true,
   };
+
+const fontsForAssets = [
+    'eot',
+    'otf',
+    'fon',
+    'font',
+    'ttf',
+    'ttc',
+    'woff',
+    'woff2',
+  ],
+  imgForAssets = [
+    'apng',
+    'arw',
+    'avif',
+    'bmp',
+    'bpg',
+    'cr2',
+    'cur',
+    'dcx',
+    'dng',
+    'flif',
+    'gif',
+    'heic',
+    'heif',
+    'icns',
+    'ico',
+    'j2c',
+    'j2k',
+    'jbig2',
+    'jng',
+    'jp2',
+    'jpe',
+    'jpeg',
+    'jpg',
+    'jpm',
+    'jpx',
+    'jxl',
+    'jxr',
+    'ktx',
+    'mj2',
+    'nef',
+    'orf',
+    'pam',
+    'pbm',
+    'pcx',
+    'pgm',
+    'png',
+    'pnm',
+    'ppm',
+    'psd',
+    'raf',
+    'raw',
+    'rgbe',
+    'rw2',
+    'svg',
+    'svgz',
+    'tga',
+    'tif',
+    'tiff',
+    'wbmp',
+    'webp',
+    'wp2',
+    'xbm',
+    'xpm',
+    'jfif',
+    'pjpeg',
+    'pjp',
+  ],
+  musicForAssets = [
+    'm4a',
+    'kar',
+    'ape',
+    'wav',
+    'wave',
+    'flac',
+    'wma',
+    'cda',
+    'aiff',
+    'au',
+    'mpeg',
+    'mpeg-1',
+    'mpeg-2',
+    'mpeg-layer3',
+    'mpeg-4',
+    'mp3',
+    'mp2',
+    'mp1',
+    'mid',
+    'midi',
+    'ra',
+    'rm',
+    'rmx',
+    'vqf',
+    'amr',
+    'aac',
+    'vorbis',
+    'opus',
+  ],
+  videosForAssets = [
+    'wmv',
+    'asf',
+    'asx',
+    'rmvb',
+    'mp4',
+    '3gp',
+    'mov',
+    'm4v',
+    'avi',
+    'dat',
+    'mkv',
+    'flv',
+    'vob',
+    'mod',
+    'mng',
+    'mpg',
+    '3gpp',
+    'ogg',
+    'webm',
+  ],
+  pwa_manifestForAssets = [
+    'webmanifest',
+  ];
 
 /**
  * @type {import('vite').UserConfig} Vite配置。<br />
@@ -451,132 +579,11 @@ export default defineConfig( async ( {
     assetsInclude = [
       ( () => {
         const KNOWN_ASSET_TYPES = Array.from( new Set( [
-          // fonts Start
-          'eot',
-          'otf',
-          'fon',
-          'font',
-          'ttf',
-          'ttc',
-          'woff',
-          'woff2',
-          // fonts End
-
-          // images Start
-          'apng',
-          'arw',
-          'avif',
-          'bmp',
-          'bpg',
-          'cr2',
-          'cur',
-          'dcx',
-          'dng',
-          'flif',
-          'gif',
-          'heic',
-          'heif',
-          'icns',
-          'ico',
-          'j2c',
-          'j2k',
-          'jbig2',
-          'jng',
-          'jp2',
-          'jpe',
-          'jpeg',
-          'jpg',
-          'jpm',
-          'jpx',
-          'jxl',
-          'jxr',
-          'ktx',
-          'mj2',
-          'nef',
-          'orf',
-          'pam',
-          'pbm',
-          'pcx',
-          'pgm',
-          'png',
-          'pnm',
-          'ppm',
-          'psd',
-          'raf',
-          'raw',
-          'rgbe',
-          'rw2',
-          'svg',
-          'svgz',
-          'tga',
-          'tif',
-          'tiff',
-          'wbmp',
-          'webp',
-          'wp2',
-          'xbm',
-          'xpm',
-          'jfif',
-          'pjpeg',
-          'pjp',
-          // images End
-
-          // music Start
-          'm4a',
-          'kar',
-          'ape',
-          'wav',
-          'wave',
-          'flac',
-          'wma',
-          'cda',
-          'aiff',
-          'au',
-          'mpeg',
-          'mpeg-1',
-          'mpeg-2',
-          'mpeg-layer3',
-          'mpeg-4',
-          'mp3',
-          'mp2',
-          'mp1',
-          'mid',
-          'midi',
-          'ra',
-          'rm',
-          'rmx',
-          'vqf',
-          'amr',
-          'aac',
-          'vorbis',
-          'opus',
-          // music End
-
-          // videos Start
-          'wmv',
-          'asf',
-          'asx',
-          'rmvb',
-          'mp4',
-          '3gp',
-          'mov',
-          'm4v',
-          'avi',
-          'dat',
-          'mkv',
-          'flv',
-          'vob',
-          'mod',
-          'mng',
-          'mpg',
-          '3gpp',
-          'ogg',
-          'webm',
-          // videos End
-
-          // other Start
-          'webmanifest',
-          // other End
+          ...fontsForAssets,
+          ...imgForAssets,
+          ...musicForAssets,
+          ...videosForAssets,
+          ...pwa_manifestForAssets,
         ] ) );
 
         return new RegExp( `\\.(` + KNOWN_ASSET_TYPES.join( '|' ) + `)(\\?.*)?$`, );
@@ -674,14 +681,28 @@ export default defineConfig( async ( {
        * 3、如果是'hidden'，则与true类似，只是捆绑文件中相应的源码图注释会被抑制。<br />
        */
       sourcemap: isProduction,
-      // ToDo
+      /**
+       * @type {RollupOptions} 直接定制底层的Rollup包。这与可以从Rollup配置文件中导出的选项相同，将与Vite的内部Rollup选项合并。<br />
+       * 详细见：<br />
+       * https://rollupjs.org/configuration-options/
+       */
       rollupOptions: {
-        // https://rollupjs.org/configuration-options/#external
+        // 核心功能 Start
+
+        /**
+         * @type {(string | RegExp)[]| RegExp| string| (id: string, parentId: string, isResolved: boolean) => boolean} 可以是一个接收ID并返回true（外部）或false（非外部）的函数，也可以是一个模块ID的数组，或匹配模块ID的正则表达式，这些都应该保持在捆绑的外部。也可以只是一个单一的ID或正则表达式。<br />
+         * 1、匹配的ID应该是以下两种情况之一：<br />
+         * 外部依赖关系的名称，与导入语句中的写法完全一致。例如，如果要将import "dependency.js"标记为外部，请使用 "dependency.js"，如果要将import "dependency"标记为外部，请使用 "dependency"。<br />
+         * 一个已解决的ID（像一个文件的绝对路径）。<br />
+         *
+         * 详细见：<br />
+         * https://rollupjs.org/configuration-options/#external
+         */
         external: [
-          'axios',
-          'echarts',
-          'jquery',
-          'swiper',
+          // 'axios',
+          // 'echarts',
+          // 'jquery',
+          // 'swiper',
         ],
         /**
          * @type {string | string []| { [entryName: string]: string }} Vite的build.rollupOptions.input的配置，也就是“entry points”的配置。<br />
@@ -704,18 +725,128 @@ export default defineConfig( async ( {
         } ),
         output: {
           // inlineDynamicImports: false,
+
+          // 核心功能 Start
+
+          /**
+           * @type {string} 所有生成的块被放置在哪个目录中。如果生成一个以上的块，这个选项是必需的。否则，可以使用file选项来代替。
+           */
           dir: resolve( __dirname, `./dist/${ env_platform }/` ),
-          // format: 'iife',
+          /**
+           * @type {string} 默认值："es"。<br />
+           * 1、指定生成的捆绑包的格式。以下之一：<br />
+           * amd - 异步模块定义，与RequireJS等模块加载器一起使用。<br />
+           * cjs - CommonJS，适用于Node和其他捆绑程序（别名：commonjs）。<br />
+           * es - 将捆绑文件作为ES模块文件，适用于其他捆绑程序，并在现代浏览器中作为<script type=module>标签包含（别名：esm，模块）。<br />
+           * iife - 一个自我执行的函数，适合作为<script>标签包含。(如果你想为你的应用程序创建一个包，你可能想使用这个。)。"iife "代表 "立即调用的函数表达式"。<br />
+           * umd - 通用模块定义，与amd、cjs和iife合二为一。<br />
+           * system - SystemJS加载器的本地格式（别名：systemjs)。<br />
+           */
+          format: 'es',
+          /**
+           * @type {{ [id: string]: string }| ((id: string) => string)} 指定umd/iife包中外部导入所需的id: variableName对。需要上面的“external”选项也要配合设置。
+           */
           globals: {
-            axios: 'axios',
-            echarts: 'echarts',
-            jquery: '$',
-            swiper: 'Swiper',
+            // axios: 'axios',
+            // echarts: 'echarts',
+            // jquery: '$',
+            // swiper: 'Swiper',
           },
-          assetFileNames: `assets/[name]-[hash:16][extname]`,
-          chunkFileNames: `js/[name]-[hash:16].js`,
-          // compact: isProduction,
+
+          // 核心功能 End
+
+          // 高级功能 Start
+
+          /**
+           * @type {string| ((assetInfo: AssetInfo) => string)} 默认值："assets/[name]-[hash][extname]"。用于命名自定义发射资产的模式，以包括在构建输出中，或者为每个资产调用一个函数来返回这样的模式。<br />
+           * 1、模式支持以下占位符：<br />
+           * [extname]：资产的文件扩展名，包括一个前导点，例如：.css。<br />
+           * [ext]：不含前导点的文件扩展名，例如：css。<br />
+           * [hash]：基于资产内容的哈希值。你也可以通过[hash:10]设置一个特定的哈希长度。<br />
+           * [name]：资产的文件名，不包括任何扩展名。<br />
+           * 2、正斜杠/可以用来将文件放在子目录中。<br />
+           * 3、当使用一个函数时，有函数参数assetInfo是generateBundle中的一个缩小版，没有fileName。<br />
+           * 4、函数参数assetInfo拥有的属性：<br />
+           * name：string，一般表示文件名，带扩展名的，值如：'Helvetica.otf'。<br />
+           * source：Uint8Array、string，一般表示文件的源码内容。<br />
+           * type：string，其值一般为：'asset'。<br />
+           */
+          assetFileNames: ( {
+            name,
+            source,
+            type,
+          } ) => {
+            const ext = extname( name );
+
+            if( ext === '.css' ){
+              return `styles/[name]-[hash:16][extname]`;
+            }
+
+            if( fontsForAssets.map( item => `.${ item }` ).includes( ext ) ){
+              return `fonts/[name]-[hash:16][extname]`;
+            }
+
+            if( imgForAssets.map( item => `.${ item }` ).includes( ext ) ){
+              return `img/[name]-[hash:16][extname]`;
+            }
+
+            if( musicForAssets.map( item => `.${ item }` ).includes( ext ) ){
+              return `music/[name]-[hash:16][extname]`;
+            }
+
+            if( videosForAssets.map( item => `.${ item }` ).includes( ext ) ){
+              return `videos/[name]-[hash:16][extname]`;
+            }
+
+            if( pwa_manifestForAssets.map( item => `.${ item }` )
+            .includes( ext ) || ( ext === '.json' && name.includes( '.manifest.json' ) ) ){
+              return `pwa_manifest/[name]-[hash:16][extname]`;
+            }
+
+            return `assets/[name]-[hash:16][extname]`;
+          },
+          /**
+           * @type {string | ((chunkInfo: ChunkInfo) => string)} 默认值："[name]-[hash].js"。用于命名代码拆分时创建的共享块的模式，或者为每个块调用一个函数以返回这样的模式。<br />
+           * 1、模式支持以下占位符：<br />
+           * [format]：输出选项中定义的渲染格式，例如es或cjs。<br />
+           * [hash]：仅基于最终生成的块的内容的哈希值，包括renderChunk中的转换和任何引用的文件哈希值。你也可以通过[hash:10]设置一个特定的哈希值长度。<br />
+           * [name]：块的名称。这可以通过output.manualChunks选项明确设置，或者在插件通过this.emitFile创建大块时设置。否则，它将从块的内容中导出。<br />
+           * 2、正斜杠/可以用来将文件放在子目录中。<br />
+           * 3、当使用一个函数时，函数参数chunkInfo是generateBundle中的一个简化版本，没有依赖于文件名的属性，也没有关于渲染模块的信息，因为渲染只发生在文件名生成之后。<br />
+           * 4、然而，你可以访问所包含的moduleIds的列表。<br />
+           * 5、函数参数chunkInfo拥有的属性：<br />
+           * exports：值如：[]。<br />
+           * facadeModuleId：值如：null。<br />
+           * isDynamicEntry：值如：false。<br />
+           * isEntry：值如：false。<br />
+           * isImplicitEntry：值如：false。<br />
+           * moduleIds：值如：[ '\x00vite/modulepreload-polyfill' ]。<br />
+           * name：值如：'modulepreload-polyfill'。<br />
+           * type：值如：'chunk'。<br />
+           */
+          chunkFileNames: ( {
+            exports,
+            facadeModuleId,
+            isDynamicEntry,
+            isEntry,
+            isImplicitEntry,
+            moduleIds,
+            name,
+            type,
+          } ) => {
+            return `js/[name]-[hash:16].js`;
+          },
+          /**
+           * @type {boolean} 默认值：false。这将使rollup生成的包装代码最小化。注意，这并不影响用户编写的代码。这个选项在捆绑预minified代码时很有用。<br />
+           */
+          compact: isProduction,
+          /**
+           * @type {boolean} 默认值：true。<br />
+           */
           //dynamicImportInCjs: true,
+
+          // 高级功能 End
+
           //externalImportAssertions: true,
           /*generatedCode: {
            preset: 'es2015',
@@ -730,9 +861,29 @@ export default defineConfig( async ( {
           //sourcemap: isProduction,
           //sourcemapExcludeSources: isProduction,
         },
-        //cache: true,
-        //makeAbsoluteExternalsRelative: 'ifRelativeSource',
-        //maxParallelFileOps: 200,
+
+        // 核心功能 End
+
+        // 高级功能 Start
+
+        /**
+         * @type {RollupCache | boolean} 默认值：true。前一个捆绑包的缓存属性。用它来加速观察模式下的后续构建--Rollup只会重新分析有变化的模块。将此选项明确设置为false将阻止生成bundle上的缓存属性，也会停用插件的缓存。<br />
+         */
+        cache: true,
+        /**
+         * @type {boolean| "ifRelativeSource"} 默认值：'ifRelativeSource'。决定绝对的外部路径是否应该在输出中转换为相对路径。这不仅适用于源文件中的绝对路径，也适用于由插件或Rollup核心解析为绝对路径的路径。<br />
+         * 1、对于这种情况，"ifRelativeSource "检查原始导入是否是相对导入，然后才在输出中转换为相对导入。选择 "false "将在输出中保持所有路径为绝对路径。<br />
+         */
+        // makeAbsoluteExternalsRelative: 'ifRelativeSource',
+        /**
+         * @type {number} 默认值：20。限制rollup在读取模块或写块时平行打开的文件数量。<br />
+         * 1、如果没有限制或者数值足够高，构建可能会失败，出现 "EMFILE: Too many open files"（EMFILE：太多的开放文件）。
+         * 2、这取决于操作系统允许多少个开放文件处理。<br />
+         */
+        maxParallelFileOps: 200 + cpus().length - 1,
+
+        // 高级功能 End
+
         //experimentalCacheExpiry: 10,
       },
       /**
@@ -2393,11 +2544,16 @@ export default defineConfig( async ( {
        * @type {(Plugin | Plugin[])[]} 适用于worker bundle的Vite插件。请注意，Vite的顶级配置plugins选项只适用于dev中的worker，对于build，应该在这里进行配置。
        */
       // plugins: [],
-      // ToDo
       /**
-       * @type {RollupOptions} Rollup选项，建立worker bundle。注意，这个rollupOptions选项，是用来捆绑、压缩、编译“worker”中的代码。
+       * @type {RollupOptions} Rollup选项，建立worker bundle。注意，这个rollupOptions选项，是用来捆绑、压缩、编译“worker”中的代码。<br />
+       * 1、直接定制底层的Rollup包。这与可以从Rollup配置文件中导出的选项相同，将与Vite的内部Rollup选项合并。<br />
+       *
+       * 详细见：<br />
+       * https://rollupjs.org/configuration-options/
        */
-      // rollupOptions: {},
+      rollupOptions: {
+        // ToDo
+      },
     };
 
   /**
