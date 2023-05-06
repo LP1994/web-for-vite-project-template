@@ -49,21 +49,17 @@
 'use strict';
 
 import {
-  createReadStream,
   readFileSync,
 } from 'node:fs';
 
 import {
   dirname,
   join,
-  resolve,
 } from 'node:path';
 
 import {
   fileURLToPath,
 } from 'node:url';
-
-import Mime from 'mime';
 
 import {
   httpHeaders,
@@ -271,9 +267,6 @@ async function ProxyConfig( {
     logFileName = `proxy_${ year }年${ month }月${ date }日${ hours }时${ minutes }分${ seconds }秒(周${ day }).log`;
 
   const logWriteStream = await CreateLogger( join( __dirname, `../log/${ env_platform }/${ logFileName }` ) );
-
-  const faviconURL = resolve( __dirname, '../favicon.ico' ),
-    appleTouchIconURL = resolve( __dirname, '../src/static/ico/uncompressed/ico_120_120.png' );
 
   /**
    * Vite的server.proxy的配置。<br />
@@ -1006,6 +999,7 @@ WebSocket代理--->${ options.context }<---End
     },
 
     '/favicon.ico': {
+      target: 'https://0.0.0.0:9200',
       secure: false,
       ssl,
       ws: false,
@@ -1013,7 +1007,6 @@ WebSocket代理--->${ options.context }<---End
       headers: httpHeaders,
       proxyTimeout: 120000,
       timeout: 120000,
-
       configure( proxy, options ){
         proxy.on( 'proxyReq', ( proxyReq, req, res, options ) => {
           const arr001 = Reflect.ownKeys( proxyReq ).filter( item => typeof item === 'symbol' );
@@ -1031,25 +1024,11 @@ ${ JSON.stringify( req.headers, null, ' ' ) }
 ${ JSON.stringify( Object.fromEntries( Object.values( proxyReq[ arr001[ arr001.findIndex( item => item.toString() === 'Symbol(kOutHeaders)' ) ] ] ) ), null, ' ' ) }
 HTTP代理--->${ req.originalUrl }<---End
 \n\n` );
-
-          res.setHeader( 'Content-Type', Mime.getType( req.url ) );
-          res.setHeader( 'x-from', 'viteConfig.server.proxy' );
-          res.setHeader( 'x-dev-type', `${ env_platform }` );
-
-          Object.entries( httpHeaders ).forEach( ( [ keyName, keyValue ], ) => {
-            res.setHeader( keyName, keyValue );
-          } );
-
-          res.statusCode = 200;
-          res.statusMessage = 'OK';
-
-          createReadStream( faviconURL ).pipe( res, {
-            end: true,
-          } );
         } );
       },
     },
     '/favicon.png': {
+      target: 'https://0.0.0.0:9200',
       secure: false,
       ssl,
       ws: false,
@@ -1057,7 +1036,6 @@ HTTP代理--->${ req.originalUrl }<---End
       headers: httpHeaders,
       proxyTimeout: 120000,
       timeout: 120000,
-
       configure( proxy, options ){
         proxy.on( 'proxyReq', ( proxyReq, req, res, options ) => {
           const arr001 = Reflect.ownKeys( proxyReq ).filter( item => typeof item === 'symbol' );
@@ -1075,25 +1053,11 @@ ${ JSON.stringify( req.headers, null, ' ' ) }
 ${ JSON.stringify( Object.fromEntries( Object.values( proxyReq[ arr001[ arr001.findIndex( item => item.toString() === 'Symbol(kOutHeaders)' ) ] ] ) ), null, ' ' ) }
 HTTP代理--->${ req.originalUrl }<---End
 \n\n` );
-
-          res.setHeader( 'Content-Type', Mime.getType( req.url ) );
-          res.setHeader( 'x-from', 'viteConfig.server.proxy' );
-          res.setHeader( 'x-dev-type', `${ env_platform }` );
-
-          Object.entries( httpHeaders ).forEach( ( [ keyName, keyValue ], ) => {
-            res.setHeader( keyName, keyValue );
-          } );
-
-          res.statusCode = 200;
-          res.statusMessage = 'OK';
-
-          createReadStream( faviconURL ).pipe( res, {
-            end: true,
-          } );
         } );
       },
     },
     '/apple-touch-icon.png': {
+      target: 'https://0.0.0.0:9200',
       secure: false,
       ssl,
       ws: false,
@@ -1101,7 +1065,6 @@ HTTP代理--->${ req.originalUrl }<---End
       headers: httpHeaders,
       proxyTimeout: 120000,
       timeout: 120000,
-
       configure( proxy, options ){
         proxy.on( 'proxyReq', ( proxyReq, req, res, options ) => {
           const arr001 = Reflect.ownKeys( proxyReq ).filter( item => typeof item === 'symbol' );
@@ -1119,25 +1082,11 @@ ${ JSON.stringify( req.headers, null, ' ' ) }
 ${ JSON.stringify( Object.fromEntries( Object.values( proxyReq[ arr001[ arr001.findIndex( item => item.toString() === 'Symbol(kOutHeaders)' ) ] ] ) ), null, ' ' ) }
 HTTP代理--->${ req.originalUrl }<---End
 \n\n` );
-
-          res.setHeader( 'Content-Type', Mime.getType( req.url ) );
-          res.setHeader( 'x-from', 'viteConfig.server.proxy' );
-          res.setHeader( 'x-dev-type', `${ env_platform }` );
-
-          Object.entries( httpHeaders ).forEach( ( [ keyName, keyValue ], ) => {
-            res.setHeader( keyName, keyValue );
-          } );
-
-          res.statusCode = 200;
-          res.statusMessage = 'OK';
-
-          createReadStream( appleTouchIconURL ).pipe( res, {
-            end: true,
-          } );
         } );
       },
     },
     '/apple-touch-icon-precomposed.png': {
+      target: 'https://0.0.0.0:9200',
       secure: false,
       ssl,
       ws: false,
@@ -1145,7 +1094,6 @@ HTTP代理--->${ req.originalUrl }<---End
       headers: httpHeaders,
       proxyTimeout: 120000,
       timeout: 120000,
-
       configure( proxy, options ){
         proxy.on( 'proxyReq', ( proxyReq, req, res, options ) => {
           const arr001 = Reflect.ownKeys( proxyReq ).filter( item => typeof item === 'symbol' );
@@ -1163,25 +1111,11 @@ ${ JSON.stringify( req.headers, null, ' ' ) }
 ${ JSON.stringify( Object.fromEntries( Object.values( proxyReq[ arr001[ arr001.findIndex( item => item.toString() === 'Symbol(kOutHeaders)' ) ] ] ) ), null, ' ' ) }
 HTTP代理--->${ req.originalUrl }<---End
 \n\n` );
-
-          res.setHeader( 'Content-Type', Mime.getType( req.url ) );
-          res.setHeader( 'x-from', 'viteConfig.server.proxy' );
-          res.setHeader( 'x-dev-type', `${ env_platform }` );
-
-          Object.entries( httpHeaders ).forEach( ( [ keyName, keyValue ], ) => {
-            res.setHeader( keyName, keyValue );
-          } );
-
-          res.statusCode = 200;
-          res.statusMessage = 'OK';
-
-          createReadStream( appleTouchIconURL ).pipe( res, {
-            end: true,
-          } );
         } );
       },
     },
     '/apple-touch-icon-120x120.png': {
+      target: 'https://0.0.0.0:9200',
       secure: false,
       ssl,
       ws: false,
@@ -1189,7 +1123,6 @@ HTTP代理--->${ req.originalUrl }<---End
       headers: httpHeaders,
       proxyTimeout: 120000,
       timeout: 120000,
-
       configure( proxy, options ){
         proxy.on( 'proxyReq', ( proxyReq, req, res, options ) => {
           const arr001 = Reflect.ownKeys( proxyReq ).filter( item => typeof item === 'symbol' );
@@ -1207,25 +1140,11 @@ ${ JSON.stringify( req.headers, null, ' ' ) }
 ${ JSON.stringify( Object.fromEntries( Object.values( proxyReq[ arr001[ arr001.findIndex( item => item.toString() === 'Symbol(kOutHeaders)' ) ] ] ) ), null, ' ' ) }
 HTTP代理--->${ req.originalUrl }<---End
 \n\n` );
-
-          res.setHeader( 'Content-Type', Mime.getType( req.url ) );
-          res.setHeader( 'x-from', 'viteConfig.server.proxy' );
-          res.setHeader( 'x-dev-type', `${ env_platform }` );
-
-          Object.entries( httpHeaders ).forEach( ( [ keyName, keyValue ], ) => {
-            res.setHeader( keyName, keyValue );
-          } );
-
-          res.statusCode = 200;
-          res.statusMessage = 'OK';
-
-          createReadStream( appleTouchIconURL ).pipe( res, {
-            end: true,
-          } );
         } );
       },
     },
     '/apple-touch-icon-120x120-precomposed.png': {
+      target: 'https://0.0.0.0:9200',
       secure: false,
       ssl,
       ws: false,
@@ -1233,7 +1152,6 @@ HTTP代理--->${ req.originalUrl }<---End
       headers: httpHeaders,
       proxyTimeout: 120000,
       timeout: 120000,
-
       configure( proxy, options ){
         proxy.on( 'proxyReq', ( proxyReq, req, res, options ) => {
           const arr001 = Reflect.ownKeys( proxyReq ).filter( item => typeof item === 'symbol' );
@@ -1251,21 +1169,6 @@ ${ JSON.stringify( req.headers, null, ' ' ) }
 ${ JSON.stringify( Object.fromEntries( Object.values( proxyReq[ arr001[ arr001.findIndex( item => item.toString() === 'Symbol(kOutHeaders)' ) ] ] ) ), null, ' ' ) }
 HTTP代理--->${ req.originalUrl }<---End
 \n\n` );
-
-          res.setHeader( 'Content-Type', Mime.getType( req.url ) );
-          res.setHeader( 'x-from', 'viteConfig.server.proxy' );
-          res.setHeader( 'x-dev-type', `${ env_platform }` );
-
-          Object.entries( httpHeaders ).forEach( ( [ keyName, keyValue ], ) => {
-            res.setHeader( keyName, keyValue );
-          } );
-
-          res.statusCode = 200;
-          res.statusMessage = 'OK';
-
-          createReadStream( appleTouchIconURL ).pipe( res, {
-            end: true,
-          } );
         } );
       },
     },
