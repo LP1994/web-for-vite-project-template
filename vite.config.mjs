@@ -2775,7 +2775,7 @@ export default defineConfig( async ( {
       /**
        * @type {'es' | 'iife'} “Web Workers”捆绑的输出格式。默认值为：'iife'。
        */
-      format: 'iife',
+      format: 'es',
       /**
        * @type {(Plugin | Plugin[])[]} 适用于worker bundle的Vite插件。请注意，Vite的顶级配置plugins选项只适用于dev中的worker，对于build，应该在这里进行配置。
        */
@@ -2788,7 +2788,397 @@ export default defineConfig( async ( {
        * https://rollupjs.org/configuration-options/
        */
       rollupOptions: {
-        // ToDo
+        // 核心功能 Start
+
+        output: {
+          // 核心功能 Start
+
+          /**
+           * @type {string} 所有生成的块被放置在哪个目录中。如果生成一个以上的块，这个选项是必需的。否则，可以使用file选项来代替。
+           */
+          dir: resolve( __dirname, `./dist/${ env_platform }/` ),
+          /**
+           * @type {string} 默认值："es"。<br />
+           * 1、指定生成的捆绑包的格式。以下之一：<br />
+           * amd - 异步模块定义，与RequireJS等模块加载器一起使用。<br />
+           * cjs - CommonJS，适用于Node和其他捆绑程序（别名：commonjs）。<br />
+           * es - 将捆绑文件作为ES模块文件，适用于其他捆绑程序，并在现代浏览器中作为<script type=module>标签包含（别名：esm，模块）。<br />
+           * iife - 一个自我执行的函数，适合作为<script>标签包含。(如果你想为你的应用程序创建一个包，你可能想使用这个。)。"iife "代表 "立即调用的函数表达式"。<br />
+           * umd - 通用模块定义，与amd、cjs和iife合二为一。<br />
+           * system - SystemJS加载器的本地格式（别名：systemjs)。<br />
+           */
+          format: 'es',
+
+          // 核心功能 End
+
+          // 高级功能 Start
+
+          /**
+           * @type {string| ((assetInfo: AssetInfo) => string)} 默认值："assets/[name]-[hash][extname]"。用于命名自定义发射资产的模式，以包括在构建输出中，或者为每个资产调用一个函数来返回这样的模式。<br />
+           * 1、模式支持以下占位符：<br />
+           * [extname]：资产的文件扩展名，包括一个前导点，例如：.css。<br />
+           * [ext]：不含前导点的文件扩展名，例如：css。<br />
+           * [hash]：基于资产内容的哈希值。你也可以通过[hash:10]设置一个特定的哈希长度。<br />
+           * [name]：资产的文件名，不包括任何扩展名。<br />
+           * 2、正斜杠/可以用来将文件放在子目录中。<br />
+           * 3、当使用一个函数时，有函数参数assetInfo是generateBundle中的一个缩小版，没有fileName。<br />
+           * 4、函数参数assetInfo拥有的属性：<br />
+           * name：string，一般表示文件名，带扩展名的，值如：'Helvetica.otf'。<br />
+           * source：Uint8Array、string，一般表示文件的源码内容。<br />
+           * type：string，其值一般为：'asset'。<br />
+           */
+          assetFileNames: ( {
+            name,
+            source,
+            type,
+          } ) => {
+            const ext = extname( name );
+
+            if( ext === '.css' ){
+              return `styles/[name]-[hash:16][extname]`;
+            }
+
+            if( fontsForAssets.map( item => `.${ item }` ).includes( ext ) ){
+              return `fonts/[name]-[hash:16][extname]`;
+            }
+
+            if( imgForAssets.map( item => `.${ item }` ).includes( ext ) ){
+              return `img/[name]-[hash:16][extname]`;
+            }
+
+            if( musicForAssets.map( item => `.${ item }` ).includes( ext ) ){
+              return `music/[name]-[hash:16][extname]`;
+            }
+
+            if( videosForAssets.map( item => `.${ item }` ).includes( ext ) ){
+              return `videos/[name]-[hash:16][extname]`;
+            }
+
+            if( pwa_manifestForAssets.map( item => `.${ item }` )
+            .includes( ext ) || ( ext === '.json' && name.includes( '.manifest.json' ) ) ){
+              return `pwa_manifest/[name]-[hash:16][extname]`;
+            }
+
+            return `assets/[name]-[hash:16][extname]`;
+          },
+          /**
+           * @type {string | ((chunkInfo: ChunkInfo) => string)} 默认值："[name]-[hash].js"。用于命名代码拆分时创建的共享块的模式，或者为每个块调用一个函数以返回这样的模式。<br />
+           * 1、模式支持以下占位符：<br />
+           * [format]：输出选项中定义的渲染格式，例如es或cjs。<br />
+           * [hash]：仅基于最终生成的块的内容的哈希值，包括renderChunk中的转换和任何引用的文件哈希值。你也可以通过[hash:10]设置一个特定的哈希值长度。<br />
+           * [name]：块的名称。这可以通过output.manualChunks选项明确设置，或者在插件通过this.emitFile创建大块时设置。否则，它将从块的内容中导出。<br />
+           * 2、正斜杠/可以用来将文件放在子目录中。<br />
+           * 3、当使用一个函数时，函数参数chunkInfo是generateBundle中的一个简化版本，没有依赖于文件名的属性，也没有关于渲染模块的信息，因为渲染只发生在文件名生成之后。<br />
+           * 4、然而，你可以访问所包含的moduleIds的列表。<br />
+           * 5、函数参数chunkInfo拥有的属性：<br />
+           * exports：值如：[]。<br />
+           * facadeModuleId：值如：null。<br />
+           * isDynamicEntry：值如：false。<br />
+           * isEntry：值如：false。<br />
+           * isImplicitEntry：值如：false。<br />
+           * moduleIds：值如：[ '\x00vite/modulepreload-polyfill' ]。<br />
+           * name：值如：'modulepreload-polyfill'。<br />
+           * type：值如：'chunk'。<br />
+           */
+          chunkFileNames: ( {
+            exports,
+            facadeModuleId,
+            isDynamicEntry,
+            isEntry,
+            isImplicitEntry,
+            moduleIds,
+            name,
+            type,
+          } ) => {
+            return `js/[name]-[hash:16].js`;
+          },
+          /**
+           * @type {boolean} 默认值：false。这将使rollup生成的包装代码最小化。注意，这并不影响用户编写的代码。这个选项在捆绑预minified代码时很有用。<br />
+           */
+          compact: isProduction,
+          /**
+           * @type {boolean} 默认值：true。虽然CommonJS输出最初只支持require(...)来导入依赖关系，但最近的Node版本也开始支持import(...)，这是从CommonJS文件中导入ES模块的唯一方法。<br />
+           * 如果这个选项为true，也就是默认情况下，Rollup会在CommonJS输出中保持外部动态导入为import(...)表达式。<br />
+           * 将此设置为false，可以使用require(...)语法重写动态导入。<br />
+           */
+          // dynamicImportInCjs: true,
+          /**
+           * @type {string | ((chunkInfo: ChunkInfo) => string)} 默认值："[name].js"。用于从入口点创建的块的模式，或者为每个入口块调用一个函数以返回这样的模式。<br />
+           * 1、模式支持以下占位符：<br />
+           * [format]：输出选项中定义的渲染格式，例如es或cjs。<br />
+           * [hash]：仅基于最终生成的条目块内容的哈希值，包括renderChunk中的转换和任何引用的文件哈希值。你也可以通过[hash:10]设置一个特定的哈希值长度。<br />
+           * [name]：入口点的文件名（不含扩展名），除非输入的对象形式被用来定义一个不同的名字。<br />
+           * 2、正斜杠/可以用来将文件放在子目录中。<br />
+           * 3、当使用一个函数时，函数参数chunkInfo是generateBundle中的一个简化版本，没有依赖于文件名的属性，也没有关于渲染模块的信息，因为渲染只发生在文件名生成之后。<br />
+           * 4、然而，你可以访问所包含的moduleIds的列表。<br />
+           * 5、在设置output.preserveModules选项时，这个模式也将被用于每个文件。<br />
+           * 6、注意，在这种情况下，[name]将包括来自输出根的相对路径和可能的原始文件扩展名，如果它不是.js、.jsx、.cjs、.ts、.tsx、.mts或.cts之一。<br />
+           * 7、函数参数chunkInfo拥有的属性：<br />
+           * exports：值如：[]。<br />
+           * facadeModuleId：值如：'G:/WebStormWS/web-for-vite-project-template/HelloWorld.html'。<br />
+           * isDynamicEntry：值如：false。<br />
+           * isEntry：值如：true。<br />
+           * isImplicitEntry：值如：false。<br />
+           * moduleIds：值如：[
+           *     'G:/WebStormWS/web-for-vite-project-template/src/pages/hello_world/HelloWorld.css',
+           *     'G:/WebStormWS/web-for-vite-project-template/src/tools/ts/universal_tools/UniversalTools.esm.mts',
+           *     'G:/WebStormWS/web-for-vite-project-template/src/pages/hello_world/HelloWorld.mjs',
+           *     'G:/WebStormWS/web-for-vite-project-template/HelloWorld.html'
+           *   ]。<br />
+           * name：值如：'HelloWorld'。<br />
+           * type：值如：'chunk'。<br />
+           */
+          entryFileNames: ( {
+            exports,
+            facadeModuleId,
+            isDynamicEntry,
+            isEntry,
+            isImplicitEntry,
+            moduleIds,
+            name,
+            type,
+          } ) => {
+            return 'js/[name]-[hash:16].js';
+          },
+          /**
+           * @type {boolean} 默认值：true。<br />
+           * 1、如果输出格式是es，是否在输出中为外部导入添加导入断言。<br />
+           * 2、默认情况下，断言取自输入文件，但插件可以稍后添加或删除断言。<br />
+           * 3、例如，import "foo" assert {type: "json"}将导致相同的导入出现在输出中，除非该选项被设置为false。<br />
+           * 4、注意，一个模块的所有导入都需要有一致的断言，否则会发出警告。<br />
+           */
+          // externalImportAssertions: true,
+          /**
+           * @type {"es5" | "es2015"| { arrowFunctions?: boolean, constBindings?: boolean, objectShorthand?: boolean, preset?: "es5"| "es2015", reservedNamesAsProps?: boolean, symbols?: boolean }} 默认值："es5"。<br />
+           * 1、Rollup可以在生成的代码中安全地使用哪些语言特性。这不会转译任何用户代码，而只是改变Rollup在包装器和帮助器中使用的代码。你可以从几个预设中选择一个：<br />
+           * "es5"：不要使用ES2015+的功能，如箭头函数，但不要引用作为道具的保留名称。<br />
+           * "es2015"：使用ES2015之前的任何JavaScript特性。<br />
+           */
+          generatedCode: {
+            preset: 'es2015',
+            arrowFunctions: true,
+            constBindings: true,
+            objectShorthand: true,
+            reservedNamesAsProps: true,
+            symbols: true,
+          },
+          /**
+           * @type {boolean} 默认值：true。默认情况下，当创建多个分块时，入口分块的横向导入将作为空导入添加到入口分块中。<br />
+           * 1、请参阅 "为什么在代码拆分时，额外的导入会出现在我的条目块中？"了解详情和背景。<br />
+           * 2、将此选项设置为false将禁用这一行为。<br />
+           * 3、当使用output.preserveModules选项时，这个选项会被忽略，因为在这里，导入永远不会被挂起。<br />
+           */
+          // hoistTransitiveImports: true,
+          /**
+           * @type {boolean} 默认值：false。这将内联动态导入，而不是创建新的块来创建一个单一的捆绑。<br />
+           * 1、只有在提供单一输入的情况下才可能。<br />
+           * 2、注意，这将改变执行顺序：如果动态导入被内联，一个只被动态导入的模块将被立即执行。<br />
+           */
+          // inlineDynamicImports: false,
+          /**
+           * @type {"compat" | "auto"| "esModule"| "default"| "defaultOnly"| ((id: string) => "compat"| "auto"| "esModule"| "default"| "defaultOnly")} 默认值："default"。<br />
+           * 1、控制Rollup如何处理默认、命名空间和来自外部依赖的动态导入，像CommonJS这样的格式不原生支持这些概念。<br />
+           * 2、请注意，"default "的默认模式是模仿NodeJS的行为，与TypeScript的esModuleInterop不同。<br />
+           * 3、要获得TypeScript的行为，明确地将该值设置为 "auto"。<br />
+           * 4、在例子中，我们将使用CommonJS格式，但互操作的选择也同样适用于AMD、IIFE和UMD目标。<br />
+           */
+          interop: 'auto',
+          /**
+           * @type {boolean} 默认值：对于es和system格式，或者如果output.compact为真，则为真，否则为假。<br />
+           * 1、默认情况下，对于格式es和system或者output.compact为true，Rollup会尝试将内部变量导出为单字母变量，以便更好地进行最小化。<br />
+           */
+          minifyInternalExports: false,
+          /**
+           * @type {boolean | 'inline'| 'hidden'} 默认值：false。<br />
+           * 1、如果是 "true"，将创建一个单独的源图文件。<br />
+           * 2、如果是 "inline"，源码表将作为一个数据URI被附加到结果输出文件中。<br />
+           * 3、"hidden "的工作原理与 "true "类似，只是捆绑文件中相应的源码表注释会被抑制。<br />
+           */
+          sourcemap: isProduction,
+          /**
+           * @type {boolean} 默认值：false。如果为true，源码的实际代码将不会被添加到源码图中，使其大大缩小。<br />
+           */
+          sourcemapExcludeSources: isProduction,
+
+          // 高级功能 End
+        },
+
+        // 核心功能 End
+
+        // 高级功能 Start
+
+        /**
+         * @type {RollupCache | boolean} 默认值：true。前一个捆绑包的缓存属性。用它来加速观察模式下的后续构建--Rollup只会重新分析有变化的模块。将此选项明确设置为false将阻止生成bundle上的缓存属性，也会停用插件的缓存。<br />
+         */
+        cache: true,
+        /**
+         * @type {boolean| "ifRelativeSource"} 默认值：'ifRelativeSource'。决定绝对的外部路径是否应该在输出中转换为相对路径。这不仅适用于源文件中的绝对路径，也适用于由插件或Rollup核心解析为绝对路径的路径。<br />
+         * 1、对于这种情况，"ifRelativeSource "检查原始导入是否是相对导入，然后才在输出中转换为相对导入。选择 "false "将在输出中保持所有路径为绝对路径。<br />
+         */
+        // makeAbsoluteExternalsRelative: 'ifRelativeSource',
+        /**
+         * @type {number} 默认值：20。限制rollup在读取模块或写块时平行打开的文件数量。<br />
+         * 1、如果没有限制或者数值足够高，构建可能会失败，出现 "EMFILE: Too many open files"（EMFILE：太多的开放文件）。
+         * 2、这取决于操作系统允许多少个开放文件处理。<br />
+         */
+        maxParallelFileOps: 200 + cpus().length - 1,
+        /**
+         * @type {"strict" | "allow-extension" | "exports-only"| false} 默认值："exports-only"。控制汇总是否尝试确保条目区块与基础条目模块具有相同的导出。<br />
+         * 1、如果设置为“strict”，Rollup将在条目块中创建与相应条目模块中完全相同的导出。如果这是不可能的，因为需要向区块添加额外的内部导出，Rollup将创建一个“facade”入口区块，该区块只从其他区块重新导出必要的绑定，但不包含其他代码。这是库的建议设置。<br />
+         * 2、"allow-extension"将在入口块中创建入口模块的所有导出，但如果需要，也可以添加额外的导出，从而避免“facade”入口块。此设置对于不需要严格签名的库是有意义的。<br />
+         * 3、如果入口模块具有导出，则“exports-only”的行为类似于“strict”，否则的行为类似“allow-extension”。<br />
+         * 4、false不会将条目模块的任何导出添加到相应的块中，甚至不包括相应的代码，除非这些导出在捆绑包的其他地方使用。不过，内部导出可能会添加到入口块中。这是将条目块放置在脚本标记中的web应用程序的建议设置，因为这可能会减少块的数量，也可能会减少捆绑包的大小。<br />
+         * 5、目前，为单个条目块覆盖此设置的唯一方法是使用插件API，并通过this.emitFile而不是使用input选项发送这些块。<br />
+         */
+        // preserveEntrySignatures: 'exports-only',
+        /**
+         * @type {boolean} 默认值：false。启用此标志后，当使用不推荐使用的功能时，Rollup将抛出一个错误，而不是显示警告。<br />
+         * 1、此外，标记为在下一个主要版本中收到弃用警告的功能在使用时也会引发错误。<br />
+         * 2、此标志旨在供例如插件作者使用，以便能够尽早为即将发布的主要版本调整插件。<br />
+         */
+        strictDeprecations: true,
+
+        // 高级功能 End
+
+        // 危险功能 Start
+
+        // 除非你知道自己在做什么，否则你可能不需要使用这些选项！
+
+        /**
+         * @type {AcornOptions} 应该传递给Acorn的解析函数的任何选项，例如allowReserved:true。<br />
+         * 详细见：<br />
+         * https://github.com/acornjs/acorn/tree/master/acorn#interface
+         * node_modules/acorn/dist/acorn.d.ts:14
+         */
+        acorn: {
+          /**
+           * @type {3 | 5 | 6 | 7 | 8 | 9 | 10 | 2015 | 2016 | 2017 | 2018 | 2019} 指示要解析的ECMAScript版本。<br />
+           * 1、必须是3、5、6（或2015）、7（2016）、8（2017）、9（2018）、10（2019）、11（2020）、12（2021）、13（2022）、14（2023）或"latest"（库支持的最新版本）。<br />
+           * 2、这影响了对严格模式、保留字集的支持以及对新语法功能的支持。<br />
+           */
+          ecmaVersion: 2022,
+          /**
+           * @type {'script' | 'module'} 指示代码应以何种模式进行解析。可以是“script”或“module”。这会影响导入和导出声明的全局严格模式和解析。<br />
+           * 1、注意：如果设置为“module”，则静态import / export语法将有效，即使ecmaVersion小于6。<br />
+           */
+          sourceType: 'module',
+          /**
+           * @type {boolean | 'never'} 如果为false，则使用保留字将生成错误。ecmaVersion 3的默认值为true，而更高版本的默认值则为false。当给定值“never”时，保留字和关键字也不能用作属性名（就像在Internet Explorer的旧解析器中一样）。<br />
+           */
+          allowReserved: false,
+          /**
+           * @type {boolean} 默认情况下，顶级的return语句会引发一个错误。将此设置为true以接受此类代码。
+           */
+          allowReturnOutsideFunction: true,
+          /**
+           * @type {boolean} 默认情况下，导入和导出声明只能出现在程序的顶级。将此选项设置为true可以在允许语句的任何位置使用它们，还可以在脚本中显示import.meta表达式（当sourceType不是“module”时）。
+           */
+          allowImportExportEverywhere: false,
+          /**
+           * @type {boolean} 如果为false，则等待表达式只能出现在异步函数内部。ecmaVersion 2022及更高版本默认为true，较低版本默认为false。将此选项设置为true可以使用顶级等待表达式。不过，在非异步函数中仍然不允许使用它们。
+           */
+          allowAwaitOutsideFunction: true,
+          /**
+           * @type {boolean} 默认情况下，方法外部的super会引发错误。将此设置为true以接受此类代码。
+           */
+          allowSuperOutsideMethod: true,
+          /**
+           * @type {boolean} 启用此选项后，如果代码以字符#!开头（在shell脚本中），第一行将被视为注释。当ecmaVersion>=2023时，默认为true。
+           */
+          allowHashBang: true,
+          /**
+           * @type {boolean} 当为true时，每个节点都有一个附加有起始子对象和结束子对象的loc对象，每个子对象都包含{行，列}形式的从一开始的行和从零开始的列编号。默认值为false。
+           */
+          // locations: false,
+        },
+
+        // 危险功能 End
+
+        // 实验性功能 Start
+
+        /**
+         * @type {number} 默认值：10，确定插件不再使用的缓存资产应在多少次运行后删除。
+         */
+        experimentalCacheExpiry: 100,
+        /**
+         * @type {boolean} 默认值：false，当设置为true时，这将把它在每个文件中发现的第一个副作用记录到控制台。<br />
+         * 1、这对于确定哪些文件有副作用以及实际的副作用是什么非常有帮助。<br />
+         * 2、消除副作用可以改善树的抖动和块的生成，对输出至关重要。实验MinChunkSize有效。<br />
+         * 3、不过，此选项将只记录顶级语句。<br />
+         * 4、有时，例如，在立即调用函数表达式的情况下，实际的副作用可能隐藏在嵌套表达式中。<br />
+         */
+        // experimentalLogSideEffects: false,
+        /**
+         * @type {number} 默认值：0，单位是：字节。在Byte中设置用于代码拆分设置的最小块大小目标。<br />
+         * 1、当该值大于0时，Rollup将尝试将执行时没有副作用的任何块，即仅包含函数定义等并且低于该大小限制的任何块合并到可能在类似条件下加载的另一个块中。<br />
+         * 2、这意味着生成的捆绑包可能会加载还不需要的代码，以减少块的数量。合并后的块没有副作用的条件确保了这不会改变行为。<br />
+         * 3、不幸的是，由于分块的工作方式，在运行任何分块渲染插件（如minifier）之前都会测量分块大小，这意味着你应该使用足够高的限制来考虑这一点。<br />
+         */
+        // experimentalMinChunkSize: 0,
+
+        // 实验性功能 End
+
+        /**
+         * @type {WatcherOptions | false} 默认值：{}。指定监视模式选项或阻止监视此配置。<br />
+         * 1、只有在使用配置数组时，指定false才真正有用。在这种情况下，此配置不会在监视模式更改时生成或重新生成，但会在定期运行Rollup时生成。<br />
+         * 2、只有在使用--watch标志运行Rollup或使用Rollup.watch时，这些选项才会生效。<br />
+         */
+        watch: {
+          /**
+           * @type {number} 默认值：0，配置Rollup在触发重建之前等待进一步更改的时间（以毫秒为单位）。<br />
+           * 1、默认情况下，Rollup不等待，但在chokidar实例中配置了一个小的防跳超时。<br />
+           * 2、将其设置为大于0的值意味着，只有在配置的毫秒数没有变化的情况下，Rollup才会触发重建。<br />
+           * 3、如果监视多个配置，Rollup将使用配置的最大生成延迟。<br />
+           */
+          buildDelay: 0,
+          /**
+           * @type {ChokidarOptions} 手表选项的可选对象，该对象将被传递到绑定的chokidar实例。<br />
+           * 详细见：<br />
+           * https://github.com/paulmillr/chokidar#persistence
+           */
+          chokidar: {
+            persistent: true,
+            ignored: [
+              '**/该文件夹说明.txt',
+              '**/.gitignore',
+              '**/graphQL/doc/**',
+              '**/graphQL/test/**',
+              '**/type_doc/**',
+              '**/unit_test/**',
+              '**/wasm/source_codes/**',
+            ],
+            cwd: resolve( __dirname, `./src` ),
+            depth: 100,
+            ignorePermissionErrors: false,
+          },
+          /**
+           * @type {boolean} 默认值：true，触发重新生成时是否清除屏幕。
+           */
+          clearScreen: false,
+          /**
+           * @type {string | RegExp | (string | RegExp)[]} 阻止监视文件。
+           */
+          exclude: [
+            '**/node_modules/**',
+            '**/该文件夹说明.txt',
+            '**/.gitignore',
+            '**/graphQL/doc/**',
+            '**/graphQL/test/**',
+            '**/type_doc/**',
+            '**/unit_test/**',
+            '**/wasm/source_codes/**',
+          ],
+          /**
+           * @type {string | RegExp | (string | RegExp)[]} 将文件监视限制为某些文件。请注意，这只会过滤模块图，但不允许添加其他监视文件。
+           */
+          include: [
+            'src/**',
+          ],
+          /**
+           * @type {boolean} 默认值：false，触发重建时是否跳过bundle.write()步骤。
+           */
+          skipWrite: false,
+        },
       },
     };
 
