@@ -72,6 +72,10 @@ import {
   viteStaticCopy,
 } from 'vite-plugin-static-copy';
 
+import {
+  ViteToml as VitePluginTOML,
+} from 'vite-plugin-toml';
+
 // 这些个必需保持这各种顺序。End
 
 import DefineConfig from './configures/DefineConfig.esm.mjs';
@@ -2904,6 +2908,9 @@ export default defineConfig( async ( {
         ],
       } ),
       VitePluginJSON5(),
+      VitePluginTOML( {
+        namedExports: true,
+      } ),
       RollupPluginYAML( {
         documentMode: 'single',
         safe: true,
