@@ -48,6 +48,8 @@ import RollupPluginGraphQL from '@rollup/plugin-graphql';
 
 import RollupPluginHandlebars from 'rollup-plugin-handlebars';
 
+import RollupPluginHTML from 'rollup-plugin-html';
+
 import RollupPluginYAML from '@rollup/plugin-yaml';
 
 // 这些个必需保持这各种顺序。Start
@@ -62,11 +64,13 @@ import checker from 'vite-plugin-checker';
 
 import VitePluginHTMLByCustom from './configures/vite_plugin_custom/vite-plugin-html-by-custom.esm.mjs';
 
+import VitePluginJSON5 from 'vite-plugin-json5';
+
+import VitePluginSRIByCustom from './configures/vite_plugin_custom/vite-plugin-sri-by-custom.esm.mjs';
+
 import {
   viteStaticCopy,
 } from 'vite-plugin-static-copy';
-
-import VitePluginSRIByCustom from './configures/vite_plugin_custom/vite-plugin-sri-by-custom.esm.mjs';
 
 // 这些个必需保持这各种顺序。End
 
@@ -2871,6 +2875,35 @@ export default defineConfig( async ( {
           /src[\\/]wasm[\\/].*\.(handlebars|hbs)$/i,
         ],
       } ),
+      RollupPluginHTML( {
+        ...( () => {
+          return isProduction
+                 ? {
+              htmlMinifierOptions: HTMLMinifyConfig,
+            }
+                 : {};
+        } )(),
+        include: [
+          /node_modules[\\/].*\.(htm|html|xhtml)$/i,
+          /src[\\/].*\.(htm|html|xhtml)$/i,
+          /webpack_location[\\/].*\.(htm|html|xhtml)$/i,
+        ],
+        exclude: [
+          /src[\\/]assets[\\/].*\.(htm|html|xhtml)$/i,
+          /src[\\/]custom_declare_types[\\/].*\.(htm|html|xhtml)$/i,
+          /src[\\/]graphQL[\\/].*\.(htm|html|xhtml)$/i,
+          /src[\\/]pwa_manifest[\\/].*\.(htm|html|xhtml)$/i,
+          /src[\\/]static[\\/].*\.(htm|html|xhtml)$/i,
+          /src[\\/]styles[\\/].*\.(htm|html|xhtml)$/i,
+          /src[\\/]template[\\/]ejs[\\/].*\.(htm|html|xhtml)$/i,
+          /src[\\/]template[\\/]handlebars[\\/].*\.(htm|html|xhtml)$/i,
+          /src[\\/]template[\\/]markdown[\\/].*\.(htm|html|xhtml)$/i,
+          /src[\\/]template[\\/]mustache[\\/].*\.(htm|html|xhtml)$/i,
+          /src[\\/]template[\\/]pug_jade[\\/].*\.(htm|html|xhtml)$/i,
+          /src[\\/]wasm[\\/].*\.(htm|html|xhtml)$/i,
+        ],
+      } ),
+      VitePluginJSON5(),
       RollupPluginYAML( {
         documentMode: 'single',
         safe: true,
