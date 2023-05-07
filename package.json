@@ -870,7 +870,7 @@
     "postcss-nested": "^6.0.1",
     "postcss-nested-import": "^1.0.0",
     "postcss-nesting": "^11.2.2",
-    "postcss-no-important": "^10.0.5",
+    "postcss-no-important": "^10.0.6",
     "postcss-normalize-charset": "^6.0.0",
     "postcss-normalize-display-values": "^6.0.0",
     "postcss-normalize-positions": "^6.0.0",

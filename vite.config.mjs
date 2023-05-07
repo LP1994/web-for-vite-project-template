@@ -66,6 +66,10 @@ import VitePluginHTMLByCustom from './configures/vite_plugin_custom/vite-plugin-
 
 import VitePluginJSON5 from 'vite-plugin-json5';
 
+import {
+  plugin as VitePluginMarkdown,
+} from 'vite-plugin-markdown';
+
 import VitePluginSRIByCustom from './configures/vite_plugin_custom/vite-plugin-sri-by-custom.esm.mjs';
 
 import {
@@ -2789,7 +2793,6 @@ export default defineConfig( async ( {
           /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(cson)$/i,
           /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(cson)$/i,
           /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(cson)$/i,
-          /src[\\/]assets[\\/]doc[\\/]txt[\\/].*\.(cson)$/i,
           /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(cson)$/i,
           /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(cson)$/i,
           /src[\\/]assets[\\/]fonts[\\/].*\.(cson)$/i,
@@ -2815,7 +2818,6 @@ export default defineConfig( async ( {
           /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(csv|tsv)$/i,
           /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(csv|tsv)$/i,
           /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(csv|tsv)$/i,
-          /src[\\/]assets[\\/]doc[\\/]txt[\\/].*\.(csv|tsv)$/i,
           /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(csv|tsv)$/i,
           /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(csv|tsv)$/i,
           /src[\\/]assets[\\/]fonts[\\/].*\.(csv|tsv)$/i,
@@ -2907,9 +2909,99 @@ export default defineConfig( async ( {
           /src[\\/]wasm[\\/].*\.(htm|html|xhtml)$/i,
         ],
       } ),
-      VitePluginJSON5(),
+      // .json5、.jsonc
+      VitePluginJSON5( {
+        include: [
+          /node_modules[\\/].*\.(json5)$/i,
+          /src[\\/].*\.(json5)$/i,
+          /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(json5)$/i,
+          /webpack_location[\\/].*\.(json5)$/i,
+        ],
+        exclude: [
+          /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(json5)$/i,
+          /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(json5)$/i,
+          /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(json5)$/i,
+          /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(json5)$/i,
+          /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(json5)$/i,
+          /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(json5)$/i,
+          /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(json5)$/i,
+          /src[\\/]assets[\\/]fonts[\\/].*\.(json5)$/i,
+          /src[\\/]assets[\\/]img[\\/].*\.(json5)$/i,
+          /src[\\/]assets[\\/]music[\\/].*\.(json5)$/i,
+          /src[\\/]assets[\\/]videos[\\/].*\.(json5)$/i,
+          /src[\\/]custom_declare_types[\\/].*\.(json5)$/i,
+          /src[\\/]graphQL[\\/].*\.(json5)$/i,
+          /src[\\/]pwa_manifest[\\/].*\.(json5)$/i,
+          /src[\\/]static[\\/].*\.(json5)$/i,
+          /src[\\/]styles[\\/].*\.(json5)$/i,
+          /src[\\/]wasm[\\/].*\.(json5)$/i,
+        ],
+      } ),
+      // .toml
       VitePluginTOML( {
         namedExports: true,
+        include: [
+          /node_modules[\\/].*\.(toml)$/i,
+          /src[\\/].*\.(toml)$/i,
+          /webpack_location[\\/].*\.(toml)$/i,
+        ],
+        exclude: [
+          /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(toml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(toml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(toml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(toml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(toml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(toml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(toml)$/i,
+          /src[\\/]assets[\\/]fonts[\\/].*\.(toml)$/i,
+          /src[\\/]assets[\\/]img[\\/].*\.(toml)$/i,
+          /src[\\/]assets[\\/]music[\\/].*\.(toml)$/i,
+          /src[\\/]assets[\\/]videos[\\/].*\.(toml)$/i,
+          /src[\\/]custom_declare_types[\\/].*\.(toml)$/i,
+          /src[\\/]graphQL[\\/].*\.(toml)$/i,
+          /src[\\/]pwa_manifest[\\/].*\.(toml)$/i,
+          /src[\\/]static[\\/].*\.(toml)$/i,
+          /src[\\/]styles[\\/].*\.(toml)$/i,
+          /src[\\/]wasm[\\/].*\.(toml)$/i,
+        ],
+      } ),
+      // .md
+      VitePluginMarkdown( {
+        mode: [
+          'html',
+          'markdown',
+          'toc',
+          'react',
+          'vue',
+        ],
+        markdownIt: {
+          html: false,
+          xhtmlOut: true,
+          breaks: false,
+          langPrefix: 'language-',
+          linkify: true,
+          typographer: true,
+          quotes: '“”‘’',
+        },
+        include: [
+          /node_modules[\\/].*\.(md)$/i,
+          /src[\\/].*\.(md)$/i,
+          /webpack_location[\\/].*\.(md)$/i,
+        ],
+        exclude: [
+          /src[\\/]assets[\\/].*\.(md)$/i,
+          /src[\\/]custom_declare_types[\\/].*\.(md)$/i,
+          /src[\\/]graphQL[\\/].*\.(md)$/i,
+          /src[\\/]pwa_manifest[\\/].*\.(md)$/i,
+          /src[\\/]static[\\/].*\.(md)$/i,
+          /src[\\/]styles[\\/].*\.(md)$/i,
+          /src[\\/]template[\\/]ejs[\\/].*\.(md)$/i,
+          /src[\\/]template[\\/]handlebars[\\/].*\.(md)$/i,
+          /src[\\/]template[\\/]html[\\/].*\.(md)$/i,
+          /src[\\/]template[\\/]mustache[\\/].*\.(md)$/i,
+          /src[\\/]template[\\/]pug_jade[\\/].*\.(md)$/i,
+          /src[\\/]wasm[\\/].*\.(md)$/i,
+        ],
       } ),
       RollupPluginYAML( {
         documentMode: 'single',
@@ -2926,7 +3018,6 @@ export default defineConfig( async ( {
           /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(yaml|yml)$/i,
           /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(yaml|yml)$/i,
           /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(yaml|yml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]txt[\\/].*\.(yaml|yml)$/i,
           /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(yaml|yml)$/i,
           /src[\\/]assets[\\/]fonts[\\/].*\.(yaml|yml)$/i,
           /src[\\/]assets[\\/]img[\\/].*\.(yaml|yml)$/i,
