@@ -5,11 +5,7 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var rollupPluginutils = require('@rollup/pluginutils');
 var Handlebars = _interopDefault(require('handlebars'));
 
-// My Code Start
-
-var HandlebarsCompiler = require( 'handlebars/runtime' )[ 'default' ];
-
-// My Code End
+var HandlebarsCompiler = require('handlebars/runtime')['default'];
 
 function index () {
   var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
@@ -25,14 +21,8 @@ function index () {
       //console.dir(templateFunction.toString());
       var compiled = '';
       //see https://github.com/epeli/node-hbsfy/blob/master/runtime.js for inspiration
-
-      // My Code Start
-
       compiled += 'import HandlebarsCompiler from \'handlebars/runtime\';\n';
-      compiled += 'export default HandlebarsCompiler.template(' + templateFunction.toString() + ');\n';
-
-      // My Code End
-
+      compiled += "export default HandlebarsCompiler.template(" + templateFunction.toString() + ");\n";
       //console.log(compiled);
       return {
         code: compiled,

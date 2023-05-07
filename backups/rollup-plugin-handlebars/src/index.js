@@ -1,12 +1,7 @@
 import { createFilter } from '@rollup/pluginutils';
 import Handlebars from 'handlebars';
 
-// My Code Start
-
-// const compiler = require( 'handlebars/runtime')['default'];
-import HandlebarsCompiler from 'handlebars/runtime';
-
-// My Code End
+const HandlebarsCompiler = require( 'handlebars/runtime')['default'];
 
 export default function (options = {}) {
   const filter = createFilter(
@@ -23,14 +18,8 @@ export default function (options = {}) {
       //console.dir(templateFunction.toString());
       let compiled = '';
       //see https://github.com/epeli/node-hbsfy/blob/master/runtime.js for inspiration
-
-      // My Code Start
-
       compiled += 'import HandlebarsCompiler from \'handlebars/runtime\';\n';
-      compiled += 'export default HandlebarsCompiler.template(' + templateFunction.toString() + ');\n';
-
-      // My Code End
-
+      compiled += "export default HandlebarsCompiler.template(" + templateFunction.toString() + ");\n";
       //console.log(compiled);
       return {
         code:compiled,
