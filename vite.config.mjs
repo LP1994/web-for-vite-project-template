@@ -48,9 +48,9 @@ import RollupPluginGraphQL from '@rollup/plugin-graphql';
 
 import RollupPluginHandlebars from 'rollup-plugin-handlebars';
 
-import RollupPluginHTML from 'rollup-plugin-html';
-
 import RollupPluginMustache from 'rollup-plugin-mustache';
+
+import RollupPluginPUG from 'rollup-plugin-pug';
 
 import RollupPluginYAML from '@rollup/plugin-yaml';
 
@@ -81,6 +81,8 @@ import {
 import {
   ViteToml as VitePluginTOML,
 } from 'vite-plugin-toml';
+
+import VitePluginXML from 'vite-plugin-xml-loader';
 
 // 这些个必需保持这各种顺序。End
 
@@ -1196,14 +1198,14 @@ export default defineConfig( async ( {
          * 如果分析没有发现ES模块的特定语句或者transformMixedEsModules为真，这些文件将被分析和转码。<br />
          */
         include: [
-          `*.cjs`,
-          `*.cts`,
+          /node_modules/,
         ],
         /**
          * @type {string[]} 默认值为：['.js']。<br />
          * 1、对于无扩展名的导入，按照指定的顺序搜索.js以外的扩展名。注意，你需要确保非JavaScript文件先由另一个插件转译。<br />
          */
         extensions: [
+          '.js',
           '.cjs',
           '.cts',
         ],
@@ -2883,34 +2885,6 @@ export default defineConfig( async ( {
           /src[\\/]wasm[\\/].*\.(handlebars|hbs)$/i,
         ],
       } ),
-      RollupPluginHTML( {
-        ...( () => {
-          return isProduction
-                 ? {
-              htmlMinifierOptions: HTMLMinifyConfig,
-            }
-                 : {};
-        } )(),
-        include: [
-          /node_modules[\\/].*\.(htm|html|xhtml)$/i,
-          /src[\\/].*\.(htm|html|xhtml)$/i,
-          /webpack_location[\\/].*\.(htm|html|xhtml)$/i,
-        ],
-        exclude: [
-          /src[\\/]assets[\\/].*\.(htm|html|xhtml)$/i,
-          /src[\\/]custom_declare_types[\\/].*\.(htm|html|xhtml)$/i,
-          /src[\\/]graphQL[\\/].*\.(htm|html|xhtml)$/i,
-          /src[\\/]pwa_manifest[\\/].*\.(htm|html|xhtml)$/i,
-          /src[\\/]static[\\/].*\.(htm|html|xhtml)$/i,
-          /src[\\/]styles[\\/].*\.(htm|html|xhtml)$/i,
-          /src[\\/]template[\\/]ejs[\\/].*\.(htm|html|xhtml)$/i,
-          /src[\\/]template[\\/]handlebars[\\/].*\.(htm|html|xhtml)$/i,
-          /src[\\/]template[\\/]markdown[\\/].*\.(htm|html|xhtml)$/i,
-          /src[\\/]template[\\/]mustache[\\/].*\.(htm|html|xhtml)$/i,
-          /src[\\/]template[\\/]pug_jade[\\/].*\.(htm|html|xhtml)$/i,
-          /src[\\/]wasm[\\/].*\.(htm|html|xhtml)$/i,
-        ],
-      } ),
       // .json5、.jsonc
       VitePluginJSON5( {
         include: [
@@ -3025,6 +2999,65 @@ export default defineConfig( async ( {
           /src[\\/]template[\\/]markdown[\\/].*\.(mustache)$/i,
           /src[\\/]template[\\/]pug_jade[\\/].*\.(mustache)$/i,
           /src[\\/]wasm[\\/].*\.(mustache)$/i,
+        ],
+      } ),
+      RollupPluginPUG( {
+        doctype: 'html',
+        pretty: !isProduction,
+        compileDebug: !isProduction,
+        debug: false,
+        sourceMap: false,
+        staticPattern: /\.(static|html)\.(pug|jade)$/i,
+        extensions: [
+          '.pug',
+          '.jade',
+        ],
+        include: [
+          /node_modules[\\/].*\.(pug|jade)$/i,
+          /src[\\/].*\.(pug|jade)$/i,
+          /webpack_location[\\/].*\.(pug|jade)$/i,
+        ],
+        exclude: [
+          /\.(static|html)\.(pug|jade)$/i,
+          /src[\\/]assets[\\/].*\.(pug|jade)$/i,
+          /src[\\/]custom_declare_types[\\/].*\.(pug|jade)$/i,
+          /src[\\/]graphQL[\\/].*\.(pug|jade)$/i,
+          /src[\\/]pwa_manifest[\\/].*\.(pug|jade)$/i,
+          /src[\\/]static[\\/].*\.(pug|jade)$/i,
+          /src[\\/]styles[\\/].*\.(pug|jade)$/i,
+          /src[\\/]template[\\/]ejs[\\/].*\.(pug|jade)$/i,
+          /src[\\/]template[\\/]handlebars[\\/].*\.(pug|jade)$/i,
+          /src[\\/]template[\\/]html[\\/].*\.(pug|jade)$/i,
+          /src[\\/]template[\\/]markdown[\\/].*\.(pug|jade)$/i,
+          /src[\\/]template[\\/]mustache[\\/].*\.(pug|jade)$/i,
+          /src[\\/]wasm[\\/].*\.(pug|jade)$/i,
+        ],
+      } ),
+      // .xml
+      VitePluginXML.default( {
+        include: [
+          /node_modules[\\/].*\.(xml)$/i,
+          /src[\\/].*\.(xml)$/i,
+          /webpack_location[\\/].*\.(xml)$/i,
+        ],
+        exclude: [
+          /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(xml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(xml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(xml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(xml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(xml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(xml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(xml)$/i,
+          /src[\\/]assets[\\/]fonts[\\/].*\.(xml)$/i,
+          /src[\\/]assets[\\/]img[\\/].*\.(xml)$/i,
+          /src[\\/]assets[\\/]music[\\/].*\.(xml)$/i,
+          /src[\\/]assets[\\/]videos[\\/].*\.(xml)$/i,
+          /src[\\/]custom_declare_types[\\/].*\.(xml)$/i,
+          /src[\\/]graphQL[\\/].*\.(xml)$/i,
+          /src[\\/]pwa_manifest[\\/].*\.(xml)$/i,
+          /src[\\/]static[\\/].*\.(xml)$/i,
+          /src[\\/]styles[\\/].*\.(xml)$/i,
+          /src[\\/]wasm[\\/].*\.(xml)$/i,
         ],
       } ),
       RollupPluginYAML( {
