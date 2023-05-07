@@ -40,6 +40,16 @@ import JSON5 from 'json5';
 
 import PostcssSCSS from 'postcss-scss';
 
+import RollupPluginCSON from 'rollup-plugin-cson';
+
+import RollupPluginDSV from '@rollup/plugin-dsv';
+
+import RollupPluginGraphQL from '@rollup/plugin-graphql';
+
+import RollupPluginHandlebars from 'rollup-plugin-handlebars';
+
+import RollupPluginYAML from '@rollup/plugin-yaml';
+
 // 这些个必需保持这各种顺序。Start
 
 import {
@@ -2753,6 +2763,142 @@ export default defineConfig( async ( {
       VitePluginSRIByCustom( {
         hashFuncNames: 'sha512',
         warn: false,
+      } ),
+      RollupPluginCSON( {
+        compact: isProduction,
+        // indent: '\t',
+        namedExports: true,
+        objectShorthand: true,
+        preferConst: true,
+        include: [
+          /node_modules[\\/].*\.(cson)$/i,
+          /src[\\/].*\.(cson)$/i,
+          /webpack_location[\\/].*\.(cson)$/i,
+        ],
+        exclude: [
+          /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(cson)$/i,
+          /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(cson)$/i,
+          /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(cson)$/i,
+          /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(cson)$/i,
+          /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(cson)$/i,
+          /src[\\/]assets[\\/]doc[\\/]txt[\\/].*\.(cson)$/i,
+          /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(cson)$/i,
+          /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(cson)$/i,
+          /src[\\/]assets[\\/]fonts[\\/].*\.(cson)$/i,
+          /src[\\/]assets[\\/]img[\\/].*\.(cson)$/i,
+          /src[\\/]assets[\\/]music[\\/].*\.(cson)$/i,
+          /src[\\/]assets[\\/]videos[\\/].*\.(cson)$/i,
+          /src[\\/]custom_declare_types[\\/].*\.(cson)$/i,
+          /src[\\/]graphQL[\\/].*\.(cson)$/i,
+          /src[\\/]pwa_manifest[\\/].*\.(cson)$/i,
+          /src[\\/]static[\\/].*\.(cson)$/i,
+          /src[\\/]styles[\\/].*\.(cson)$/i,
+          /src[\\/]wasm[\\/].*\.(cson)$/i,
+        ],
+      } ),
+      RollupPluginDSV( {
+        include: [
+          /node_modules[\\/].*\.(csv|tsv)$/i,
+          /src[\\/].*\.(csv|tsv)$/i,
+          /webpack_location[\\/].*\.(csv|tsv)$/i,
+        ],
+        exclude: [
+          /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(csv|tsv)$/i,
+          /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(csv|tsv)$/i,
+          /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(csv|tsv)$/i,
+          /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(csv|tsv)$/i,
+          /src[\\/]assets[\\/]doc[\\/]txt[\\/].*\.(csv|tsv)$/i,
+          /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(csv|tsv)$/i,
+          /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(csv|tsv)$/i,
+          /src[\\/]assets[\\/]fonts[\\/].*\.(csv|tsv)$/i,
+          /src[\\/]assets[\\/]img[\\/].*\.(csv|tsv)$/i,
+          /src[\\/]assets[\\/]music[\\/].*\.(csv|tsv)$/i,
+          /src[\\/]assets[\\/]videos[\\/].*\.(csv|tsv)$/i,
+          /src[\\/]custom_declare_types[\\/].*\.(csv|tsv)$/i,
+          /src[\\/]graphQL[\\/].*\.(csv|tsv)$/i,
+          /src[\\/]pwa_manifest[\\/].*\.(csv|tsv)$/i,
+          /src[\\/]static[\\/].*\.(csv|tsv)$/i,
+          /src[\\/]styles[\\/].*\.(csv|tsv)$/i,
+          /src[\\/]wasm[\\/].*\.(csv|tsv)$/i,
+        ],
+      } ),
+      RollupPluginGraphQL( {
+        include: [
+          /node_modules[\\/].*\.(graphql|graphqls|gql)$/i,
+          /src[\\/].*\.(graphql|graphqls|gql)$/i,
+          /webpack_location[\\/].*\.(graphql|graphqls|gql)$/i,
+        ],
+        exclude: [
+          /src[\\/]assets[\\/].*\.(graphql|graphqls|gql)$/i,
+          /src[\\/]custom_declare_types[\\/].*\.(graphql|graphqls|gql)$/i,
+          /src[\\/]graphQL[\\/]doc[\\/].*\.(graphql|graphqls|gql)$/i,
+          /src[\\/]graphQL[\\/]test[\\/].*\.(graphql|graphqls|gql)$/i,
+          /src[\\/]pwa_manifest[\\/].*\.(graphql|graphqls|gql)$/i,
+          /src[\\/]static[\\/].*\.(graphql|graphqls|gql)$/i,
+          /src[\\/]styles[\\/].*\.(graphql|graphqls|gql)$/i,
+          /src[\\/]wasm[\\/].*\.(graphql|graphqls|gql)$/i,
+        ],
+      } ),
+      RollupPluginHandlebars( {
+        sourceMap: false,
+        noEscape: false,
+        strict: true,
+        preventIndent: true,
+        // 设置成true会报错！
+        compat: false,
+        assumeObjects: true,
+        // knownHelpers: true,
+        // knownHelpersOnly: false,
+        // ignoreStandalone: true,
+        // explicitPartialContext: false,
+        include: [
+          /node_modules[\\/].*\.(handlebars|hbs)$/i,
+          /src[\\/].*\.(handlebars|hbs)$/i,
+          /webpack_location[\\/].*\.(handlebars|hbs)$/i,
+        ],
+        exclude: [
+          /src[\\/]assets[\\/].*\.(handlebars|hbs)$/i,
+          /src[\\/]custom_declare_types[\\/].*\.(handlebars|hbs)$/i,
+          /src[\\/]graphQL[\\/].*\.(handlebars|hbs)$/i,
+          /src[\\/]pwa_manifest[\\/].*\.(handlebars|hbs)$/i,
+          /src[\\/]static[\\/].*\.(handlebars|hbs)$/i,
+          /src[\\/]styles[\\/].*\.(handlebars|hbs)$/i,
+          /src[\\/]template[\\/]ejs[\\/].*\.(handlebars|hbs)$/i,
+          /src[\\/]template[\\/]html[\\/].*\.(handlebars|hbs)$/i,
+          /src[\\/]template[\\/]markdown[\\/].*\.(handlebars|hbs)$/i,
+          /src[\\/]template[\\/]mustache[\\/].*\.(handlebars|hbs)$/i,
+          /src[\\/]template[\\/]pug_jade[\\/].*\.(handlebars|hbs)$/i,
+          /src[\\/]wasm[\\/].*\.(handlebars|hbs)$/i,
+        ],
+      } ),
+      RollupPluginYAML( {
+        documentMode: 'single',
+        safe: true,
+        include: [
+          /node_modules[\\/].*\.(yaml|yml)$/i,
+          /src[\\/].*\.(yaml|yml)$/i,
+          /webpack_location[\\/].*\.(yaml|yml)$/i,
+        ],
+        exclude: [
+          /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(yaml|yml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(yaml|yml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(yaml|yml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(yaml|yml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(yaml|yml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(yaml|yml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]txt[\\/].*\.(yaml|yml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(yaml|yml)$/i,
+          /src[\\/]assets[\\/]fonts[\\/].*\.(yaml|yml)$/i,
+          /src[\\/]assets[\\/]img[\\/].*\.(yaml|yml)$/i,
+          /src[\\/]assets[\\/]music[\\/].*\.(yaml|yml)$/i,
+          /src[\\/]assets[\\/]videos[\\/].*\.(yaml|yml)$/i,
+          /src[\\/]custom_declare_types[\\/].*\.(yaml|yml)$/i,
+          /src[\\/]graphQL[\\/].*\.(yaml|yml)$/i,
+          /src[\\/]pwa_manifest[\\/].*\.(yaml|yml)$/i,
+          /src[\\/]static[\\/].*\.(yaml|yml)$/i,
+          /src[\\/]styles[\\/].*\.(yaml|yml)$/i,
+          /src[\\/]wasm[\\/].*\.(yaml|yml)$/i,
+        ],
       } ),
     ],
     /**
