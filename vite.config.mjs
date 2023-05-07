@@ -50,6 +50,8 @@ import RollupPluginHandlebars from 'rollup-plugin-handlebars';
 
 import RollupPluginHTML from 'rollup-plugin-html';
 
+import RollupPluginMustache from 'rollup-plugin-mustache';
+
 import RollupPluginYAML from '@rollup/plugin-yaml';
 
 // 这些个必需保持这各种顺序。Start
@@ -3001,6 +3003,28 @@ export default defineConfig( async ( {
           /src[\\/]template[\\/]mustache[\\/].*\.(md)$/i,
           /src[\\/]template[\\/]pug_jade[\\/].*\.(md)$/i,
           /src[\\/]wasm[\\/].*\.(md)$/i,
+        ],
+      } ),
+      RollupPluginMustache( {
+        hoganKey: `hogan.js`,
+        include: [
+          /node_modules[\\/].*\.(mustache)$/i,
+          /src[\\/].*\.(mustache)$/i,
+          /webpack_location[\\/].*\.(mustache)$/i,
+        ],
+        exclude: [
+          /src[\\/]assets[\\/].*\.(mustache)$/i,
+          /src[\\/]custom_declare_types[\\/].*\.(mustache)$/i,
+          /src[\\/]graphQL[\\/].*\.(mustache)$/i,
+          /src[\\/]pwa_manifest[\\/].*\.(mustache)$/i,
+          /src[\\/]static[\\/].*\.(mustache)$/i,
+          /src[\\/]styles[\\/].*\.(mustache)$/i,
+          /src[\\/]template[\\/]ejs[\\/].*\.(mustache)$/i,
+          /src[\\/]template[\\/]handlebars[\\/].*\.(mustache)$/i,
+          /src[\\/]template[\\/]html[\\/].*\.(mustache)$/i,
+          /src[\\/]template[\\/]markdown[\\/].*\.(mustache)$/i,
+          /src[\\/]template[\\/]pug_jade[\\/].*\.(mustache)$/i,
+          /src[\\/]wasm[\\/].*\.(mustache)$/i,
         ],
       } ),
       RollupPluginYAML( {
