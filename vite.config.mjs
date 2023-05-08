@@ -66,7 +66,11 @@ import checker from 'vite-plugin-checker';
 
 import VitePluginHTMLByCustom from './configures/vite_plugin_custom/vite-plugin-html-by-custom.esm.mjs';
 
+import VitePluginInject from '@rollup/plugin-inject';
+
 import VitePluginJSON5 from 'vite-plugin-json5';
+
+import VitePluginLegacy from '@vitejs/plugin-legacy';
 
 import {
   plugin as VitePluginMarkdown,
@@ -213,7 +217,51 @@ const browserslist = [
     // 移动端各主流浏览器的最新版本，至20230504。Start
     'ios16',
     // 移动端各主流浏览器的最新版本，至20230504。End
-  ];
+  ],
+  /**
+   * @type {object} 目标浏览器版本。<br />
+   * 1、支持的标识符有：<br />
+   * android、chrome、deno（支持的最低版本为'1.0'）、edge、electron、firefox、ie、ios、node、opera、rhino、safari、samsung，其他的会报错。<br />
+   * 具体见：node_modules/@babel/helper-compilation-targets/lib/options.js。<br />
+   * 2、也支持其他的别名标识符，但是不建议用别名标识符，因为如果设置了这些别名会报错（因为相关代码貌似并没使用这个别名映射）：<br />
+   * and_chr（对应：chrome）、and_ff（对应：firefox）、ios_saf（对应：ios）、ie_mob（对应：ie）、op_mob（对应：opera）。<br />
+   * 其他的别名会报错。<br />
+   * 具体见：node_modules/@babel/core/lib/config/validation/option-assertions.js。<br />
+   */
+  vite_plugin_legacy_target = {
+    // PC端完全支持ES 5的主流浏览器 Start
+    // chrome: 23,
+    // firefox: 21,
+    // ie 9不支持ECMAScript 5的"use strict"，但是ie 10真正的完全支持ECMAScript 5了。
+    // ie: 9,
+    // safari: 6,
+    // Opera 15开始改用基于Chromium 28的，也是从15开始其内核跟Chrome一致了。
+    // opera: 15,
+    // PC端完全支持ES 5的主流浏览器 End
+
+    // PC端完全支持ES 6（ECMAScript 2015）的主流浏览器 Start
+    // chrome: 58,
+    // firefox: 54,
+    // 这里的Edge是指旧版的微软Edge（版本从12到18），它是用微软的浏览器引擎EdgeHTML和他们的Chakra JavaScript引擎构建的。
+    // edge: 14,
+    // safari: 10,
+    // opera: 55,
+    // PC端完全支持ES 6（ECMAScript 2015）的主流浏览器 End
+
+    // PC端各主流浏览器的最新版本，至20230504。Start
+    chrome: 113,
+    edge: 113,
+    firefox: 112,
+    safari: 16,
+    opera: 98,
+    // PC端各主流浏览器的最新版本，至20230504。End
+
+    // 移动端各主流浏览器的最新版本，至20230504。Start
+    /*从Android 4.4后Android WebView直接跟Chrome同步。*/
+    android: 113,
+    ios: 16,
+    // 移动端各主流浏览器的最新版本，至20230504。End
+  };
 
 // autoprefixer共有三种类型的控制注释：
 // /* autoprefixer: (on|off) */：在注释前后“启用/禁用”整个块的所有Autoprefixer翻译。
@@ -2419,6 +2467,70 @@ export default defineConfig( async ( {
      */
     plugins = [
       /**
+       * @type {object} 自动加载模块，而不必在任何地方“import”或“require”它们。<br />
+       * 1、默认情况下，模块解析路径是从“当前文件夹”和“node_modules”中开始查找。<br />
+       * 2、要导入ES2015模块的“默认导出”，必须指定模块的“默认属性”，也就是说模块必须指定“默认属性”。<br />
+       * 3、每当在模块中遇到标识符作为自由变量时，模块会自动加载，并且标识符会填充加载模块的导出（或“属性”以支持“命名导出”）。<br />
+       * 如：_map: ['lodash', 'map']、Vue: ['vue/dist/vue.esm.js', 'default']。<br />
+       * 4、也可以指定完整路径：identifier: path.resolve(path.join(__dirname, 'src/module1'))。<br />
+       * 5、为第三方包配置时，只要用包名作为value值即可，因为webpack会自动从“node_modules”中查找，并加载相应的模块文件。<br />
+       * 6、为第三方包配置时，不要设置以“./”、“./node_modules/”、“node_modules/”等等开头的value值，当然如果是指向自己的模块文件，那还是要指定完整路径。<br />
+       * 7、element-ui依赖vue 2.X，而当前安装的时vue 3.X，所以如果要使用element-ui，要去安装vue 2.X的包，如：vue@2.6.14。当要使用element-ui且安装了vue 2.X，并且设置了：ELEMENT: 'element-ui'、Vue: 'vue'，那么在代码中使用这两个的时候要写成：Vue.default.use( ELEMENT )。<br />
+       * 8、注意，不同的包，因为其package.json中"exports"字段值的不同，如下设置也会不同的，最好每次都要在代码中测试是否如期望一样达到目的效果。<br />
+       * 9、鉴于某些低版本浏览器不支持ES6+的语法，而如下设置又直接使用了第三方包的ESM版本，那么最终的打包代码中会直接使用其ESM版本的代码，从而导致不支持某些低版本浏览器。<br />
+       *
+       * 例子：<br />
+       * {
+       *   // import { Promise } from 'es6-promise'
+       *   Promise: [ 'es6-promise', 'Promise' ],
+       * 
+       *   // import { Promise as P } from 'es6-promise'
+       *   P: [ 'es6-promise', 'Promise' ],
+       * 
+       *   // import $ from 'jquery'
+       *   $: 'jquery',
+       * 
+       *   // import * as fs from 'fs'
+       *   fs: [ 'fs', '*' ],
+       * 
+       *   // use a local module instead of a third-party one
+       *   'Object.assign': path.resolve( 'src/helpers/object-assign.js' ),
+       * }
+       */
+      VitePluginInject( {
+        // include: [],
+        // exclude: [],
+        sourceMap: false,
+        modules: {
+          $: [
+            resolve( join( __dirname, './node_modules/jquery/dist/jquery.js' ) ),
+            '*',
+          ],
+          jQuery: [
+            resolve( join( __dirname, './node_modules/jquery/dist/jquery.js' ) ),
+            '*',
+          ],
+        },
+      } ),
+      VitePluginLegacy( {
+        targets: vite_plugin_legacy_target,
+        polyfills: true,
+        /**
+         * @type {string[]} 添加自定义导入到传统的polyfills块中。<br />
+         * 1、由于基于使用的polyfill检测只包括ES语言功能，可能需要使用这个选项手动指定额外的DOM API polyfills。<br />
+         * 2、注意：如果现代和传统块都需要额外的polyfills，它们可以简单地在应用程序源代码中导入。<br />
+         */
+        // additionalLegacyPolyfills: [],
+        /**
+         * @type {boolean}
+         */
+        ignoreBrowserslistConfig: false,
+        // modernPolyfills: false,
+        // renderLegacyChunks: true,
+        // externalSystemJS: false,
+      } ),
+
+      /**
        * 该插件的详细配置选项见：<br />
        * node_modules/@vitejs/plugin-vue/dist/index.d.ts:20
        * https://github.com/vitejs/vite-plugin-vue/tree/main/packages/plugin-vue#options
@@ -2721,6 +2833,7 @@ export default defineConfig( async ( {
         // 供Vue2使用。
         // vls: true,
       } ),
+
       VitePluginHTMLByCustom( VitePluginHTMLConfig( {
         appType,
         entryConfig: EntryConfig( {
@@ -2729,57 +2842,11 @@ export default defineConfig( async ( {
         isProduction,
         HTMLMinifyConfig,
       } ) ),
-      /**
-       * 拷贝插件。<br />
-       * 1、当前被设置为只监听文件夹“src/static”下的文件变动，有需要可以修改该设置。<br />
-       *
-       * 详细见：<br />
-       * node_modules/vite-plugin-static-copy/dist/index.d.ts:56
-       * node_modules/chokidar/types/index.d.ts:68
-       */
-      viteStaticCopy( ( targets => ( {
-        targets: targets.map( item => ( {
-          preserveTimestamps: false,
-          dereference: true,
-          ...item,
-        } ) ),
-        flatten: true,
-        silent: false,
-        watch: {
-          options: {
-            persistent: true,
-            ignored: [
-              '**/.gitignore',
-              '**/*.gitignore',
-              '**/该文件夹说明.txt',
-            ],
-            cwd: resolve( __dirname, './src/static' ),
-            depth: 1000,
-            ignorePermissionErrors: false,
-          },
-          reloadPageOnChange: !isProduction,
-        },
-      } ) )( [
-        // 该设置会将项目根目录下的文件“favicon.ico”复制到Vite的顶级选项build.outDir设置的文件夹下。
-        {
-          // 该选项值是相对于项目根目录的。
-          src: `./favicon.ico`,
-          // 该值是相对于Vite的顶级选项build.outDir设置的值。
-          dest: `./`,
-        },
-
-        // 该设置会将文件夹“src/static”整个原样复制到Vite的顶级选项build.outDir设置的文件夹下。
-        {
-          // 该选项值是相对于项目根目录的。
-          src: `./src/static`,
-          // 该值是相对于Vite的顶级选项build.outDir设置的值。
-          dest: `./`,
-        },
-      ] ) ),
       VitePluginSRIByCustom( {
         hashFuncNames: 'sha512',
         warn: false,
       } ),
+
       RollupPluginCSON( {
         compact: isProduction,
         // indent: '\t',
@@ -2913,34 +2980,6 @@ export default defineConfig( async ( {
           /src[\\/]wasm[\\/].*\.(json5)$/i,
         ],
       } ),
-      // .toml
-      VitePluginTOML( {
-        namedExports: true,
-        include: [
-          /node_modules[\\/].*\.(toml)$/i,
-          /src[\\/].*\.(toml)$/i,
-          /webpack_location[\\/].*\.(toml)$/i,
-        ],
-        exclude: [
-          /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(toml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(toml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(toml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(toml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(toml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(toml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(toml)$/i,
-          /src[\\/]assets[\\/]fonts[\\/].*\.(toml)$/i,
-          /src[\\/]assets[\\/]img[\\/].*\.(toml)$/i,
-          /src[\\/]assets[\\/]music[\\/].*\.(toml)$/i,
-          /src[\\/]assets[\\/]videos[\\/].*\.(toml)$/i,
-          /src[\\/]custom_declare_types[\\/].*\.(toml)$/i,
-          /src[\\/]graphQL[\\/].*\.(toml)$/i,
-          /src[\\/]pwa_manifest[\\/].*\.(toml)$/i,
-          /src[\\/]static[\\/].*\.(toml)$/i,
-          /src[\\/]styles[\\/].*\.(toml)$/i,
-          /src[\\/]wasm[\\/].*\.(toml)$/i,
-        ],
-      } ),
       // .md
       VitePluginMarkdown( {
         mode: [
@@ -3033,6 +3072,34 @@ export default defineConfig( async ( {
           /src[\\/]wasm[\\/].*\.(pug|jade)$/i,
         ],
       } ),
+      // .toml
+      VitePluginTOML( {
+        namedExports: true,
+        include: [
+          /node_modules[\\/].*\.(toml)$/i,
+          /src[\\/].*\.(toml)$/i,
+          /webpack_location[\\/].*\.(toml)$/i,
+        ],
+        exclude: [
+          /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(toml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(toml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(toml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(toml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(toml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(toml)$/i,
+          /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(toml)$/i,
+          /src[\\/]assets[\\/]fonts[\\/].*\.(toml)$/i,
+          /src[\\/]assets[\\/]img[\\/].*\.(toml)$/i,
+          /src[\\/]assets[\\/]music[\\/].*\.(toml)$/i,
+          /src[\\/]assets[\\/]videos[\\/].*\.(toml)$/i,
+          /src[\\/]custom_declare_types[\\/].*\.(toml)$/i,
+          /src[\\/]graphQL[\\/].*\.(toml)$/i,
+          /src[\\/]pwa_manifest[\\/].*\.(toml)$/i,
+          /src[\\/]static[\\/].*\.(toml)$/i,
+          /src[\\/]styles[\\/].*\.(toml)$/i,
+          /src[\\/]wasm[\\/].*\.(toml)$/i,
+        ],
+      } ),
       // .xml
       VitePluginXML.default( {
         include: [
@@ -3088,6 +3155,54 @@ export default defineConfig( async ( {
           /src[\\/]wasm[\\/].*\.(yaml|yml)$/i,
         ],
       } ),
+
+      /**
+       * 拷贝插件。<br />
+       * 1、当前被设置为只监听文件夹“src/static”下的文件变动，有需要可以修改该设置。<br />
+       *
+       * 详细见：<br />
+       * node_modules/vite-plugin-static-copy/dist/index.d.ts:56
+       * node_modules/chokidar/types/index.d.ts:68
+       */
+      viteStaticCopy( ( targets => ( {
+        targets: targets.map( item => ( {
+          preserveTimestamps: false,
+          dereference: true,
+          ...item,
+        } ) ),
+        flatten: true,
+        silent: false,
+        watch: {
+          options: {
+            persistent: true,
+            ignored: [
+              '**/.gitignore',
+              '**/*.gitignore',
+              '**/该文件夹说明.txt',
+            ],
+            cwd: resolve( __dirname, './src/static' ),
+            depth: 1000,
+            ignorePermissionErrors: false,
+          },
+          reloadPageOnChange: !isProduction,
+        },
+      } ) )( [
+        // 该设置会将项目根目录下的文件“favicon.ico”复制到Vite的顶级选项build.outDir设置的文件夹下。
+        {
+          // 该选项值是相对于项目根目录的。
+          src: `./favicon.ico`,
+          // 该值是相对于Vite的顶级选项build.outDir设置的值。
+          dest: `./`,
+        },
+
+        // 该设置会将文件夹“src/static”整个原样复制到Vite的顶级选项build.outDir设置的文件夹下。
+        {
+          // 该选项值是相对于项目根目录的。
+          src: `./src/static`,
+          // 该值是相对于Vite的顶级选项build.outDir设置的值。
+          dest: `./`,
+        },
+      ] ) ),
     ],
     /**
      * @type {string|boolean} 默认值：“public”。作为“静态资源服务”的文件夹。<br />
