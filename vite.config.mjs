@@ -68,6 +68,8 @@ import VitePluginHTMLByCustom from './configures/vite_plugin_custom/vite-plugin-
 
 import VitePluginInject from '@rollup/plugin-inject';
 
+import VitePluginInjectPreload from 'vite-plugin-inject-preload';
+
 import VitePluginJSON5 from 'vite-plugin-json5';
 
 import VitePluginLegacy from '@vitejs/plugin-legacy';
@@ -3201,6 +3203,43 @@ export default defineConfig( async ( {
           src: `./src/static`,
           // 该值是相对于Vite的顶级选项build.outDir设置的值。
           dest: `./`,
+        },
+      ] ) ),
+
+      /**
+       * 这个插件通过获取ViteJS的输出资产，在生产模式下的构建时添加预加载链接。<br />
+       * 1、目前，由于Vite的行为方式，这个插件只在生产模式下的构建时工作。<br />
+       * 2、利用该插件的“注入”功能，我们其实还可以注入诸多“link”标签：<br />
+       * <link rel = 'dns-prefetch' />
+       * <link rel = 'preconnect' />
+       * <link rel = 'preload' />
+       * <link rel = 'prefetch' />
+       * <link rel = 'prerender' />
+       * <link rel = 'modulepreload' />
+       *
+       * 详细见：<br />
+       * src/template/ejs/head_meta/Meta_PreOperation_001.ejs
+       *
+       * 3、如果手动设置了“href”属性，那么手动设置的会覆盖掉该插件自动设置的值。<br />
+       */
+      VitePluginInjectPreload( ( config => {
+        return {
+          files: config,
+          // 'head' | 'head-prepend' | 'custom'
+          injectTo: 'head-prepend',
+        };
+      } )( [
+        // ToDO
+        {
+          match: /.*\.(otf)$/i,
+          attributes: {
+            rel: 'preconnect',
+            href: 'http://localhost:8090/web-for-vite-project-template/dist/test/HelloWorld.html',
+            // as: 'font',
+            // type: 'font/otf',
+            crossorigin: 'anonymous',
+            // 'data-font-format': 'opentype',
+          },
         },
       ] ) ),
     ],
