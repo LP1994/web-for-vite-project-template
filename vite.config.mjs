@@ -2798,8 +2798,9 @@ export default defineConfig( async ( {
          * 在使用Vue的反应性API时，引入一组编译器转换来改善人体工程学，特别是能够使用没有.value的refs。<br />
          * 1、具体可阅https://github.com/vuejs/rfcs/discussions/369 <br />
          * 2、仅在SFC中生效。<br />
+         * 3、该选项会在3.4版本中被删除！反应性转换提案已被删除。如果你打算继续使用它，请禁用它并切换到[Vue Macros implementation](https://vue-macros.sxzz.moe/features/reactivity-transform.html)。<br />
          */
-        reactivityTransform: true,
+        // reactivityTransform: true,
         // 使用自定义compiler-sfc实例。可用于强制使用特定版本。
         // compiler: typeof _compiler,
       } ),
@@ -3207,7 +3208,7 @@ export default defineConfig( async ( {
       ] ) ),
 
       /**
-       * 这个插件通过获取ViteJS的输出资产，在生产模式下的构建时添加预加载链接。<br />
+       * 这个插件通过获取ViteJS的输出资产，在生产模式下的构建时添加预加载（“preload”）链接。<br />
        * 1、目前，由于Vite的行为方式，这个插件只在生产模式下的构建时工作。<br />
        * 2、利用该插件的“注入”功能，我们其实还可以注入诸多“link”标签：<br />
        * <link rel = 'dns-prefetch' />
@@ -3216,11 +3217,11 @@ export default defineConfig( async ( {
        * <link rel = 'prefetch' />
        * <link rel = 'prerender' />
        * <link rel = 'modulepreload' />
-       *
+       * 等等“link”标签。<br />
        * 详细见：<br />
        * src/template/ejs/head_meta/Meta_PreOperation_001.ejs
        *
-       * 3、如果手动设置了“href”属性，那么手动设置的会覆盖掉该插件自动设置的值。<br />
+       * 3、如果手动设置了“href”属性的值，那么手动设置的值会覆盖掉该插件自动设置的值。<br />
        */
       VitePluginInjectPreload( ( config => {
         return {
@@ -3233,12 +3234,13 @@ export default defineConfig( async ( {
         {
           match: /.*\.(otf)$/i,
           attributes: {
-            rel: 'preconnect',
-            href: 'http://localhost:8090/web-for-vite-project-template/dist/test/HelloWorld.html',
+            // rel: 'preload',
+            // href: 'http://localhost:8090/web-for-vite-project-template/dist/test/HelloWorld.html',
             // as: 'font',
             // type: 'font/otf',
             crossorigin: 'anonymous',
             // 'data-font-format': 'opentype',
+            // 还可以有其他自定义的属性或者其他标准属性。
           },
         },
       ] ) ),
