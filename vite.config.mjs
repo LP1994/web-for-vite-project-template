@@ -853,35 +853,35 @@ export default defineConfig( async ( {
             const ext = extname( name );
 
             if( ext === '.css' ){
-              return `styles/[name]-[hash:16][extname]`;
+              return `styles/[name]_[hash:16][extname]`;
             }
 
             if( ext === '.wasm' ){
-              return `wasm/[name]-[hash:16][extname]`;
+              return `wasm/[name]_[hash:16][extname]`;
             }
 
             if( fontsForAssets.map( item => `.${ item }` ).includes( ext ) ){
-              return `fonts/[name]-[hash:16][extname]`;
+              return `fonts/[name]_[hash:16][extname]`;
             }
 
             if( imgForAssets.map( item => `.${ item }` ).includes( ext ) ){
-              return `img/[name]-[hash:16][extname]`;
+              return `img/[name]_[hash:16][extname]`;
             }
 
             if( musicForAssets.map( item => `.${ item }` ).includes( ext ) ){
-              return `music/[name]-[hash:16][extname]`;
+              return `music/[name]_[hash:16][extname]`;
             }
 
             if( videosForAssets.map( item => `.${ item }` ).includes( ext ) ){
-              return `videos/[name]-[hash:16][extname]`;
+              return `videos/[name]_[hash:16][extname]`;
             }
 
             if( pwa_manifestForAssets.map( item => `.${ item }` )
             .includes( ext ) || ( ext === '.json' && name.includes( '.manifest.json' ) ) ){
-              return `pwa_manifest/[name]-[hash:16][extname]`;
+              return `pwa_manifest/[name]_[hash:16][extname]`;
             }
 
-            return `assets/[name]-[hash:16][extname]`;
+            return `assets/[name]_[hash:16][extname]`;
           },
           /**
            * @type {string | ((chunkInfo: ChunkInfo) => string)} 默认值："[name]-[hash].js"。用于命名代码拆分时创建的共享块的模式，或者为每个块调用一个函数以返回这样的模式。<br />
@@ -912,7 +912,7 @@ export default defineConfig( async ( {
             name,
             type,
           } ) => {
-            return `js/[name]-Chunk-[hash:16].js`;
+            return `js/[name]_Chunk_[hash:16].js`;
           },
           /**
            * @type {boolean} 默认值：false。这将使rollup生成的包装代码最小化。注意，这并不影响用户编写的代码。这个选项在捆绑预minified代码时很有用。<br />
@@ -960,7 +960,7 @@ export default defineConfig( async ( {
             name,
             type,
           } ) => {
-            return 'js/[name]-Entry-[hash:16].js';
+            return 'js/[name]_Entry_[hash:16].js';
           },
           /**
            * @type {boolean} 默认值：true。<br />
