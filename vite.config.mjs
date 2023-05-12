@@ -3246,8 +3246,9 @@ export default defineConfig( async ( {
        * 等等“link”标签。<br />
        * 详细见：<br />
        * src/template/ejs/head_meta/Meta_PreOperation_001.ejs
-       *
        * 3、如果手动设置了“href”属性的值，那么手动设置的值会覆盖掉该插件自动设置的值。<br />
+       * 4、当前做了一个可以自动为想要预加载（“preload”）的资源做预加载处理的方法，即：<br />
+       * 只要打包前的文件名中带有“.preload”这样的文件名组合就能被识别到，当然，最后打包出来的文件名中也必须带有“.preload”这样的文件名组合才能被识别处理。<br />
        */
       VitePluginInjectPreload( ( config => {
         return {
