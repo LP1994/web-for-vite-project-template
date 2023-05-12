@@ -2539,24 +2539,24 @@ export default defineConfig( async ( {
        */
       vue( {
         isProduction,
-        /**
-         * 设置该选项后会报错！因为内部代码有BUG！
-         * 详细见：
-         * TypeError: Cannot read properties of undefined (reading 'name')
-         *     at registerBinding (G:\WebStormWS\web-for-vite-project-template\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:4653:19)
-         *     at walkObjectPattern (G:\WebStormWS\web-for-vite-project-template\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:4734:13)
-         *     at walkDeclaration (G:\WebStormWS\web-for-vite-project-template\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:4698:21)
-         *     at Object.compileScript (G:\WebStormWS\web-for-vite-project-template\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:4263:13)
-         *     at resolveScript (file:///G:/WebStormWS/web-for-vite-project-template/node_modules/@vitejs/plugin-vue/dist/index.mjs:283:31)
-         *     at genScriptCode (file:///G:/WebStormWS/web-for-vite-project-template/node_modules/@vitejs/plugin-vue/dist/index.mjs:2469:18)
-         *     at transformMain (file:///G:/WebStormWS/web-for-vite-project-template/node_modules/@vitejs/plugin-vue/dist/index.mjs:2282:54)
-         *     at Object.transform (file:///G:/WebStormWS/web-for-vite-project-template/node_modules/@vitejs/plugin-vue/dist/index.mjs:2785:16)
-         *     at file:///G:/WebStormWS/web-for-vite-project-template/node_modules/rollup/dist/es/shared/node-entry.js:24551:40
-         */
-        ...( isEnabled => {
-          return isEnabled
-                 ? {
-              script: {
+        script: {
+          /**
+           * 设置该选项后会报错！因为内部代码有BUG！
+           * 详细见：
+           * TypeError: Cannot read properties of undefined (reading 'name')
+           *     at registerBinding (G:\WebStormWS\web-for-vite-project-template\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:4653:19)
+           *     at walkObjectPattern (G:\WebStormWS\web-for-vite-project-template\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:4734:13)
+           *     at walkDeclaration (G:\WebStormWS\web-for-vite-project-template\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:4698:21)
+           *     at Object.compileScript (G:\WebStormWS\web-for-vite-project-template\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:4263:13)
+           *     at resolveScript (file:///G:/WebStormWS/web-for-vite-project-template/node_modules/@vitejs/plugin-vue/dist/index.mjs:283:31)
+           *     at genScriptCode (file:///G:/WebStormWS/web-for-vite-project-template/node_modules/@vitejs/plugin-vue/dist/index.mjs:2469:18)
+           *     at transformMain (file:///G:/WebStormWS/web-for-vite-project-template/node_modules/@vitejs/plugin-vue/dist/index.mjs:2282:54)
+           *     at Object.transform (file:///G:/WebStormWS/web-for-vite-project-template/node_modules/@vitejs/plugin-vue/dist/index.mjs:2785:16)
+           *     at file:///G:/WebStormWS/web-for-vite-project-template/node_modules/rollup/dist/es/shared/node-entry.js:24551:40
+           */
+          ...( isEnabled => {
+            return isEnabled
+                   ? {
                 babelParserPlugins: [
                   // Language extensions Start
 
@@ -2692,10 +2692,26 @@ export default defineConfig( async ( {
 
                   // Latest ECMAScript features End
                 ],
-              },
-            }
-                 : {};
-        } )( false ),
+              }
+                   : {};
+          } )( false ),
+          /**
+           * 在使用Vue的反应性API时，引入一组编译器转换来改善人体工程学，特别是能够使用没有.value的refs。<br />
+           * 1、具体可阅https://github.com/vuejs/rfcs/discussions/369 <br />
+           * 2、仅在SFC中生效。<br />
+           * 3、该选项会在3.4版本中被删除！反应性转换提案已被删除。如果你打算继续使用它，请禁用它并切换到[Vue Macros implementation](https://vue-macros.sxzz.moe/features/reactivity-transform.html)。<br />
+           */
+          // reactivityTransform: true,
+
+          /**
+           * 实验性选项。true表示启用宏“defineModel”。
+           */
+          defineModel: true,
+          /**
+           * 实验性选项。true表示为“defineProps”启用反应式解构。
+           */
+          propsDestructure: true,
+        },
         template: {
           /**
            * @type {TemplateCompiler | string} 设置编译器，用于编译单文件组件中的<template>块。<br />
@@ -2720,6 +2736,11 @@ export default defineConfig( async ( {
            * 因此，该选项不用设置，貌似内部自动处理设置了。<br />
            */
           // compiler: '@vue/compiler-sfc',
+
+          // preprocessOptions: any,
+
+          // preprocessCustomRequire: (id: string) => any,
+
           compilerOptions: {
             /**
              * 值有："module"、"function"（默认值）。<br />
@@ -2763,8 +2784,6 @@ export default defineConfig( async ( {
                         ? 'preserve'
                         : 'condense',
           },
-          // preprocessOptions: any,
-          // preprocessCustomRequire: (id: string) => any,
           transformAssetUrls: {
             video: [
               'src',
@@ -2801,7 +2820,9 @@ export default defineConfig( async ( {
          * 3、该选项会在3.4版本中被删除！反应性转换提案已被删除。如果你打算继续使用它，请禁用它并切换到[Vue Macros implementation](https://vue-macros.sxzz.moe/features/reactivity-transform.html)。<br />
          */
         // reactivityTransform: true,
-        // 使用自定义compiler-sfc实例。可用于强制使用特定版本。
+        /**
+         * 使用自定义compiler-sfc实例。可用于强制使用特定版本。
+         */
         // compiler: typeof _compiler,
       } ),
       checker( {
