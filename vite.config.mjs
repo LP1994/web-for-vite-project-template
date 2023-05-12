@@ -856,6 +856,10 @@ export default defineConfig( async ( {
               return `styles/[name]-[hash:16][extname]`;
             }
 
+            if( ext === '.wasm' ){
+              return `wasm/[name]-[hash:16][extname]`;
+            }
+
             if( fontsForAssets.map( item => `.${ item }` ).includes( ext ) ){
               return `fonts/[name]-[hash:16][extname]`;
             }
@@ -1482,6 +1486,7 @@ export default defineConfig( async ( {
          * 默认情况下，一个带有导出类的JSON文件将被放在相应的CSS旁边。但你可以自由地使用导出的类来做你想做的一切，只要使用getJSON回调。getJSON也可以返回一个Promise。<br />
          * 注意：<br />
          * 1、目前，有一个问题，就是在生产模式下，该选项生成的.JSON文件在生成后会被清除掉，因为生产模式在构建前，会清除输出目录，显然该选项的生成操作在“清除”操作之前了。<br />
+         * 2、使用插件“vite-plugin-clean”也没法改变这个情况。<br />
          *
          * @param {string} cssFileName 如：G:/WebStormWS/xxx/Upload.Vue3.ts.vue?used&vue&type=style&index=1&lang.module.scss
          *
