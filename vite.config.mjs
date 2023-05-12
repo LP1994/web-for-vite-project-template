@@ -912,7 +912,7 @@ export default defineConfig( async ( {
             name,
             type,
           } ) => {
-            return `js/[name]-[hash:16].js`;
+            return `js/[name]-Chunk-[hash:16].js`;
           },
           /**
            * @type {boolean} 默认值：false。这将使rollup生成的包装代码最小化。注意，这并不影响用户编写的代码。这个选项在捆绑预minified代码时很有用。<br />
@@ -960,7 +960,7 @@ export default defineConfig( async ( {
             name,
             type,
           } ) => {
-            return 'js/[name]-[hash:16].js';
+            return 'js/[name]-Entry-[hash:16].js';
           },
           /**
            * @type {boolean} 默认值：true。<br />
