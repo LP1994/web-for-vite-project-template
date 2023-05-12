@@ -3256,17 +3256,32 @@ export default defineConfig( async ( {
           injectTo: 'head-prepend',
         };
       } )( [
-        // ToDO
         {
-          match: /.*\.(otf)$/i,
+          match: /.*\.(preload)\.(.*)$/i,
           attributes: {
             // rel: 'preload',
             // href: 'http://localhost:8090/web-for-vite-project-template/dist/test/HelloWorld.html',
             // as: 'font',
             // type: 'font/otf',
             crossorigin: 'anonymous',
+
             // 'data-font-format': 'opentype',
-            // 还可以有其他自定义的属性或者其他标准属性。
+
+            // 还可以有其他自定义的属性（如：data-font-format）或者其他标准属性。
+          },
+        },
+        {
+          match: /.*\.(preload)(-|_)(.*)\.(.*)$/i,
+          attributes: {
+            // rel: 'preload',
+            // href: 'http://localhost:8090/web-for-vite-project-template/dist/test/HelloWorld.html',
+            // as: 'font',
+            // type: 'font/otf',
+            crossorigin: 'anonymous',
+
+            // 'data-font-format': 'opentype',
+
+            // 还可以有其他自定义的属性（如：data-font-format）或者其他标准属性。
           },
         },
       ] ) ),
