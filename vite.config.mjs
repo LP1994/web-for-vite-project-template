@@ -3159,6 +3159,10 @@ export default defineConfig( async ( {
       RollupPluginYAML( {
         documentMode: 'single',
         safe: true,
+        extensions: [
+          '.yaml',
+          '.yml',
+        ],
         include: [
           /node_modules[\\/].*\.(yaml|yml)$/i,
           /src[\\/].*\.(yaml|yml)$/i,
