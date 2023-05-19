@@ -7,6 +7,50 @@
  * CreateDate: 2022-01-01 00:00:00 星期六
  */
 
+/**
+ * 可能需要修改的地方！
+ *
+ * 1、当需要将代码转换成兼容比较旧的平台时，需要修改：
+ * 变量browserslist。
+ * 变量esbuildMinify_target。
+ * 变量vite_plugin_legacy_target。
+ * package.json中的browserslist字段，值同变量browserslist。
+ * tsconfig.json中的compilerOptions.module、compilerOptions.target。
+ * tsconfig.vite.json中的compilerOptions.module、compilerOptions.target。
+ * Vite的配置esbuild.format。
+ *
+ * webpack的配置项：experiments、target、output.environment。
+ * 变量babel_targets中的esmodules选项、browsers选项。
+ * @babel/preset-env中的forceAllTransforms选项。
+ * vue-loader:options.transpileOptions.transforms。
+ *
+ * 变量isUseESBuildLoader、变量isSPA、webpack的配置项：output.chunkLoadingGlobal、变量assetsWebpackPluginConfig中的配置、文件夹configures下的文件GlobalParameters.esm.mjs中的配置、变量cleanWebpackPluginConfig.cleanOnceBeforeBuildPatterns。
+ * 变量assetsWebpackPluginConfig.metadata：display、version。
+ * 变量moduleConfig里的cssLoader_url_import_IgnoreArr1变量。
+ * 变量experimentsConfig.buildHttp中的allowedCondition变量。
+ *
+ * 2、本配置中的路径字符都是以Windows平台为主，没做其他系统平台的兼容，如果需要在其他系统平台使用，注意针对性修改如“./”、“//”、“\\”、“/”、“\”之类的路径。
+ */
+
+/**
+ * 关于在压缩代码时删除“console”、“debugger”的注意事项，可能导致编译后的代码报错或输出的代码非期望代码！！！
+ * 1、当压缩代码时启用删除“console”、“debugger”后，某些情况下会有意外的编译输出，详见如下：
+ * 说明：
+ * 如果在诸如console.log()中编写某些跟项目逻辑业务有关的代码，那么当压缩代码时启用删除“console”、“debugger”时，会导致最后输出的代码中因删除了诸如console.log()，从而导致其中的某些跟项目逻辑业务有关的代码也被删除，最终使生产的代码出现非所愿期望的代码输出，从而报错。
+ * 所以，诸如console.log()中不要做任何逻辑处理（哪怕是：++index这种最简单的逻辑），只作为纯日志输出。
+ * 例如：
+ * let index = 0, arr001 = [ 'qqq', 'www', ], str001 = '';
+ *
+ * for( const item of arr001 ){
+ *   str001 + = item;
+ *
+ *   console.log( `index--->${ ++index }` );
+ * }
+ * 当压缩代码时没有启用删除“console”、“debugger”时，执行上述代码后，index的值为3，但是如果启用，则index的值为0，那么显然这不是期望的。
+ *
+ * 对于上述的“console”、“debugger”，当前配置是这样的，只当CLI参数中有“--mode production”时，才会压缩代码时启用删除“console”、“debugger”。
+ */
+
 'use strict';
 
 import {
@@ -54,8 +98,6 @@ import RollupPluginPUG from 'rollup-plugin-pug';
 
 import RollupPluginYAML from '@rollup/plugin-yaml';
 
-// 这些个必需保持这各种顺序。Start
-
 import {
   defineConfig,
 } from 'vite';
@@ -89,8 +131,6 @@ import {
 } from 'vite-plugin-toml';
 
 import VitePluginXML from 'vite-plugin-xml-loader';
-
-// 这些个必需保持这各种顺序。End
 
 import DefineConfig from './configures/DefineConfig.esm.mjs';
 
@@ -315,6 +355,9 @@ const autoprefixerConfig = {
     selectors: true,
   };
 
+/**
+ * @type {string[]} 几种字体文件的不带“.”的后缀名。
+ */
 const fontsForAssets = [
     'eot',
     'otf',
@@ -325,6 +368,9 @@ const fontsForAssets = [
     'woff',
     'woff2',
   ],
+  /**
+   * @type {string[]} 几种图片的不带“.”的后缀名。
+   */
   imgForAssets = [
     'apng',
     'arw',
@@ -383,6 +429,9 @@ const fontsForAssets = [
     'pjpeg',
     'pjp',
   ],
+  /**
+   * @type {string[]} 几种音频的不带“.”的后缀名。
+   */
   musicForAssets = [
     'm4a',
     'kar',
@@ -413,6 +462,9 @@ const fontsForAssets = [
     'vorbis',
     'opus',
   ],
+  /**
+   * @type {string[]} 几种视频的不带“.”的后缀名。
+   */
   videosForAssets = [
     'wmv',
     'asf',
@@ -434,6 +486,9 @@ const fontsForAssets = [
     'ogg',
     'webm',
   ],
+  /**
+   * @type {string[]} PWA的manifest文件的不带“.”的后缀名。
+   */
   pwa_manifestForAssets = [
     'webmanifest',
   ];

@@ -49,17 +49,21 @@
 'use strict';
 
 import {
+  createReadStream,
   readFileSync,
 } from 'node:fs';
 
 import {
   dirname,
   join,
+  resolve,
 } from 'node:path';
 
 import {
   fileURLToPath,
 } from 'node:url';
+
+import Mime from 'mime';
 
 import {
   httpHeaders,
@@ -267,6 +271,60 @@ async function ProxyConfig( {
     logFileName = `proxy_${ year }年${ month }月${ date }日${ hours }时${ minutes }分${ seconds }秒(周${ day }).log`;
 
   const logWriteStream = await CreateLogger( join( __dirname, `../log/${ env_platform }/${ logFileName }` ) );
+
+  const ResFaviconIco = ( req, res, url = resolve( __dirname, '../favicon.ico' ) ) => {
+      logWriteStream.write( `--->${ req.url }<---Start
+请求头：
+${ JSON.stringify( req.headers, null, ' ' ) }
+--->${ req.url }<---End
+\n` );
+
+      res.setHeader( 'Content-Type', Mime.getType( req.url ) );
+      res.setHeader( 'x-from', 'vite.server.proxy' );
+      res.setHeader( 'x-dev-type', `${ env_platform }` );
+
+      Object.entries( httpHeaders ).forEach( ( [ keyName, keyValue ], ) => {
+        res.setHeader( keyName, keyValue );
+      } );
+
+      res.statusCode = 200;
+      res.statusMessage = 'OK';
+
+      createReadStream( url ).pipe( res, {
+        end: true,
+      } );
+    },
+    ResRoot = ( req, response ) => {
+      logWriteStream.write( `--->${ req.originalUrl }<---Start
+请求头：
+${ JSON.stringify( req.headers, null, ' ' ) }
+--->${ req.originalUrl }<---End
+\n` );
+
+      response.setHeader( 'Content-Type', 'text/html;charset=utf-8' );
+      response.setHeader( 'x-from', 'vite.server.proxy' );
+      response.setHeader( 'x-dev-type', `${ env_platform }` );
+
+      Object.entries( httpHeaders ).forEach( ( [ keyName, keyValue ], ) => {
+        response.setHeader( keyName, keyValue );
+      } );
+
+      response.statusCode = 200;
+      response.statusMessage = 'OK';
+
+      response.end( `
+                   <!DOCTYPE html>
+                   <html lang = 'zh-CN'>
+                   <head>
+                     <meta charset = 'UTF-8' />
+                     <title>index</title>
+                   </head>
+                   <body>
+                     <p>This is a index page(${ req.originalUrl }) for proxy config.</p>
+                   </body>
+                   </html>
+                   `, 'utf8' );
+    };
 
   /**
    * Vite的server.proxy的配置。<br />
@@ -998,6 +1056,21 @@ WebSocket代理--->${ options.context }<---End
       // http-proxy events End
     },
 
+    '/index.html': {
+      target: 'https://0.0.0.0:9200',
+      secure: false,
+      ssl,
+      ws: false,
+      changeOrigin,
+      headers: httpHeaders,
+      proxyTimeout: 120000,
+      timeout: 120000,
+      configure( proxy, options ){
+        proxy.on( 'proxyReq', ( proxyReq, req, res, options ) => {
+          ResRoot( req, res );
+        } );
+      },
+    },
     '/favicon.ico': {
       target: 'https://0.0.0.0:9200',
       secure: false,
@@ -1009,21 +1082,7 @@ WebSocket代理--->${ options.context }<---End
       timeout: 120000,
       configure( proxy, options ){
         proxy.on( 'proxyReq', ( proxyReq, req, res, options ) => {
-          const arr001 = Reflect.ownKeys( proxyReq ).filter( item => typeof item === 'symbol' );
-
-          logWriteStream.write( `HTTP代理--->${ req.originalUrl }<---Start
-原请求方法：${ req.method }
-原请求头：
-${ JSON.stringify( req.headers, null, ' ' ) }
-
-代理请求方法：${ proxyReq.method }
-代理请求的protocol：${ proxyReq.protocol }
-代理请求的host：${ proxyReq.host }
-代理请求的path：${ proxyReq.path }
-代理的请求头：
-${ JSON.stringify( Object.fromEntries( Object.values( proxyReq[ arr001[ arr001.findIndex( item => item.toString() === 'Symbol(kOutHeaders)' ) ] ] ) ), null, ' ' ) }
-HTTP代理--->${ req.originalUrl }<---End
-\n\n` );
+          ResFaviconIco( req, res );
         } );
       },
     },
@@ -1038,21 +1097,7 @@ HTTP代理--->${ req.originalUrl }<---End
       timeout: 120000,
       configure( proxy, options ){
         proxy.on( 'proxyReq', ( proxyReq, req, res, options ) => {
-          const arr001 = Reflect.ownKeys( proxyReq ).filter( item => typeof item === 'symbol' );
-
-          logWriteStream.write( `HTTP代理--->${ req.originalUrl }<---Start
-原请求方法：${ req.method }
-原请求头：
-${ JSON.stringify( req.headers, null, ' ' ) }
-
-代理请求方法：${ proxyReq.method }
-代理请求的protocol：${ proxyReq.protocol }
-代理请求的host：${ proxyReq.host }
-代理请求的path：${ proxyReq.path }
-代理的请求头：
-${ JSON.stringify( Object.fromEntries( Object.values( proxyReq[ arr001[ arr001.findIndex( item => item.toString() === 'Symbol(kOutHeaders)' ) ] ] ) ), null, ' ' ) }
-HTTP代理--->${ req.originalUrl }<---End
-\n\n` );
+          ResFaviconIco( req, res, resolve( __dirname, '../src/static/ico/favicon.png' ) );
         } );
       },
     },
@@ -1067,21 +1112,7 @@ HTTP代理--->${ req.originalUrl }<---End
       timeout: 120000,
       configure( proxy, options ){
         proxy.on( 'proxyReq', ( proxyReq, req, res, options ) => {
-          const arr001 = Reflect.ownKeys( proxyReq ).filter( item => typeof item === 'symbol' );
-
-          logWriteStream.write( `HTTP代理--->${ req.originalUrl }<---Start
-原请求方法：${ req.method }
-原请求头：
-${ JSON.stringify( req.headers, null, ' ' ) }
-
-代理请求方法：${ proxyReq.method }
-代理请求的protocol：${ proxyReq.protocol }
-代理请求的host：${ proxyReq.host }
-代理请求的path：${ proxyReq.path }
-代理的请求头：
-${ JSON.stringify( Object.fromEntries( Object.values( proxyReq[ arr001[ arr001.findIndex( item => item.toString() === 'Symbol(kOutHeaders)' ) ] ] ) ), null, ' ' ) }
-HTTP代理--->${ req.originalUrl }<---End
-\n\n` );
+          ResFaviconIco( req, res, resolve( __dirname, '../src/static/ico/favicon.png' ) );
         } );
       },
     },
@@ -1096,21 +1127,7 @@ HTTP代理--->${ req.originalUrl }<---End
       timeout: 120000,
       configure( proxy, options ){
         proxy.on( 'proxyReq', ( proxyReq, req, res, options ) => {
-          const arr001 = Reflect.ownKeys( proxyReq ).filter( item => typeof item === 'symbol' );
-
-          logWriteStream.write( `HTTP代理--->${ req.originalUrl }<---Start
-原请求方法：${ req.method }
-原请求头：
-${ JSON.stringify( req.headers, null, ' ' ) }
-
-代理请求方法：${ proxyReq.method }
-代理请求的protocol：${ proxyReq.protocol }
-代理请求的host：${ proxyReq.host }
-代理请求的path：${ proxyReq.path }
-代理的请求头：
-${ JSON.stringify( Object.fromEntries( Object.values( proxyReq[ arr001[ arr001.findIndex( item => item.toString() === 'Symbol(kOutHeaders)' ) ] ] ) ), null, ' ' ) }
-HTTP代理--->${ req.originalUrl }<---End
-\n\n` );
+          ResFaviconIco( req, res, resolve( __dirname, '../src/static/ico/favicon.png' ) );
         } );
       },
     },
@@ -1125,21 +1142,7 @@ HTTP代理--->${ req.originalUrl }<---End
       timeout: 120000,
       configure( proxy, options ){
         proxy.on( 'proxyReq', ( proxyReq, req, res, options ) => {
-          const arr001 = Reflect.ownKeys( proxyReq ).filter( item => typeof item === 'symbol' );
-
-          logWriteStream.write( `HTTP代理--->${ req.originalUrl }<---Start
-原请求方法：${ req.method }
-原请求头：
-${ JSON.stringify( req.headers, null, ' ' ) }
-
-代理请求方法：${ proxyReq.method }
-代理请求的protocol：${ proxyReq.protocol }
-代理请求的host：${ proxyReq.host }
-代理请求的path：${ proxyReq.path }
-代理的请求头：
-${ JSON.stringify( Object.fromEntries( Object.values( proxyReq[ arr001[ arr001.findIndex( item => item.toString() === 'Symbol(kOutHeaders)' ) ] ] ) ), null, ' ' ) }
-HTTP代理--->${ req.originalUrl }<---End
-\n\n` );
+          ResFaviconIco( req, res, resolve( __dirname, '../src/static/ico/favicon.png' ) );
         } );
       },
     },
@@ -1154,21 +1157,7 @@ HTTP代理--->${ req.originalUrl }<---End
       timeout: 120000,
       configure( proxy, options ){
         proxy.on( 'proxyReq', ( proxyReq, req, res, options ) => {
-          const arr001 = Reflect.ownKeys( proxyReq ).filter( item => typeof item === 'symbol' );
-
-          logWriteStream.write( `HTTP代理--->${ req.originalUrl }<---Start
-原请求方法：${ req.method }
-原请求头：
-${ JSON.stringify( req.headers, null, ' ' ) }
-
-代理请求方法：${ proxyReq.method }
-代理请求的protocol：${ proxyReq.protocol }
-代理请求的host：${ proxyReq.host }
-代理请求的path：${ proxyReq.path }
-代理的请求头：
-${ JSON.stringify( Object.fromEntries( Object.values( proxyReq[ arr001[ arr001.findIndex( item => item.toString() === 'Symbol(kOutHeaders)' ) ] ] ) ), null, ' ' ) }
-HTTP代理--->${ req.originalUrl }<---End
-\n\n` );
+          ResFaviconIco( req, res, resolve( __dirname, '../src/static/ico/favicon.png' ) );
         } );
       },
     },
