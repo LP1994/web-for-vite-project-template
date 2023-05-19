@@ -287,60 +287,13 @@ function VitePluginHTMLConfig( {
      * https://github.com/vbenjs/vite-plugin-html
      */
          ? GenerateSPAConfig( {
-      entry: 'src/pages/upload/Upload.mts',
-      template: 'src/pages/upload/Upload.ejs',
-      filename: 'Upload.html',
+      entry: 'src/pages/hello_world/HelloWorld.mjs',
+      template: 'src/template/ejs/HelloWorld.ejs',
+      filename: 'HelloWorld.html',
       data: {
         VitePluginHTMLData: {
           ...defaultData,
-          title: 'Upload',
-          description: 'This is a page for Upload.',
-          appName: 'Upload',
-          itemprop: {
-            type: 'website',
-            url: 'https://192.168.2.7:8500/dev_server/pages/Upload.html',
-            name: 'Upload',
-            description: 'This is a page for Upload.',
-            image: 'https://192.168.2.7:8500/dev_server/static/ico/uncompressed/ico_512_512.png',
-          },
-          appLinks: {
-            web: {
-              url: 'https://192.168.2.7:8500/dev_server/pages/Upload.html',
-            },
-            share: {
-              type: 'website',
-              url: 'https://192.168.2.7:8500/dev_server/pages/Upload.html',
-              title: 'Upload',
-              description: 'This is a page for Upload.',
-              image: 'https://192.168.2.7:8500/dev_server/static/ico/uncompressed/ico_512_512.png',
-            },
-          },
-          og: {
-            og: 'website',
-            title: 'Upload',
-            url: 'https://192.168.2.7:8500/dev_server/pages/Upload.html',
-            siteName: 'Upload',
-            description: 'This is a page for Upload.',
-            locale: 'zh_CN',
-            image: {
-              url: 'https://192.168.2.7:8500/dev_server/static/ico/uncompressed/ico_512_512.png',
-              secureURL: 'https://192.168.2.7:8500/dev_server/static/ico/uncompressed/ico_512_512.png',
-              type: 'image/png',
-              width: '512',
-              height: '512',
-              alt: '网站图片_512x512.png',
-            },
-          },
-          twitter: {
-            type: 'website',
-            creator: '1227839175@qq.com',
-            site: 'https://192.168.2.7:8500/dev_server/pages/Upload.html',
-            url: 'https://192.168.2.7:8500/dev_server/pages/Upload.html',
-            title: 'Upload',
-            description: 'This is a page for Upload.',
-            card: 'summary_large_image',
-            image: 'https://192.168.2.7:8500/dev_server/static/ico/uncompressed/ico_512_512.png',
-          },
+          title: 'HelloWorld',
         },
       },
     } )

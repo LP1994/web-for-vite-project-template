@@ -19,16 +19,6 @@
  * tsconfig.vite.json中的compilerOptions.module、compilerOptions.target。
  * Vite的配置esbuild.format。
  *
- * webpack的配置项：experiments、target、output.environment。
- * 变量babel_targets中的esmodules选项、browsers选项。
- * @babel/preset-env中的forceAllTransforms选项。
- * vue-loader:options.transpileOptions.transforms。
- *
- * 变量isUseESBuildLoader、变量isSPA、webpack的配置项：output.chunkLoadingGlobal、变量assetsWebpackPluginConfig中的配置、文件夹configures下的文件GlobalParameters.esm.mjs中的配置、变量cleanWebpackPluginConfig.cleanOnceBeforeBuildPatterns。
- * 变量assetsWebpackPluginConfig.metadata：display、version。
- * 变量moduleConfig里的cssLoader_url_import_IgnoreArr1变量。
- * 变量experimentsConfig.buildHttp中的allowedCondition变量。
- *
  * 2、本配置中的路径字符都是以Windows平台为主，没做其他系统平台的兼容，如果需要在其他系统平台使用，注意针对性修改如“./”、“//”、“\\”、“/”、“\”之类的路径。
  */
 
