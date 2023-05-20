@@ -17,7 +17,15 @@
  * package.json中的browserslist字段，值同变量browserslist。
  * tsconfig.json中的compilerOptions.module、compilerOptions.target。
  * tsconfig.vite.json中的compilerOptions.module、compilerOptions.target。
- * Vite的配置esbuild.format。
+ * 变量rollupOptions.external。
+ * 变量rollupOptions.output.format。
+ * 变量rollupOptions.output.globals。
+ * 变量rollupOptions.output.generatedCode。
+ * 变量rollupOptions.acorn。
+ *
+ * Vite的顶级配置项appType。
+ * Vite的顶级配置项esbuild.format。
+ * Vite的顶级配置项worker.format。
  *
  * 2、本配置中的路径字符都是以Windows平台为主，没做其他系统平台的兼容，如果需要在其他系统平台使用，注意针对性修改如“./”、“//”、“\\”、“/”、“\”之类的路径。
  */
@@ -616,20 +624,22 @@ export default defineConfig( async ( {
       // 日志限制可以更改为另一个值，也可以通过将其设置为0来完全禁用。这将显示所有日志消息。
       logLimit: 0,
       /**
-       * 注意：<br />
-       * 如果在诸如console.log()中编写某些跟项目逻辑业务有关的代码，那么当启用removeConsole、removeDebugger时，会导致最后输出的代码中因为删除了诸如console.log()，从而导致其中的某些跟项目逻辑业务有关的代码也被删除，最终使生产的代码出现非所愿期望的代码输出，从而报错。<br />
-       * 所以，诸如console.log()中不要做任何逻辑处理（哪怕是：++index这种最简单的逻辑），只作为纯日志输出。<br />
-       * 例如：<br />
+       * 关于在压缩代码时删除“console”、“debugger”的注意事项，可能导致编译后的代码报错或输出的代码非期望代码！！！
+       * 1、当压缩代码时启用删除“console”、“debugger”后，某些情况下会有意外的编译输出，详见如下：
+       * 说明：
+       * 如果在诸如console.log()中编写某些跟项目逻辑业务有关的代码，那么当压缩代码时启用删除“console”、“debugger”时，会导致最后输出的代码中因删除了诸如console.log()，从而导致其中的某些跟项目逻辑业务有关的代码也被删除，最终使生产的代码出现非所愿期望的代码输出，从而报错。
+       * 所以，诸如console.log()中不要做任何逻辑处理（哪怕是：++index这种最简单的逻辑），只作为纯日志输出。
+       * 例如：
        * let index = 0, arr001 = [ 'qqq', 'www', ], str001 = '';
        *
        * for( const item of arr001 ){
        *   str001 + = item;
-       *   
+       *
        *   console.log( `index--->${ ++index }` );
        * }
-       * 当没有启用removeConsole、removeDebugger时，执行上述代码后，index的值为3，但是如果启用removeConsole、removeDebugger，则index的值为0，那么显然这不是期望的。<br />
+       * 当压缩代码时没有启用删除“console”、“debugger”时，执行上述代码后，index的值为3，但是如果启用，则index的值为0，那么显然这不是期望的。
        *
-       * 对于drop选项，当前配置是这样的，当“env_platform”为“test”时不设置drop选项（对应的是不删除操作），当“env_platform”为“production”时设置drop选项（对应的是删除操作）。<br />
+       * 对于上述的“console”、“debugger”，当前配置是这样的，只当CLI参数中有“--mode production”时，才会压缩代码时启用删除“console”、“debugger”。
        */
       ...( () => {
         return {
