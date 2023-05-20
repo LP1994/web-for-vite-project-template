@@ -1,6 +1,0 @@
-{
-  "extends": "../../../../../typedoc_tsconfig.json",
-  "files": [
-    "../UniversalTools.esm.mts"
-  ]
-}

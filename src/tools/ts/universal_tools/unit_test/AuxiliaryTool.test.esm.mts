@@ -1,6 +1,6 @@
 /**
  * Project: web-for-vite-project-template
- * FileDirPath: simulation_servers/deno/src/tools/universal_tool_for_deno/unit_test/AuxiliaryTool.esm.test.mts
+ * FileDirPath: src/tools/ts/universal_tools/unit_test/AuxiliaryTool.test.esm.mts
  * Author: 12278
  * Email: 1227839175@qq.com
  * IDE: WebStorm
@@ -69,16 +69,7 @@
 
 'use strict';
 
-/**
- * 在Deno中要想能正常使用“chalk”得在启用命令中添加“--color=16m”（真彩色支持，1600 万色）标识，加在入口脚本的后面，如：<br />
- * deno run -A --watch --config=deno.json --lock=lock.json --lock-write --unstable --prompt --check --v8-flags=--max-old-space-size=8192 ./src/App.mts --color=16m
- * 支持的标识还有：--color=256（256色支持）、--color（该标识表示默认启用控制台颜色）、--color=16m（真彩色支持，1600 万色）。<br />
- */
-import {
-  Chalk,
-
-  // @ts-ignore
-} from 'https://deno.land/x/chalk_deno/source/index.js';
+import chalk from 'chalk';
 
 export type TypeMyExpect001 = any;
 
@@ -90,8 +81,6 @@ export type TypeError001 = {
   // 实际值。
   result: any;
 };
-
-export const chalk: { [ keyName: string ]: any; } = new Chalk();
 
 /**
  * 使用“!==”比较的对比函数Equal001。<br />
@@ -194,9 +183,12 @@ ${ String( expect ) }
   }
 }
 
+export {
+  chalk,
+};
+
 export default {
   chalk,
-
   Equal001,
   MyError001,
   Test001,
