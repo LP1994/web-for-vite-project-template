@@ -10,12 +10,45 @@
 /**
  * 该文件是用来让“WebStorm”这个开发工具识别“Vite”配置中“resolve”这个字段里头的各个别名变量，当然其他配置字段也系可以被识别的。
  * 1、这么做才能让代码中的别名路径被“WebStorm”这个开发工具识别到，才可以通过点击这个别名路径导航到目标文件。
- * 2、目前“WebStorm”这个开发工具只能识别以.js为结尾的编写的“Vite”配置，其他的后缀名、模块写法还不能识别。
  */
 
 'use strict';
 
-const path = require( 'node:path' );
+import {
+  dirname,
+  resolve,
+} from 'node:path';
+
+import {
+  fileURLToPath,
+} from 'node:url';
+
+/**
+ * 该函数返回值完全等价于“CommonJS modules”中的“__dirname”，是一个字符串，Windows系统下型如：G:\WebStormWS\xx\tools。<br />
+ *
+ * @param {string} import_meta_url 只传入import.meta.url即可，默认值（哈哈哈，这个默认值设置的有点多余，纯粹只是为了规避传空报错）：import.meta.url，必需。
+ *
+ * @returns {string} 返回值完全等价于“CommonJS modules”中的“__dirname”，是一个字符串，Windows系统下型如：G:\WebStormWS\xx\tools。
+ */
+function Get__dirname( import_meta_url = import.meta.url ){
+  return dirname( Get__filename( import_meta_url ) );
+}
+
+/**
+ * 该函数返回值完全等价于“CommonJS modules”中的“__filename”，是一个字符串，Windows系统下型如：G:\WebStormWS\xx\7788.mjs。<br />
+ *
+ * @param {string} import_meta_url 只传入import.meta.url即可，默认值（哈哈哈，这个默认值设置的有点多余，纯粹只是为了规避传空报错）：import.meta.url，必需。
+ *
+ * @returns {string} 返回值完全等价于“CommonJS modules”中的“__filename”，是一个字符串，Windows系统下型如：G:\WebStormWS\xx\7788.mjs。
+ */
+function Get__filename( import_meta_url = import.meta.url ){
+  return fileURLToPath( import_meta_url );
+}
+
+/**
+ * @type {string} 表示项目文件夹根目录，不是磁盘根目录。<br />
+ */
+const __dirname = Get__dirname( import.meta.url );
 
 export default {
   resolve: {
@@ -38,75 +71,101 @@ export default {
       'swiper-css$': 'swiper/swiper-bundle.min.css',
 
       // assets文件夹 Start
-      'assetsDir': path.resolve( __dirname, './src/assets/' ),
+      'assetsDir': resolve( __dirname, './src/assets/' ),
 
-      'docDir': path.resolve( __dirname, './src/assets/doc/' ),
+      'docDir': resolve( __dirname, './src/assets/doc/' ),
 
-      'csonDir': path.resolve( __dirname, './src/assets/doc/cson/' ),
-      'csvDir': path.resolve( __dirname, './src/assets/doc/csv/' ),
-      'jsonDir': path.resolve( __dirname, './src/assets/doc/json/' ),
-      'json5Dir': path.resolve( __dirname, './src/assets/doc/json5/' ),
-      'tomlDir': path.resolve( __dirname, './src/assets/doc/toml/' ),
-      'tsvDir': path.resolve( __dirname, './src/assets/doc/tsv/' ),
-      'txtDir': path.resolve( __dirname, './src/assets/doc/txt/' ),
-      'xmlDir': path.resolve( __dirname, './src/assets/doc/xml/' ),
-      'yamlDir': path.resolve( __dirname, './src/assets/doc/yaml/' ),
+      'csonDir': resolve( __dirname, './src/assets/doc/cson/' ),
+      'csvDir': resolve( __dirname, './src/assets/doc/csv/' ),
+      'jsonDir': resolve( __dirname, './src/assets/doc/json/' ),
+      'json5Dir': resolve( __dirname, './src/assets/doc/json5/' ),
+      'tomlDir': resolve( __dirname, './src/assets/doc/toml/' ),
+      'tsvDir': resolve( __dirname, './src/assets/doc/tsv/' ),
+      'txtDir': resolve( __dirname, './src/assets/doc/txt/' ),
+      'xmlDir': resolve( __dirname, './src/assets/doc/xml/' ),
+      'yamlDir': resolve( __dirname, './src/assets/doc/yaml/' ),
 
-      'fontsDir': path.resolve( __dirname, './src/assets/fonts/' ),
-      'imgDir': path.resolve( __dirname, './src/assets/img/' ),
-      'musicDir': path.resolve( __dirname, './src/assets/music/' ),
-      'videosDir': path.resolve( __dirname, './src/assets/videos/' ),
+      'fontsDir': resolve( __dirname, './src/assets/fonts/' ),
+      'imgDir': resolve( __dirname, './src/assets/img/' ),
+      'musicDir': resolve( __dirname, './src/assets/music/' ),
+      'videosDir': resolve( __dirname, './src/assets/videos/' ),
       // assets文件夹 End
 
-      'gQLAPIDir': path.resolve( __dirname, './src/graphQL/api/' ),
+      'gQLAPIDir': resolve( __dirname, './src/graphQL/api/' ),
 
-      'nativeComponentsDir': path.resolve( __dirname, './src/native_components/' ),
+      'nativeComponentsDir': resolve( __dirname, './src/native_components/' ),
 
-      'pagesDir': path.resolve( __dirname, './src/pages/' ),
+      'pagesDir': resolve( __dirname, './src/pages/' ),
 
-      'pwaManifestDir': path.resolve( __dirname, './src/pwa_manifest/' ),
+      'pwaManifestDir': resolve( __dirname, './src/pwa_manifest/' ),
 
       // styles文件夹 Start
-      'stylesDir': path.resolve( __dirname, './src/styles/' ),
+      'stylesDir': resolve( __dirname, './src/styles/' ),
 
-      'cssDir': path.resolve( __dirname, './src/styles/css/' ),
-      'lessDir': path.resolve( __dirname, './src/styles/less/' ),
-      'postcssDir': path.resolve( __dirname, './src/styles/postcss/' ),
-      'sassDir': path.resolve( __dirname, './src/styles/sass/' ),
-      'scssDir': path.resolve( __dirname, './src/styles/scss/' ),
-      'stylusDir': path.resolve( __dirname, './src/styles/stylus/' ),
+      'cssDir': resolve( __dirname, './src/styles/css/' ),
+      'lessDir': resolve( __dirname, './src/styles/less/' ),
+      'postcssDir': resolve( __dirname, './src/styles/postcss/' ),
+      'sassDir': resolve( __dirname, './src/styles/sass/' ),
+      'scssDir': resolve( __dirname, './src/styles/scss/' ),
+      'stylusDir': resolve( __dirname, './src/styles/stylus/' ),
       // styles文件夹 End
 
       // template文件夹 Start
-      'templateDir': path.resolve( __dirname, './src/template/' ),
+      'templateDir': resolve( __dirname, './src/template/' ),
 
-      'ejsDir': path.resolve( __dirname, './src/template/ejs/' ),
-      'handlebarsDir': path.resolve( __dirname, './src/template/handlebars/' ),
-      'htmlDir': path.resolve( __dirname, './src/template/html/' ),
-      'markdownDir': path.resolve( __dirname, './src/template/markdown/' ),
-      'mustacheDir': path.resolve( __dirname, './src/template/mustache/' ),
-      'pug_jadeDir': path.resolve( __dirname, './src/template/pug_jade/' ),
+      'ejsDir': resolve( __dirname, './src/template/ejs/' ),
+      'handlebarsDir': resolve( __dirname, './src/template/handlebars/' ),
+      'htmlDir': resolve( __dirname, './src/template/html/' ),
+      'markdownDir': resolve( __dirname, './src/template/markdown/' ),
+      'mustacheDir': resolve( __dirname, './src/template/mustache/' ),
+      'pug_jadeDir': resolve( __dirname, './src/template/pug_jade/' ),
       // template文件夹 End
 
       // tools文件夹 Start
-      'toolsDir': path.resolve( __dirname, './src/tools/' ),
+      'toolsDir': resolve( __dirname, './src/tools/' ),
 
-      'jsDir': path.resolve( __dirname, './src/tools/js/' ),
-      'tsDir': path.resolve( __dirname, './src/tools/ts/' ),
+      'jsDir': resolve( __dirname, './src/tools/js/' ),
+      'tsDir': resolve( __dirname, './src/tools/ts/' ),
       // tools文件夹 End
 
-      'wasmDir': path.resolve( __dirname, './src/wasm/build/' ),
+      'wasmDir': resolve( __dirname, './src/wasm/build/' ),
 
-      'webComponentsDir': path.resolve( __dirname, './src/web_components/' ),
+      'webComponentsDir': resolve( __dirname, './src/web_components/' ),
 
       // workers文件夹 Start
-      'workersDir': path.resolve( __dirname, './src/workers/' ),
+      'workersDir': resolve( __dirname, './src/workers/' ),
 
-      'serviceWorkersDir': path.resolve( __dirname, './src/workers/service_workers/' ),
-      'sharedWorkersDir': path.resolve( __dirname, './src/workers/shared_workers/' ),
-      'workersToolsDir': path.resolve( __dirname, './src/workers/tools/' ),
-      'webWorkersDir': path.resolve( __dirname, './src/workers/web_workers/' ),
+      'serviceWorkersDir': resolve( __dirname, './src/workers/service_workers/' ),
+      'sharedWorkersDir': resolve( __dirname, './src/workers/shared_workers/' ),
+      'workersToolsDir': resolve( __dirname, './src/workers/tools/' ),
+      'webWorkersDir': resolve( __dirname, './src/workers/web_workers/' ),
       // workers文件夹 End
     },
+    /**
+     * @type {string[]} 导入时想要省略的扩展名列表。注意，不建议忽略自定义导入类型的扩展名（例如：.vue），因为它会影响IDE和类型支持。<br />
+     * 默认值：['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json']。<br />
+     */
+    extensions: [
+      '.js',
+      '.cjs',
+      '.mjs',
+      '.ts',
+      '.cts',
+      '.mts',
+
+      '.jsx',
+      '.tsx',
+
+      '.json',
+      '.json5',
+
+      '.wasm',
+
+      '.vue',
+    ],
+    /**
+     * @type {boolean} 默认值为：false，启用此设置后，vite将通过原始文件路径（即不跟随符号链接的路径）而不是真正的文件路径（即跟随符号链接后的路径）确定文件身份。
+     */
+    preserveSymlinks: false,
   },
 };
