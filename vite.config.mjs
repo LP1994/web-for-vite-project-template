@@ -492,6 +492,20 @@ const fontsForAssets = [
   ];
 
 /**
+ * @type {(string | RegExp)[]} 阻止监视文件。
+ */
+const watch_ignored = [
+  '**/node_modules/**',
+  '**/该文件夹说明.txt',
+  '**/.gitignore',
+  '**/graphQL/doc/**',
+  '**/graphQL/test/**',
+  '**/type_doc/**',
+  '**/unit_test/**',
+  '**/wasm/source_codes/**',
+];
+
+/**
  * @type {import('vite').UserConfig} Vite配置。<br />
  * 详细选项见：<br />
  * https://vitejs.dev/config/
@@ -1272,15 +1286,7 @@ export default defineConfig( async ( {
          */
         chokidar: {
           persistent: true,
-          ignored: [
-            '**/该文件夹说明.txt',
-            '**/.gitignore',
-            '**/graphQL/doc/**',
-            '**/graphQL/test/**',
-            '**/type_doc/**',
-            '**/unit_test/**',
-            '**/wasm/source_codes/**',
-          ],
+          ignored: watch_ignored,
           cwd: resolve( __dirname, `./src` ),
           depth: 100,
           ignorePermissionErrors: false,
@@ -1292,16 +1298,7 @@ export default defineConfig( async ( {
         /**
          * @type {string | RegExp | (string | RegExp)[]} 阻止监视文件。
          */
-        exclude: [
-          '**/node_modules/**',
-          '**/该文件夹说明.txt',
-          '**/.gitignore',
-          '**/graphQL/doc/**',
-          '**/graphQL/test/**',
-          '**/type_doc/**',
-          '**/unit_test/**',
-          '**/wasm/source_codes/**',
-        ],
+        exclude: watch_ignored,
         /**
          * @type {string | RegExp | (string | RegExp)[]} 将文件监视限制为某些文件。请注意，这只会过滤模块图，但不允许添加其他监视文件。
          */
@@ -2414,6 +2411,7 @@ export default defineConfig( async ( {
           ],
         },
       } ),
+
       VitePluginLegacy( {
         targets: vite_plugin_legacy_target,
         polyfills: true,
@@ -2431,7 +2429,6 @@ export default defineConfig( async ( {
         // renderLegacyChunks: true,
         // externalSystemJS: false,
       } ),
-
       /**
        * 该插件的详细配置选项见：<br />
        * node_modules/@vitejs/plugin-vue/dist/index.d.ts:20
@@ -2757,7 +2754,6 @@ export default defineConfig( async ( {
         // 供Vue2使用。
         // vls: true,
       } ),
-
       VitePluginHTMLByCustom( VitePluginHTMLConfig( {
         appType,
         entryConfig: EntryConfig( {
@@ -2837,6 +2833,7 @@ export default defineConfig( async ( {
         warn: false,
       } ),
 
+      // .cson
       RollupPluginCSON( {
         compact: isProduction,
         // indent: '\t',
@@ -2868,6 +2865,7 @@ export default defineConfig( async ( {
           /src[\\/]wasm[\\/].*\.(cson)$/i,
         ],
       } ),
+      // .csv、.tsv
       RollupPluginDSV( {
         include: [
           /node_modules[\\/].*\.(csv|tsv)$/i,
@@ -2893,6 +2891,7 @@ export default defineConfig( async ( {
           /src[\\/]wasm[\\/].*\.(csv|tsv)$/i,
         ],
       } ),
+      // .graphql、.graphqls、.gql
       RollupPluginGraphQL( {
         include: [
           /node_modules[\\/].*\.(graphql|graphqls|gql)$/i,
@@ -2910,6 +2909,7 @@ export default defineConfig( async ( {
           /src[\\/]wasm[\\/].*\.(graphql|graphqls|gql)$/i,
         ],
       } ),
+      // .handlebars、.hbs
       RollupPluginHandlebars( {
         sourceMap: false,
         noEscape: false,
@@ -3008,6 +3008,7 @@ export default defineConfig( async ( {
           /src[\\/]wasm[\\/].*\.(md)$/i,
         ],
       } ),
+      // .mustache
       RollupPluginMustache( {
         hoganKey: `hogan.js`,
         include: [
@@ -3030,6 +3031,7 @@ export default defineConfig( async ( {
           /src[\\/]wasm[\\/].*\.(mustache)$/i,
         ],
       } ),
+      // .pug、.jade
       RollupPluginPUG( {
         doctype: 'html',
         pretty: !isProduction,
@@ -3117,6 +3119,7 @@ export default defineConfig( async ( {
           /src[\\/]wasm[\\/].*\.(xml)$/i,
         ],
       } ),
+      // .yaml、.yml
       RollupPluginYAML( {
         documentMode: 'single',
         safe: true,
@@ -3586,57 +3589,31 @@ export default defineConfig( async ( {
           /**
            * @type {boolean | string | regExp | ((string | regExp)[]) | function} 配置Access-Control-Allow-Origin CORS头。
            */
-          origin: [
-            '*',
-          ],
+          origin: ( origin => origin.split( ',' )
+          .map( item => item.trim() ) )( httpHeaders[ 'Access-Control-Allow-Origin' ] ),
           /**
            * @type {string | string[]} 配置Access-Control-Allow-Methods CORS头。希望是一个以逗号分隔的字符串（例如：'GET,PUT,POST'）或一个数组（例如：['GET', 'PUT', 'POST']）。
            */
-          methods: [
-            'GET',
-            'HEAD',
-            'POST',
-            'PUT',
-            'DELETE',
-            'CONNECT',
-            'OPTIONS',
-            'TRACE',
-            'PATCH',
-          ],
+          methods: ( methods => methods.split( ',' )
+          .map( item => item.trim() ) )( httpHeaders[ 'Access-Control-Allow-Methods' ] ),
           /**
            * @type {string | string[]} 配置Access-Control-Allow-Headers CORS头。希望是一个以逗号分隔的字符串（例如：'Content-Type,Authorization'）或一个数组（例如：['Content-Type', 'Authorization']）。如果没有指定，默认为反映请求的Access-Control-Request-Headers头中指定的头。
            */
-          allowedHeaders: [
-            'X-Custom-Header-File-SRI',
-            'Authorization',
-            'Accept',
-            'Content-Type',
-            'Content-Language',
-            'Accept-Language',
-          ],
+          allowedHeaders: ( allowedHeaders => allowedHeaders.split( ',' )
+          .map( item => item.trim() ) )( httpHeaders[ 'Access-Control-Allow-Headers' ] ),
           /**
            * @type {string | string[]} 配置Access-Control-Expose-Headers CORS标头。期待一个以逗号分隔的字符串（例如：'Content-Range,X-Content-Range'）或一个数组（例如：['Content-Range', 'X-Content-Range']）。如果不指定，就不会有自定义的头文件被暴露。
            */
-          exposedHeaders: [
-            'X-Custom-Header-File-SRI',
-            'Authorization',
-            'Content-Encoding',
-            'Cache-Control',
-            'Content-Language',
-            'Content-Length',
-            'Content-Type',
-            'Expires',
-            'Last-Modified',
-            'Pragma',
-          ],
+          exposedHeaders: ( exposedHeaders => exposedHeaders.split( ',' )
+          .map( item => item.trim() ) )( httpHeaders[ 'Access-Control-Expose-Headers' ] ),
           /**
            * @type {boolean} 配置Access-Control-Allow-Credentials CORS头。设置为true以传递该头信息，否则就省略。
            */
-          credentials: true,
+          credentials: httpHeaders[ 'Access-Control-Allow-Credentials' ],
           /**
            * @type {number} 配置Access-Control-Max-Age CORS头。设置为整数以通过该头，否则省略。
            */
-          maxAge: 2 * 60 * 60,
+          maxAge: httpHeaders[ 'Access-Control-Max-Age' ],
           /**
            * @type {boolean} 将CORS预检响应传递给下一个处理程序。默认值为：false。
            */
