@@ -189,10 +189,6 @@ import {
   onMounted,
 } from 'vue';
 
-import {
-  IsArray,
-} from 'toolsDir/ts/universal_tools/UniversalTools.esm.mts';
-
 type TypeState = {
   [ key: string | number ]: any;
 };
@@ -321,7 +317,7 @@ function UploadForMultiple( event: Event ): void{
 }
 
 const state: TypeState = reactive( {
-  titleText: `测试DIY的Deno服务器的文件上传（${ IsArray( [] ) }）`,
+  titleText: `测试DIY的Deno服务器的文件上传`,
 } );
 
 onMounted( (): void => {

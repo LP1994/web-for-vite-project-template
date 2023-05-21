@@ -11,8 +11,4 @@
 
 import './HelloWorld.css';
 
-import {
-  DateFormatForObject,
-} from 'toolsDir/ts/universal_tools/UniversalTools.esm.mts';
-
-document.querySelector( 'main' ).textContent = `Hello World!${ JSON.stringify( DateFormatForObject() ) }`;
+document.querySelector( 'main' ).textContent = `Hello World!`;
