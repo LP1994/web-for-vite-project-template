@@ -749,9 +749,9 @@ export default defineConfig( async ( {
        * 7、必须在项目根目录存在一个有效的tsconfig.json、tsconfig.vite.json文件。<br />
        */
       tsconfigRaw: ( tsconfigPath => {
-        let obj1 = tsconfig_vite_json,
+        let obj1 = JSON.parse( JSON.stringify( tsconfig_vite_json ) ),
           resultCompilerOptionsObj = Object.prototype.toString.call( obj1.compilerOptions ) === '[object Object]'
-                                     ? obj1.compilerOptions
+                                     ? JSON.parse( JSON.stringify( obj1.compilerOptions ) )
                                      : {},
           path1 = '',
           dirNamePath1 = dirname( resolve( __dirname, tsconfigPath ) );
@@ -764,13 +764,13 @@ export default defineConfig( async ( {
           obj1 = JSON5.parse( String( readFileSync( path1 ) ) );
 
           resultCompilerOptionsObj = Object.assign( {}, Object.prototype.toString.call( obj1.compilerOptions ) === '[object Object]'
-                                                        ? obj1.compilerOptions
-                                                        : {}, resultCompilerOptionsObj );
+                                                        ? JSON.parse( JSON.stringify( obj1.compilerOptions ) )
+                                                        : {}, JSON.parse( JSON.stringify( resultCompilerOptionsObj ) ) );
         }
 
         return JSON.stringify( {
           compilerOptions: {
-            ...resultCompilerOptionsObj,
+            ...JSON.parse( JSON.stringify( resultCompilerOptionsObj ) ),
             esModuleInterop: true,
             // 选项'isolatedModules'是多余的，不能与选项'verbatimModuleSyntax'一起指定，优先使用verbatimModuleSyntax。
             // isolatedModules: true,
