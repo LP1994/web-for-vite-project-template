@@ -192,7 +192,7 @@ function createPlugin( {
 
         const parsedUrl = rqst._parsedUrl,
           rewrite = rewrites.find( r => {
-            return parsedUrl.path.match( r.from );
+            return parsedUrl.pathname.match( r.from );
           } );
 
         if( !rewrite ){
@@ -205,6 +205,7 @@ function createPlugin( {
 
         if( typeof rewrite.to === 'string' ){
           rqst.url = rewrite.to;
+
           return next();
         }
 
@@ -219,7 +220,6 @@ function createPlugin( {
         // 因此不会再触发transformIndexHtml钩子，需要手动调用
         server.transformIndexHtml(
           path.resolve( baseUrl, rewrite.to.filename ),
-
           fs.readFileSync( path.resolve( viteConfig.root, rewrite.to.template ) ).toString(),
         ).then( html => {
           resp.end( html );

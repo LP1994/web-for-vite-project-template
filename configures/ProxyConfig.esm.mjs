@@ -375,7 +375,7 @@ ${ JSON.stringify( req.headers, null, ' ' ) }
       /**
        * 重写目标的url路径。例子可见：https://vitejs.dev/config/server-options.html#server-proxy
        *
-       * @param path {string}
+       * @param {string} path
        *
        * @returns {string} 新路径。
        */
@@ -602,9 +602,9 @@ ${ JSON.stringify( req.headers, null, ' ' ) }
       /**
        * 配置代理服务器（例如，侦听各种事件）。
        *
-       * @param proxy {HttpProxy.Server} 'http-proxy'的实例。
+       * @param {HttpProxy.Server} proxy 'http-proxy'的实例。
        *
-       * @param options {ProxyOptions}
+       * @param {ProxyOptions} options
        *
        * @returns {void}
        */
@@ -727,7 +727,7 @@ HTTP代理--->${ req.originalUrl }<---End
       /**
        * 重写目标的url路径。例子可见：https://vitejs.dev/config/server-options.html#server-proxy
        *
-       * @param path {string}
+       * @param {string} path
        *
        * @returns {string} 新路径。
        */
@@ -954,9 +954,9 @@ HTTP代理--->${ req.originalUrl }<---End
       /**
        * 配置代理服务器（例如，侦听各种事件）。
        *
-       * @param proxy {HttpProxy.Server} 'http-proxy'的实例。
+       * @param {HttpProxy.Server} proxy 'http-proxy'的实例。
        *
-       * @param options {ProxyOptions}
+       * @param {ProxyOptions} options
        *
        * @returns {void}
        */

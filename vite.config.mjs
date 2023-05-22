@@ -552,8 +552,22 @@ export default defineConfig( async ( {
    * 'spa'：包含HTML中间件以及使用SPA回退。在预览中将sirv配置为single: true。<br />
    * 'mpa'：包含HTML中间件。<br />
    * 'custom'：不包含HTML中间件。<br />
+   *
+   * 特别说明：
+   * 1、该选项也会影响“configures/VitePluginHTMLConfig.esm.mjs”、“configures/EntryConfig.esm.mjs”这个两个的配置。<br />
+   * 2、前者是vite-plugin-html插件，后者是Vite的build.rollupOptions.input的配置，也就是“entry points”的配置。<br />
+   * 3、上述两个配置文件，详细可前往它们内部查看说明。<br />
+   * 4、如果实际项目指定为是SPA的，那么就将该选项设置为'spa'即可，上述两个配置文件会有各自的判断，返回相应的配置，具体见它们内部说明。<br />
+   * 5、如果实际项目指定为是MPA的，那么就将该选项设置为'mpa'即可，上述两个配置文件会有各自的判断，返回相应的配置，具体见它们内部说明。<br />
+   * 6、如果该选项设置为'custom'，那么极可能需要前往上述两个配置文件进行具体的修改，当前的配置未必能满足“custom”的需要。<br />
    */
   const appType = 'mpa',
+    /**
+     * @type {string|string[]|{[p: string]: string}} Vite的build.rollupOptions.input的配置，也就是“entry points”的配置。
+     */
+    entryConfig = EntryConfig( {
+      appType,
+    } ),
     /**
      * @type {ESBuildOptions | false} 默认情况下，esbuild会被应用在ts、jsx、tsx文件。ESBuildOptions扩展了esbuild自己的transform选项。<br />
      * 1、你可以通过esbuild.include和esbuild.exclude对要处理的文件类型进行配置，这两个配置的值可以是一个正则表达式、一个picomatch模式，或是一个值为这两种类型的数组。<br />
@@ -922,9 +936,7 @@ export default defineConfig( async ( {
        * 详细见：<br />
        * https://rollupjs.org/configuration-options/#input
        */
-      input: EntryConfig( {
-        appType,
-      } ),
+      input: entryConfig,
       output: {
         // 核心功能 Start
 
@@ -2756,9 +2768,7 @@ export default defineConfig( async ( {
       } ),
       VitePluginHTMLByCustom( VitePluginHTMLConfig( {
         appType,
-        entryConfig: EntryConfig( {
-          appType,
-        } ),
+        entryConfig,
         isProduction,
         /**
          * @type {object} HTML压缩配置。

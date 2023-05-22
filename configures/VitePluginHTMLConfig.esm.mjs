@@ -183,6 +183,13 @@ const defaultData = {
  * 'spa'：包含HTML中间件以及使用SPA回退。在预览中将sirv配置为single: true。<br />
  * 'mpa'：包含HTML中间件。<br />
  * 'custom'：不包含HTML中间件。<br />
+ * 特别说明：
+ * 1、该选项也会影响“configures/VitePluginHTMLConfig.esm.mjs”、“configures/EntryConfig.esm.mjs”这个两个的配置。<br />
+ * 2、前者是vite-plugin-html插件，后者是Vite的build.rollupOptions.input的配置，也就是“entry points”的配置。<br />
+ * 3、上述两个配置文件，详细可前往它们内部查看说明。<br />
+ * 4、如果实际项目指定为是SPA的，那么就将该选项设置为'spa'即可，上述两个配置文件会有各自的判断，返回相应的配置，具体见它们内部说明。<br />
+ * 5、如果实际项目指定为是MPA的，那么就将该选项设置为'mpa'即可，上述两个配置文件会有各自的判断，返回相应的配置，具体见它们内部说明。<br />
+ * 6、如果该选项设置为'custom'，那么极可能需要前往上述两个配置文件进行具体的修改，当前的配置未必能满足“custom”的需要。<br />
  *
  * @param {string | string []| { [entryName: string]: string }} config.entryConfig vite的顶级配置项build.rollupOptions.input的配置值，必需。<br />
  *
@@ -225,6 +232,40 @@ function VitePluginHTMLConfig( {
    * 详细的配置见：
    * node_modules/vite-plugin-html/dist/index.d.ts:23
    * https://github.com/vbenjs/vite-plugin-html
+   *
+   * @param {object} config 对象参数。
+   *
+   * @param {string} config.entry 1个对应的“入口脚本”。<br />
+   * 1、由于返回的值是给项目根目录下的vite.config.mjs使用的，所以设置的文件路径也是相对于项目根目录的。
+   *
+   * @param {string} config.template HTML模板文件，一般是ejs文件。<br />
+   * 1、由于返回的值是给项目根目录下的vite.config.mjs使用的，所以设置的文件路径也是相对于项目根目录的。
+   *
+   * @param {string} config.filename 最后生成的HTML文件名，带不带“.html”这个后缀名都行，因为最后生成的HTML文件名都会带上“.html”。<br />
+   * 1、该选项不仅影响生产模式下生成的HTML文件名，也影响开发模式下，浏览器打开的URL的路径名。<br />
+   * 如：<br />
+   * filename: 'HelloWorld'
+   * 那么开发模式下，浏览器打开的URL的路径名为：https://localhost:8500/dev_server/HelloWorld
+   * 注意，这时，能成功访问到的URL为：https://localhost:8500/dev_server/HelloWorld
+   * 而不是：https://localhost:8500/dev_server/HelloWorld.html
+   * 此时，带不带“.html”就有区别了！
+   *
+   * filename: 'HelloWorld.html'
+   * 那么开发模式下，浏览器打开的URL的路径名为：https://localhost:8500/dev_server/HelloWorld.html
+   * 注意，这时，能成功访问到的URL为：https://localhost:8500/dev_server/HelloWorld.html
+   * 而不是：https://localhost:8500/dev_server/HelloWorld
+   * 此时，带不带“.html”就有区别了！
+   *
+   * @param {object} config.data 传给模板的自定义数据，一般将自定义的数据放在VitePluginHTMLData下即可，这样就能在模板文件中通过VitePluginHTMLData.xxx来访问自定义数据了。<br />
+   * 如：<br />
+   * {
+   *   VitePluginHTMLData: {
+   *     name: 'nameXXX',
+   *   },
+   * }
+   * 1、当然，也可以是其他命名的，不一定得是“VitePluginHTMLData”，只是说，这里叫啥名，在模板文件中就得用那个设置的名字获取自定义的数据。<br />
+   *
+   * @returns {object}
    */
   function GenerateSPAConfig( {
     entry,
@@ -252,6 +293,40 @@ function VitePluginHTMLConfig( {
    * 详细的配置见：
    * node_modules/vite-plugin-html/dist/index.d.ts:23
    * https://github.com/vbenjs/vite-plugin-html
+   *
+   * @param {Array<{entry, template, filename, data}>} configs 数组参数。
+   *
+   * @param {string} entry 1个对应的“入口脚本”。<br />
+   * 1、由于返回的值是给项目根目录下的vite.config.mjs使用的，所以设置的文件路径也是相对于项目根目录的。
+   *
+   * @param {string} template HTML模板文件，一般是ejs文件。<br />
+   * 1、由于返回的值是给项目根目录下的vite.config.mjs使用的，所以设置的文件路径也是相对于项目根目录的。
+   *
+   * @param {string} filename 最后生成的HTML文件名，带不带“.html”这个后缀名都行，因为最后生成的HTML文件名都会带上“.html”。<br />
+   * 1、该选项不仅影响生产模式下生成的HTML文件名，也影响开发模式下，浏览器打开的URL的路径名。<br />
+   * 如：<br />
+   * filename: 'HelloWorld'
+   * 那么开发模式下，浏览器打开的URL的路径名为：https://localhost:8500/dev_server/HelloWorld
+   * 注意，这时，能成功访问到的URL为：https://localhost:8500/dev_server/HelloWorld
+   * 而不是：https://localhost:8500/dev_server/HelloWorld.html
+   * 此时，带不带“.html”就有区别了！
+   *
+   * filename: 'HelloWorld.html'
+   * 那么开发模式下，浏览器打开的URL的路径名为：https://localhost:8500/dev_server/HelloWorld.html
+   * 注意，这时，能成功访问到的URL为：https://localhost:8500/dev_server/HelloWorld.html
+   * 而不是：https://localhost:8500/dev_server/HelloWorld
+   * 此时，带不带“.html”就有区别了！
+   *
+   * @param {object} data 传给模板的自定义数据，一般将自定义的数据放在VitePluginHTMLData下即可，这样就能在模板文件中通过VitePluginHTMLData.xxx来访问自定义数据了。<br />
+   * 如：<br />
+   * {
+   *   VitePluginHTMLData: {
+   *     name: 'nameXXX',
+   *   },
+   * }
+   * 1、当然，也可以是其他命名的，不一定得是“VitePluginHTMLData”，只是说，这里叫啥名，在模板文件中就得用那个设置的名字获取自定义的数据。<br />
+   *
+   * @returns {object}
    */
   function GenerateMPAConfig( pagesConfig = [] ){
     return {
@@ -279,12 +354,9 @@ function VitePluginHTMLConfig( {
   }
 
   return isSPA
-    /**
-     * SPA的配置。<br />
-     *
-     * 详细的配置见：
-     * node_modules/vite-plugin-html/dist/index.d.ts:23
-     * https://github.com/vbenjs/vite-plugin-html
+    /*
+     1、当项目为单页应用时，调用函数GenerateSPAConfig即可。
+     2、由于返回的值是给项目根目录下的vite.config.mjs使用的，所以设置的文件路径也是相对于项目根目录的。
      */
          ? GenerateSPAConfig( {
       entry: 'src/pages/hello_world/HelloWorld.mjs',
@@ -297,12 +369,9 @@ function VitePluginHTMLConfig( {
         },
       },
     } )
-    /**
-     * MPA的配置。<br />
-     *
-     * 详细的配置见：
-     * node_modules/vite-plugin-html/dist/index.d.ts:23
-     * https://github.com/vbenjs/vite-plugin-html
+    /*
+     1、当项目为多页应用时，调用函数GenerateMPAConfig即可。
+     2、由于返回的值是给项目根目录下的vite.config.mjs使用的，所以设置的文件路径也是相对于项目根目录的。
      */
          : GenerateMPAConfig( [
       {

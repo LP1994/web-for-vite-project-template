@@ -72,6 +72,13 @@ const __dirname = Get__dirname( import.meta.url );
  * 'spa'：包含HTML中间件以及使用SPA回退。在预览中将sirv配置为single: true。<br />
  * 'mpa'：包含HTML中间件。<br />
  * 'custom'：不包含HTML中间件。<br />
+ * 特别说明：
+ * 1、该选项也会影响“configures/VitePluginHTMLConfig.esm.mjs”、“configures/EntryConfig.esm.mjs”这个两个的配置。<br />
+ * 2、前者是vite-plugin-html插件，后者是Vite的build.rollupOptions.input的配置，也就是“entry points”的配置。<br />
+ * 3、上述两个配置文件，详细可前往它们内部查看说明。<br />
+ * 4、如果实际项目指定为是SPA的，那么就将该选项设置为'spa'即可，上述两个配置文件会有各自的判断，返回相应的配置，具体见它们内部说明。<br />
+ * 5、如果实际项目指定为是MPA的，那么就将该选项设置为'mpa'即可，上述两个配置文件会有各自的判断，返回相应的配置，具体见它们内部说明。<br />
+ * 6、如果该选项设置为'custom'，那么极可能需要前往上述两个配置文件进行具体的修改，当前的配置未必能满足“custom”的需要。<br />
  *
  * @returns {string | string []| { [entryName: string]: string }} Vite的build.rollupOptions.input的配置，也就是“entry points”的配置。
  */
@@ -81,7 +88,15 @@ function EntryConfig( {
   const isSPA = appType === 'spa';
 
   return isSPA
+    /*
+     1、当appType为'spa'时，也就是单页应用时，只需要设置1个“入口脚本”即可，且设置成一个字符串类型的值。
+     2、由于返回的值是给项目根目录下的vite.config.mjs使用的，所以设置的文件路径也是相对于项目根目录的。
+     */
          ? 'src/pages/hello_world/HelloWorld.mjs'
+    /*
+     1、当appType为'mpa'时，也就是多页应用时，保持为一个空对象的值即可。
+     2、因为实际的设置是依赖“configures/VitePluginHTMLConfig.esm.mjs”这个配置文件的，Vite内部会自动生成相应的“entry points”配置。
+     */
          : {};
 }
 
