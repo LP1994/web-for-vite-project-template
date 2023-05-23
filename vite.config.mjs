@@ -1745,7 +1745,7 @@ export default defineConfig( async ( {
          */
         getJSON: async ( cssFileName, json, outputFileName ) => {
           await writeFile( resolve( __dirname, `./dist/${ env_platform }/styles/${ basename( cssFileName )
-          .replace( new URL( cssFileName ).search, '' ) }.json` ), JSON.stringify( json ), {
+          .replace( new URL( cssFileName ).search, '' ) }.css.modules.json` ), JSON.stringify( json ), {
             flag: 'w+',
           } );
         },
