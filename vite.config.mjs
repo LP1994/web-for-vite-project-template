@@ -1770,6 +1770,7 @@ export default defineConfig( async ( {
          * dashesOnly：class名中的破折号（“-”）将被驼峰化（如：.apply-color -> applyColor），原来的class名将被从local删除。<br />
          */
         localsConvention: 'dashes',
+        exportGlobals: true,
       },
       /**
        * @type {string | (PostCSS.ProcessOptions & { plugins?: PostCSS.AcceptedPlugin[]; })} 内联的PostCSS配置（格式同postcss.config.js），或者一个（默认基于项目根目录的）自定义的PostCSS配置路径。<br />
