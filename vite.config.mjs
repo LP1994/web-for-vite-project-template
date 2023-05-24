@@ -128,6 +128,10 @@ import {
   ViteToml as VitePluginTOML,
 } from 'vite-plugin-toml';
 
+import VitePluginWASM from 'vite-plugin-wasm';
+
+import VitePluginTopLevelAwait from 'vite-plugin-top-level-await';
+
 import VitePluginXML from 'vite-plugin-xml-loader';
 
 import DefineConfig from './configures/DefineConfig.esm.mjs';
@@ -2425,6 +2429,23 @@ export default defineConfig( async ( {
         },
       } ),
 
+      /**
+       * 将WebAssembly ESM集成（又名Webpack的asyncWebAssembly）添加到Vite中，并支持wasm-pack生成的模块。<br />
+       * 详细见：<br />
+       * https://github.com/Menci/vite-plugin-wasm
+       * 1、在针对Firefox时，请将worker.format的值设置为iife。<br />
+       */
+      VitePluginWASM(),
+      /**
+       * 转化代码以支持Vite的普通浏览器的顶层等待。支持Vite默认目标的所有现代浏览器，无需将build.target设置为esnext。<br />
+       * 详细见：<br />
+       * https://github.com/Menci/vite-plugin-top-level-await
+       * 1、如果worker.format的值是es，该插件也可以正常工作的。<br />
+       * 2、如果worker.format的值是iife，该插件首先让Vite将您的工作者构建为ES捆绑包，因为IIFE不支持顶层等待，然后将转换后的ES捆绑包构建为IIFE。<br />
+       * 3、在针对Firefox时，请将worker.format的值设置为iife。<br />
+       */
+      VitePluginTopLevelAwait(),
+
       VitePluginLegacy( {
         targets: vite_plugin_legacy_target,
         polyfills: true,
@@ -3403,11 +3424,29 @@ export default defineConfig( async ( {
       /**
        * @type {'es' | 'iife'} “Web Workers”捆绑的输出格式。默认值为：'iife'。
        */
-      format: 'es',
+      // format: 'es',
       /**
-       * @type {(Plugin | Plugin[])[]} 适用于worker bundle的Vite插件。请注意，Vite的顶级配置plugins选项只适用于dev中的worker，对于build，应该在这里进行配置。
+       * @type {(Plugin | Plugin[])[]} 适用于worker bundle的Vite插件。请注意，Vite的顶级配置plugins选项只适用于dev中的worker，对于build，应该在这里进行配置。<br />
+       * 1、一般来说，如果插件支持Web Worker中使用时，会在它的说明文档中提到！<br />
        */
-      // plugins: [],
+      plugins: [
+        /**
+         * 将WebAssembly ESM集成（又名Webpack的asyncWebAssembly）添加到Vite中，并支持wasm-pack生成的模块。<br />
+         * 详细见：<br />
+         * https://github.com/Menci/vite-plugin-wasm
+         * 1、在针对Firefox时，请将worker.format的值设置为iife。<br />
+         */
+        VitePluginWASM(),
+        /**
+         * 转化代码以支持Vite的普通浏览器的顶层等待。支持Vite默认目标的所有现代浏览器，无需将build.target设置为esnext。<br />
+         * 详细见：<br />
+         * https://github.com/Menci/vite-plugin-top-level-await
+         * 1、如果worker.format的值是es，该插件也可以正常工作的。<br />
+         * 2、如果worker.format的值是iife，该插件首先让Vite将您的工作者构建为ES捆绑包，因为IIFE不支持顶层等待，然后将转换后的ES捆绑包构建为IIFE。<br />
+         * 3、在针对Firefox时，请将worker.format的值设置为iife。<br />
+         */
+        VitePluginTopLevelAwait(),
+      ],
       /**
        * @type {RollupOptions} Rollup选项，建立worker bundle。注意，这个rollupOptions选项，是用来捆绑、压缩、编译“worker”中的代码。<br />
        * 1、直接定制底层的Rollup包。这与可以从Rollup配置文件中导出的选项相同，将与Vite的内部Rollup选项合并。<br />
