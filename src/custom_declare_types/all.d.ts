@@ -25,9 +25,9 @@ type CSSModuleClasses = {
   readonly [ key: string ]: string;
 };
 
-type WASMObject = {
+interface WASMObject {
   readonly [ key: string ]: any;
-};
+}
 
 interface ArrayConstructor {
   fromAsync( asyncItems: AsyncIterable | Iterable | ArrayLike ): Promise<[]>;
@@ -125,21 +125,39 @@ declare module '*.woff2' {
 }
 
 declare module '*.graphql' {
-  const src: string;
+  import {
+    type DocumentNode,
+  } from 'graphql';
 
-  export default src;
+  const module: DocumentNode;
+
+  export = module;
+
+  export default module;
 }
 
 declare module '*.graphqls' {
-  const src: string;
+  import {
+    type DocumentNode,
+  } from 'graphql';
 
-  export default src;
+  const module: DocumentNode;
+
+  export = module;
+
+  export default module;
 }
 
 declare module '*.gql' {
-  const src: string;
+  import {
+    type DocumentNode,
+  } from 'graphql';
 
-  export default src;
+  const module: DocumentNode;
+
+  export = module;
+
+  export default module;
 }
 
 declare module '*.handlebars' {
@@ -233,9 +251,11 @@ declare module '*.jade' {
 }
 
 declare module '*.wasm' {
-  const wasmObject: WASMObject;
+  const module: WASMObject;
 
-  export default wasmObject;
+  export = module;
+
+  export default module;
 }
 
 declare module '*.xml' {
