@@ -1018,9 +1018,16 @@ export default defineConfig( async ( {
             return `videos/[name]_[hash:16][extname]`;
           }
 
-          if( pwa_manifestForAssets.map( item => `.${ item }` )
-          .includes( ext ) || ( ext === '.json' && name.includes( '.manifest.json' ) ) ){
+          if( pwa_manifestForAssets.map( item => `.${ item }` ).includes( ext ) ){
             return `pwa_manifest/[name]_[hash:16][extname]`;
+          }
+
+          if( name.endsWith( '.manifest.json' ) ){
+            return `pwa_manifest/${ name.split( '.manifest.json' )[ 0 ] }_[hash:16].manifest.json`;
+          }
+
+          if( name.endsWith( '.worker.js' ) || name.endsWith( '.worker.ts' ) ){
+            return `workers/${ name.split( '.worker' )[ 0 ] }_[hash:16].worker.js`;
           }
 
           return `assets/[name]_[hash:16][extname]`;
@@ -3462,6 +3469,8 @@ export default defineConfig( async ( {
         delete config.input;
 
         delete output.globals;
+
+        output.format = 'iife';
 
         config.output = output;
 
