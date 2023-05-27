@@ -3451,53 +3451,6 @@ export default defineConfig( async ( {
        */
       plugins: [
         /**
-         * @type {object} 自动加载模块，而不必在任何地方“import”或“require”它们。<br />
-         * 1、默认情况下，模块解析路径是从“当前文件夹”和“node_modules”中开始查找。<br />
-         * 2、要导入ES2015模块的“默认导出”，必须指定模块的“默认属性”，也就是说模块必须指定“默认属性”。<br />
-         * 3、每当在模块中遇到标识符作为自由变量时，模块会自动加载，并且标识符会填充加载模块的导出（或“属性”以支持“命名导出”）。<br />
-         * 如：_map: ['lodash', 'map']、Vue: ['vue/dist/vue.esm.js', 'default']。<br />
-         * 4、也可以指定完整路径：identifier: path.resolve(path.join(__dirname, 'src/module1'))。<br />
-         * 5、为第三方包配置时，只要用包名作为value值即可，因为webpack会自动从“node_modules”中查找，并加载相应的模块文件。<br />
-         * 6、为第三方包配置时，不要设置以“./”、“./node_modules/”、“node_modules/”等等开头的value值，当然如果是指向自己的模块文件，那还是要指定完整路径。<br />
-         * 7、element-ui依赖vue 2.X，而当前安装的时vue 3.X，所以如果要使用element-ui，要去安装vue 2.X的包，如：vue@2.6.14。当要使用element-ui且安装了vue 2.X，并且设置了：ELEMENT: 'element-ui'、Vue: 'vue'，那么在代码中使用这两个的时候要写成：Vue.default.use( ELEMENT )。<br />
-         * 8、注意，不同的包，因为其package.json中"exports"字段值的不同，如下设置也会不同的，最好每次都要在代码中测试是否如期望一样达到目的效果。<br />
-         * 9、鉴于某些低版本浏览器不支持ES6+的语法，而如下设置又直接使用了第三方包的ESM版本，那么最终的打包代码中会直接使用其ESM版本的代码，从而导致不支持某些低版本浏览器。<br />
-         *
-         * 例子：<br />
-         * {
-         *   // import { Promise } from 'es6-promise'
-         *   Promise: [ 'es6-promise', 'Promise' ],
-         * 
-         *   // import { Promise as P } from 'es6-promise'
-         *   P: [ 'es6-promise', 'Promise' ],
-         * 
-         *   // import $ from 'jquery'
-         *   $: 'jquery',
-         * 
-         *   // import * as fs from 'fs'
-         *   fs: [ 'fs', '*' ],
-         * 
-         *   // use a local module instead of a third-party one
-         *   'Object.assign': path.resolve( 'src/helpers/object-assign.js' ),
-         * }
-         */
-        VitePluginInject( {
-          // include: [],
-          // exclude: [],
-          sourceMap: false,
-          modules: {
-            $: [
-              resolve( join( __dirname, './node_modules/jquery/dist/jquery.js' ) ),
-              '*',
-            ],
-            jQuery: [
-              resolve( join( __dirname, './node_modules/jquery/dist/jquery.js' ) ),
-              '*',
-            ],
-          },
-        } ),
-
-        /**
          * 将WebAssembly ESM集成（又名Webpack的asyncWebAssembly）添加到Vite中，并支持wasm-pack生成的模块。<br />
          * 详细见：<br />
          * https://github.com/Menci/vite-plugin-wasm
@@ -3513,56 +3466,6 @@ export default defineConfig( async ( {
          * 3、在针对Firefox时，请将worker.format的值设置为iife。<br />
          */
         VitePluginTopLevelAwait(),
-
-        VitePluginLegacy( {
-          targets: vite_plugin_legacy_target,
-          polyfills: true,
-          /**
-           * @type {string[]} 添加自定义导入到传统的polyfills块中。<br />
-           * 1、由于基于使用的polyfill检测只包括ES语言功能，可能需要使用这个选项手动指定额外的DOM API polyfills。<br />
-           * 2、注意：如果现代和传统块都需要额外的polyfills，它们可以简单地在应用程序源代码中导入。<br />
-           */
-          // additionalLegacyPolyfills: [],
-          /**
-           * @type {boolean}
-           */
-          ignoreBrowserslistConfig: false,
-          // modernPolyfills: false,
-          // renderLegacyChunks: true,
-          // externalSystemJS: false,
-        } ),
-        checker( {
-          overlay: {
-            initialIsOpen: true,
-            position: 'bl',
-            /**
-             * 使用它向徽章按钮添加额外的样式字符串，字符串格式为：[Svelte style](https://svelte.dev/docs#template-syntax-element-directives-style-property)<br />
-             * 例如，如果要隐藏徽章，可以将“display: none;”传递给badgeStyle属性。<br />
-             */
-            // badgeStyle: ``,
-            /**
-             * 使用它向诊断面板添加额外的样式字符串，字符串格式为：[Svelte style](https://svelte.dev/docs#template-syntax-element-directives-style-property)<br />
-             * 例如，如果要更改面板的不透明度，可以将“opacity: 0.8;”传递给panelStyle属性。<br />
-             */
-            // panelStyle: ``,
-          },
-          terminal: true,
-          // Enable checking in build mode.
-          enableBuild: true,
-          typescript: {
-            root: resolve( __dirname, `./` ),
-            tsconfigPath: './tsconfig.vite.json',
-            // Add --build to tsc flag, note that noEmit does NOT work if buildMode is true.
-            buildMode: false,
-          },
-          // 供Vue3使用。
-          vueTsc: {
-            root: resolve( __dirname, `./` ),
-            tsconfigPath: './tsconfig.vite.json',
-          },
-          // 供Vue2使用。
-          // vls: true,
-        } ),
 
         // .cson
         RollupPluginCSON( {
@@ -3883,60 +3786,6 @@ export default defineConfig( async ( {
             /src[\\/]wasm[\\/].*\.(yaml|yml)$/i,
           ],
         } ),
-
-        /**
-         * 这个插件通过获取ViteJS的输出资产，在生产模式下的构建时添加预加载（“preload”）链接。<br />
-         * 1、目前，由于Vite的行为方式，这个插件只在生产模式下的构建时工作。<br />
-         * 2、利用该插件的“注入”功能，我们其实还可以注入诸多“link”标签：<br />
-         * <link rel = 'dns-prefetch' />
-         * <link rel = 'preconnect' />
-         * <link rel = 'preload' />
-         * <link rel = 'prefetch' />
-         * <link rel = 'prerender' />
-         * <link rel = 'modulepreload' />
-         * 等等“link”标签。<br />
-         * 详细见：<br />
-         * src/template/ejs/head_meta/Meta_PreOperation_001.ejs
-         * 3、如果手动设置了“href”属性的值，那么手动设置的值会覆盖掉该插件自动设置的值。<br />
-         * 4、当前做了一个可以自动为想要预加载（“preload”）的资源做预加载处理的方法，即：<br />
-         * 只要打包前的文件名中带有“.preload”这样的文件名组合就能被识别到，当然，最后打包出来的文件名中也必须带有“.preload”这样的文件名组合才能被识别处理。<br />
-         */
-        VitePluginInjectPreload( ( config => {
-          return {
-            files: config,
-            // 'head' | 'head-prepend' | 'custom'
-            injectTo: 'head-prepend',
-          };
-        } )( [
-          {
-            match: /.*\.(preload)\.(.*)$/i,
-            attributes: {
-              // rel: 'preload',
-              // href: 'http://localhost:8090/web-for-vite-project-template/dist/test/HelloWorld.html',
-              // as: 'font',
-              // type: 'font/otf',
-              crossorigin: 'anonymous',
-
-              // 'data-font-format': 'opentype',
-
-              // 还可以有其他自定义的属性（如：data-font-format）或者其他标准属性。
-            },
-          },
-          {
-            match: /.*\.(preload)(-|_)(.*)\.(.*)$/i,
-            attributes: {
-              // rel: 'preload',
-              // href: 'http://localhost:8090/web-for-vite-project-template/dist/test/HelloWorld.html',
-              // as: 'font',
-              // type: 'font/otf',
-              crossorigin: 'anonymous',
-
-              // 'data-font-format': 'opentype',
-
-              // 还可以有其他自定义的属性（如：data-font-format）或者其他标准属性。
-            },
-          },
-        ] ) ),
       ],
       /**
        * @type {RollupOptions} Rollup选项，建立worker bundle。注意，这个rollupOptions选项，是用来捆绑、压缩、编译“worker”中的代码。<br />
