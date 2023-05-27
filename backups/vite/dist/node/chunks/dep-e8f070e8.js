@@ -28721,12 +28721,12 @@ function optimizedDepsBuildPlugin(config) {
                     ...options,
                     skipSelf: true,
                 });
-                if (resolved) {
+                if (resolved && !resolved.external) {
                     depsOptimizer.delayDepsOptimizerUntil(resolved.id, async () => {
                         await this.load(resolved);
                     });
-                    return resolved;
                 }
+                return resolved;
             }
         },
         async load(id) {
@@ -38209,10 +38209,9 @@ function cssPostPlugin(config) {
                         `${style}.textContent = ${cssString};` +
                         `document.head.appendChild(${style});`;
                     const wrapIdx = code.indexOf('System.register');
-                    const insertMark = "'use strict';";
-                    const insertIdx = code.indexOf(insertMark, wrapIdx);
+                    const executeFnStart = code.indexOf('{', code.indexOf('execute:', wrapIdx)) + 1;
                     const s = new MagicString(code);
-                    s.appendLeft(insertIdx + insertMark.length, injectCode);
+                    s.appendRight(executeFnStart, injectCode);
                     if (config.build.sourcemap) {
                         // resolve public URL from CSS paths, we need to use absolute paths
                         return {
@@ -38474,6 +38473,7 @@ async function compileCSS(id, code, config, urlReplacer) {
         return {
             code,
             map: preprocessorMap,
+            deps,
         };
     }
     let postcssResult;
@@ -38575,8 +38575,8 @@ function createCachedImport(imp) {
         return cached;
     };
 }
-const importPostcssImport = createCachedImport(() => import('./dep-92b9cc25.js').then(function (n) { return n.i; }));
-const importPostcssModules = createCachedImport(() => import('./dep-5500f506.js').then(function (n) { return n.i; }));
+const importPostcssImport = createCachedImport(() => import('./dep-93197d47.js').then(function (n) { return n.i; }));
+const importPostcssModules = createCachedImport(() => import('./dep-8124a809.js').then(function (n) { return n.i; }));
 const importPostcss = createCachedImport(() => import('postcss'));
 /**
  * @experimental
@@ -41347,10 +41347,10 @@ function webWorkerPlugin(config) {
             let objURL;
             try {
               objURL = blob && (window.URL || window.webkitURL).createObjectURL(blob);
-              if (!objURL) { throw ''; }
+              if (!objURL) throw ''
               return new ${workerConstructor}(objURL${ workerOptions.length === 0
                                                                          ? `,options`
-                                                                         : `,Object.assign( {}, ${ workerOptions.slice( 1 ) }, options )` });
+                                                                         : `,Object.assign( {}, ${ workerOptions.slice( 1 ) }, options )` })
             } catch(e) {
               return new ${workerConstructor}("data:application/javascript;base64," + encodedJs${ workerOptions.length === 0
                                                                          ? `,options`
@@ -41358,13 +41358,13 @@ function webWorkerPlugin(config) {
             } finally {
               objURL && (window.URL || window.webkitURL).revokeObjectURL(objURL);
             }
-          };`
+          }`
                         : `${encodedJs}
           export default function WorkerWrapper( options = {} ) {
             return new ${workerConstructor}("data:application/javascript;base64," + encodedJs${ workerOptions.length === 0
                                                                          ? `,options`
                                                                          : `,Object.assign( {}, ${ workerOptions.slice( 1 ) }, Object.prototype.toString.call( options ) === '[object Object]' ? options : { name: String( options ) } )` });
-          };
+          }
           `;
                     return {
                         code,
@@ -41388,7 +41388,7 @@ function webWorkerPlugin(config) {
                 };
             }
             return {
-              code: workerConstructor === 'Worker'
+                code: workerConstructor === 'Worker'
                     ? `export default function WorkerWrapper( options = {} ) {
           return new ${ workerConstructor }(${ JSON.stringify( url ) }${ workerOptions.length === 0
                                                                          ? `,options`
@@ -41399,7 +41399,7 @@ function webWorkerPlugin(config) {
                                                                          ? `,options`
                                                                          : `,Object.assign( {}, ${ workerOptions.slice( 1 ) }, Object.prototype.toString.call( options ) === '[object Object]' ? options : { name: String( options ) } )` });
         };`,
-              map: { mappings: '' }, // Empty sourcemap to suppress Rollup warning
+                map: { mappings: '' }, // Empty sourcemap to suppress Rollup warning
             };
         },
         renderChunk(code, chunk, outputOptions) {
@@ -46082,7 +46082,7 @@ function serveStaticMiddleware(dir, server) {
             isInternalRequest(req.url)) {
             return next();
         }
-        const url = new URL(req.url, 'http://example.com');
+        const url = new URL(req.url.replace(/^\/+/, '/'), 'http://example.com');
         const pathname = decodeURIComponent(url.pathname);
         // apply aliases to static requests as well
         let redirectedPathname;
@@ -46121,7 +46121,7 @@ function serveRawFsMiddleware(server) {
     const serveFromRoot = sirv('/', sirvOptions({ headers: server.config.server.headers }));
     // Keep the named function. The name is visible in debug logs via `DEBUG=connect:dispatcher ...`
     return function viteServeRawFsMiddleware(req, res, next) {
-        const url = new URL(req.url, 'http://example.com');
+        const url = new URL(req.url.replace(/^\/+/, '/'), 'http://example.com');
         // In some cases (e.g. linked monorepos) files outside of root will
         // reference assets that are also out of served root. In such cases
         // the paths are rewritten to `/@fs/` prefixed paths and must be served by
@@ -54200,17 +54200,23 @@ function isInDestructuringAssignment(parent, parentStack) {
 }
 
 let offset;
-try {
-    new Function('throw new Error(1)')();
-}
-catch (e) {
-    // in Node 12, stack traces account for the function wrapper.
-    // in Node 13 and later, the function wrapper adds two lines,
-    // which must be subtracted to generate a valid mapping
-    const match = /:(\d+):\d+\)$/.exec(e.stack.split('\n')[1]);
-    offset = match ? +match[1] - 1 : 0;
+function calculateOffsetOnce() {
+    if (offset !== undefined) {
+        return;
+    }
+    try {
+        new Function('throw new Error(1)')();
+    }
+    catch (e) {
+        // in Node 12, stack traces account for the function wrapper.
+        // in Node 13 and later, the function wrapper adds two lines,
+        // which must be subtracted to generate a valid mapping
+        const match = /:(\d+):\d+\)$/.exec(e.stack.split('\n')[1]);
+        offset = match ? +match[1] - 1 : 0;
+    }
 }
 function ssrRewriteStacktrace(stack, moduleGraph) {
+    calculateOffsetOnce();
     return stack
         .split('\n')
         .map((line) => {
@@ -63955,17 +63961,8 @@ var preview$1 = {
 function resolveSSROptions(ssr, preserveSymlinks, buildSsrCjsExternalHeuristics) {
     ssr ?? (ssr = {});
     const optimizeDeps = ssr.optimizeDeps ?? {};
-    let format = 'esm';
-    let target = 'node';
-    if (buildSsrCjsExternalHeuristics) {
-        if (ssr) {
-            format = 'cjs';
-        }
-        else {
-            target = 'node';
-            format = 'cjs';
-        }
-    }
+    const format = buildSsrCjsExternalHeuristics ? 'cjs' : 'esm';
+    const target = 'node';
     return {
         format,
         target,
@@ -64044,7 +64041,10 @@ async function resolveConfig(inlineConfig, command, defaultMode = 'development',
     // run config hooks
     const userPlugins = [...prePlugins, ...normalPlugins, ...postPlugins];
     config = await runConfigHook(config, userPlugins, configEnv);
-    if (process.env.VITE_TEST_WITHOUT_PLUGIN_COMMONJS) {
+    // If there are custom commonjsOptions, don't force optimized deps for this test
+    // even if the env var is set as it would interfere with the playground specs.
+    if (!config.build?.commonjsOptions &&
+        process.env.VITE_TEST_WITHOUT_PLUGIN_COMMONJS) {
         config = mergeConfig(config, {
             optimizeDeps: { disabled: false },
             ssr: { optimizeDeps: { disabled: false } },
