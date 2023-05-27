@@ -565,7 +565,7 @@ export default defineConfig( async ( {
    * 5、如果实际项目指定为是MPA的，那么就将该选项设置为'mpa'即可，上述两个配置文件会有各自的判断，返回相应的配置，具体见它们内部说明。<br />
    * 6、如果该选项设置为'custom'，那么极可能需要前往上述两个配置文件进行具体的修改，当前的配置未必能满足“custom”的需要。<br />
    */
-  const appType = 'mpa',
+  const appType = 'spa',
     /**
      * @type {string|string[]|{[p: string]: string}} Vite的build.rollupOptions.input的配置，也就是“entry points”的配置。
      */

@@ -1,10 +1,10 @@
 /**
  * Project: web-for-vite-project-template
- * FileDirPath: src/pages/upload/Upload.mts
+ * FileDirPath: src/pages/SPA.mts
  * Author: 12278
  * Email: 1227839175@qq.com
  * IDE: WebStorm
- * CreateDate: 2022-01-01 00:00:00 星期六
+ * CreateDate: 2022-07-30 14:08:53 星期六
  */
 
 'use strict';
@@ -16,16 +16,16 @@ import {
   createApp,
 } from 'vue';
 
-import './Upload.css';
+import 'pagesDir/SPA.css';
 
-import UploadComponentForVue3 from './Upload.Vue3.ts.vue';
+import SPAComponentForVue3 from 'pagesDir/SPA.Vue3.ts.vue';
 
 /**
  * @type {App<Element>} 创建了一个Vue 3的应用实例。
  */
-const UploadAPP: App<Element> = createApp( UploadComponentForVue3 );
+const SPAAPPInstance: App<Element> = createApp( SPAComponentForVue3 );
 
-UploadAPP.config.errorHandler = ( error: unknown, instance: ComponentPublicInstance | null, info: string ): void => {
+SPAAPPInstance.config.errorHandler = ( error: unknown, instance: ComponentPublicInstance | null, info: string ): void => {
   console.log( `\n\n\n` );
   console.error( `error:` );
   console.error( error );
@@ -41,8 +41,8 @@ UploadAPP.config.errorHandler = ( error: unknown, instance: ComponentPublicInsta
 /**
  * @type {ComponentPublicInstance} 一个Vue 3的根组件实例。
  */
-const RootComponent: ComponentPublicInstance = UploadAPP.mount( '#UploadAPP' );
+const SPARootComponentInstance: ComponentPublicInstance = SPAAPPInstance.mount( '#SPA' );
 
 console.log( `\n\n\n一个Vue 3的根组件实例：` )
-console.dir( RootComponent );
+console.dir( SPARootComponentInstance );
 console.log( `\n\n\n` );

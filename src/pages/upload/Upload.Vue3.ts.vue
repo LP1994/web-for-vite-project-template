@@ -189,7 +189,7 @@ import {
   onMounted,
 } from 'vue';
 
-type TypeState = {
+type TState = {
   [ key: string | number ]: any;
 };
 
@@ -316,13 +316,13 @@ function UploadForMultiple( event: Event ): void{
   }
 }
 
-const state: TypeState = reactive( {
+const state: TState = reactive( {
   titleText: `测试DIY的Deno服务器的文件上传`,
 } );
 
 onMounted( (): void => {
   console.log( `\n\n
-DOM已挂载。
+src/pages/upload/Upload.Vue3.ts.vue，DOM已挂载。
 \n\n` );
 } );
 </script>

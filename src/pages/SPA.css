@@ -1,10 +1,10 @@
 /*
 Project: web-for-vite-project-template
-FileDirPath: src/pages/hello_world/HelloWorld.css
+FileDirPath: src/pages/SPA.css
 Author: 12278
 Email: 1227839175@qq.com
 IDE: WebStorm
-CreateDate: 2022-07-30 14:06:00 星期六
+CreateDate: 2022-07-30 14:08:53 星期六
 */
 
 @font-face {
@@ -70,12 +70,4 @@ only screen and (max-width: 1300px) and (max-device-pixel-ratio: 1.9) and (min-d
 
 .overflow-hidden-auto {
   overflow: hidden auto;
-}
-
-main {
-  font-family: 'MyFont_Helvetica', serif;
-  color: black;
-
-  line-height: 1;
-  text-align: center;
 }

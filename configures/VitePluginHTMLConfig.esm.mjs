@@ -81,11 +81,11 @@ const defaultData = {
   pageExit: 'revealTrans(duration=5,transtion=9)',
   refresh: null,
   color: '#0000ff',
-  keywords: 'WEB,HTML5,CSS3',
-  description: 'This is a page for HelloWorld.',
+  keywords: 'WEB,Vite,SPA',
+  description: 'This is a SPA.',
   subject: '这是一个副标题。',
   generator: 'WebStorm',
-  appName: 'HelloWorld',
+  appName: 'SPA',
   author: '1227839175@qq.com',
   publisher: '12278',
   creators: [
@@ -93,20 +93,20 @@ const defaultData = {
   ],
   itemprop: {
     type: 'website',
-    url: 'https://192.168.2.7:8500/dev_server/pages/HelloWorld.html',
-    name: 'HelloWorld',
-    description: 'This is a page for HelloWorld.',
+    url: 'https://192.168.2.7:8500/dev_server/SPA.html',
+    name: 'SPA',
+    description: 'This is a SPA.',
     image: 'https://192.168.2.7:8500/dev_server/static/ico/uncompressed/ico_512_512.png',
   },
   appLinks: {
     web: {
-      url: 'https://192.168.2.7:8500/dev_server/pages/HelloWorld.html',
+      url: 'https://192.168.2.7:8500/dev_server/SPA.html',
     },
     share: {
       type: 'website',
-      url: 'https://192.168.2.7:8500/dev_server/pages/HelloWorld.html',
-      title: 'HelloWorld',
-      description: 'This is a page for HelloWorld.',
+      url: 'https://192.168.2.7:8500/dev_server/SPA.html',
+      title: 'SPA',
+      description: 'This is a SPA.',
       image: 'https://192.168.2.7:8500/dev_server/static/ico/uncompressed/ico_512_512.png',
     },
   },
@@ -116,10 +116,10 @@ const defaultData = {
   appleTouchIconPrecomposed: AppleTouchIconPrecomposed,
   og: {
     og: 'website',
-    title: 'HelloWorld',
-    url: 'https://192.168.2.7:8500/dev_server/pages/HelloWorld.html',
-    siteName: 'HelloWorld',
-    description: 'This is a page for HelloWorld.',
+    title: 'SPA',
+    url: 'https://192.168.2.7:8500/dev_server/SPA.html',
+    siteName: 'SPA',
+    description: 'This is SPA.',
     locale: 'zh_CN',
     image: {
       url: 'https://192.168.2.7:8500/dev_server/static/ico/uncompressed/ico_512_512.png',
@@ -134,10 +134,10 @@ const defaultData = {
   twitter: {
     type: 'website',
     creator: '1227839175@qq.com',
-    site: 'https://192.168.2.7:8500/dev_server/pages/HelloWorld.html',
-    url: 'https://192.168.2.7:8500/dev_server/pages/HelloWorld.html',
-    title: 'HelloWorld',
-    description: 'This is a page for HelloWorld.',
+    site: 'https://192.168.2.7:8500/dev_server/SPA.html',
+    url: 'https://192.168.2.7:8500/dev_server/SPA.html',
+    title: 'SPA',
+    description: 'This is a SPA.',
     card: 'summary_large_image',
     image: 'https://192.168.2.7:8500/dev_server/static/ico/uncompressed/ico_512_512.png',
   },
@@ -274,16 +274,33 @@ function VitePluginHTMLConfig( {
     data,
   } ){
     return {
-      entry,
-      template,
       ...config001,
-      inject: {
-        ejsOptions: {
-          ...ejsOptions,
+      pages: [
+        {
+          entry,
+          template,
           filename,
+          data,
         },
+      ].map( ( {
+        entry,
+        template,
+        filename,
         data,
-      },
+      } ) => {
+        return {
+          entry,
+          template,
+          filename,
+          injectOptions: {
+            ejsOptions: {
+              ...ejsOptions,
+              filename,
+            },
+            data,
+          },
+        };
+      } ),
     };
   }
 
@@ -359,13 +376,13 @@ function VitePluginHTMLConfig( {
      2、由于返回的值是给项目根目录下的vite.config.mjs使用的，所以设置的文件路径也是相对于项目根目录的。
      */
          ? GenerateSPAConfig( {
-      entry: 'src/pages/hello_world/HelloWorld.mjs',
-      template: 'src/template/ejs/HelloWorld.ejs',
-      filename: 'HelloWorld.html',
+      entry: 'src/pages/SPA.mts',
+      template: 'src/pages/SPA.ejs',
+      filename: 'SPA.html',
       data: {
         VitePluginHTMLData: {
           ...defaultData,
-          title: 'HelloWorld',
+          title: 'SPA',
         },
       },
     } )
@@ -373,78 +390,7 @@ function VitePluginHTMLConfig( {
      1、当项目为多页应用时，调用函数GenerateMPAConfig即可。
      2、由于返回的值是给项目根目录下的vite.config.mjs使用的，所以设置的文件路径也是相对于项目根目录的。
      */
-         : GenerateMPAConfig( [
-      {
-        entry: 'src/pages/hello_world/HelloWorld.mjs',
-        template: 'src/template/ejs/HelloWorld.ejs',
-        filename: 'HelloWorld.html',
-        data: {
-          VitePluginHTMLData: {
-            ...defaultData,
-            title: 'HelloWorld',
-          },
-        },
-      },
-
-      {
-        entry: 'src/pages/upload/Upload.mts',
-        template: 'src/pages/upload/Upload.ejs',
-        filename: 'Upload.html',
-        data: {
-          VitePluginHTMLData: {
-            ...defaultData,
-            title: 'Upload',
-            description: 'This is a page for Upload.',
-            appName: 'Upload',
-            itemprop: {
-              type: 'website',
-              url: 'https://192.168.2.7:8500/dev_server/pages/Upload.html',
-              name: 'Upload',
-              description: 'This is a page for Upload.',
-              image: 'https://192.168.2.7:8500/dev_server/static/ico/uncompressed/ico_512_512.png',
-            },
-            appLinks: {
-              web: {
-                url: 'https://192.168.2.7:8500/dev_server/pages/Upload.html',
-              },
-              share: {
-                type: 'website',
-                url: 'https://192.168.2.7:8500/dev_server/pages/Upload.html',
-                title: 'Upload',
-                description: 'This is a page for Upload.',
-                image: 'https://192.168.2.7:8500/dev_server/static/ico/uncompressed/ico_512_512.png',
-              },
-            },
-            og: {
-              og: 'website',
-              title: 'Upload',
-              url: 'https://192.168.2.7:8500/dev_server/pages/Upload.html',
-              siteName: 'Upload',
-              description: 'This is a page for Upload.',
-              locale: 'zh_CN',
-              image: {
-                url: 'https://192.168.2.7:8500/dev_server/static/ico/uncompressed/ico_512_512.png',
-                secureURL: 'https://192.168.2.7:8500/dev_server/static/ico/uncompressed/ico_512_512.png',
-                type: 'image/png',
-                width: '512',
-                height: '512',
-                alt: '网站图片_512x512.png',
-              },
-            },
-            twitter: {
-              type: 'website',
-              creator: '1227839175@qq.com',
-              site: 'https://192.168.2.7:8500/dev_server/pages/Upload.html',
-              url: 'https://192.168.2.7:8500/dev_server/pages/Upload.html',
-              title: 'Upload',
-              description: 'This is a page for Upload.',
-              card: 'summary_large_image',
-              image: 'https://192.168.2.7:8500/dev_server/static/ico/uncompressed/ico_512_512.png',
-            },
-          },
-        },
-      },
-    ] );
+         : GenerateMPAConfig( [] );
 }
 
 export {
