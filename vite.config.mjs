@@ -2558,7 +2558,14 @@ export default defineConfig( async ( {
                   'exportDefaultFrom',
                   'functionBind',
                   // importAssertions跟moduleAttributes不能同时使用，且importAssertions已经取代了moduleAttributes。
-                  'importAssertions',
+                  // 'importAssertions',
+                  // importAttributes已经取代了importAssertions。
+                  [
+                    'importAttributes',
+                    {
+                      deprecatedAssertSyntax: true,
+                    },
+                  ],
                   'importReflection',
                   // importAssertions跟moduleAttributes不能同时使用，且importAssertions已经取代了moduleAttributes。
                   /*
@@ -2600,7 +2607,12 @@ export default defineConfig( async ( {
                   'regexpUnicodeSets',
                   'throwExpressions',
                   'importMeta',
-                  'estree',
+                  [
+                    'estree',
+                    {
+                      classFeatures: true,
+                    },
+                  ],
 
                   // ECMAScript proposals End
 
@@ -2608,9 +2620,9 @@ export default defineConfig( async ( {
 
                   'asyncGenerators',
                   'bigInt',
-                  'classProperties',
-                  'classPrivateProperties',
                   'classPrivateMethods',
+                  'classPrivateProperties',
+                  'classProperties',
                   // Enabled by default
                   'classStaticBlock',
                   'dynamicImport',
