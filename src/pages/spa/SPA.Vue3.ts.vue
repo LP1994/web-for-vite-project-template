@@ -48,19 +48,19 @@ const routes = {
     Upload,
   },
   state: TState = reactive( {
-    currentPath: window.location.hash.slice( 1 ),
+    currentPath: window.location.hash,
   } );
 
 window.addEventListener( 'hashchange', (
   // @ts-expect-error
   event: Event
 ): void => {
-  state.currentPath = window.location.hash.slice( 1 );
+  state.currentPath = window.location.hash;
 } );
 
 const currentView = computed( () => {
   // @ts-expect-error
-  return routes[ state.currentPath ] ?? Index;
+  return routes[ state.currentPath.slice( 1 ) ] ?? Index;
 } );
 
 onMounted( (): void => {
