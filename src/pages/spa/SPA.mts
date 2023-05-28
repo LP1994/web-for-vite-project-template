@@ -1,6 +1,6 @@
 /**
  * Project: web-for-vite-project-template
- * FileDirPath: src/pages/SPA.mts
+ * FileDirPath: src/pages/spa/SPA.mts
  * Author: 12278
  * Email: 1227839175@qq.com
  * IDE: WebStorm
@@ -16,9 +16,9 @@ import {
   createApp,
 } from 'vue';
 
-import 'pagesDir/SPA.css';
+import './SPA.css';
 
-import SPAComponentForVue3 from 'pagesDir/SPA.Vue3.ts.vue';
+import SPAComponentForVue3 from './SPA.Vue3.ts.vue';
 
 /**
  * @type {App<Element>} 创建了一个Vue 3的应用实例。

@@ -9,17 +9,9 @@ CreateDate: 2022-12-17 08:08:45 星期六
 <style
   scoped
   lang = 'scss'>
-@font-face {
-  font-family: 'MyFont_Helvetica';
-  src: url(fontsDir/Helvetica.preload.otf) format('opentype');
-  font-weight: normal;
-  font-style: normal;
-  font-size: 20px;
-}
-
 main {
   font-family: 'MyFont_Helvetica', serif;
-  color: black;
+  color: white;
 
   line-height: 1;
   text-align: center;

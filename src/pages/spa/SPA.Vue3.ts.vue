@@ -1,6 +1,6 @@
 <!--
 Project: web-for-vite-project-template
-FileDirPath: src/pages/SPA.Vue3.ts.vue
+FileDirPath: src/pages/spa/SPA.Vue3.ts.vue
 Author: 12278
 Email: 1227839175@qq.com
 IDE: WebStorm
@@ -9,17 +9,6 @@ CreateDate: 2022-07-30 14:08:53 星期六
 <style
   scoped
   lang = 'scss'>
-@font-face {
-  font-family: 'MyFont_Helvetica';
-  src: url(fontsDir/Helvetica.preload.otf) format('opentype');
-  font-weight: normal;
-  font-style: normal;
-  font-size: 20px;
-}
-
-main {
-
-}
 </style>
 <template>
   <!--*********弹窗、悬浮一类节点的书写区域 Start*********-->
@@ -31,7 +20,8 @@ main {
   <!--<dialog style = 'position: absolute;'>例子：可以滚动的内容。</dialog>-->
   <!--*********弹窗、悬浮一类节点的书写区域 End*********-->
   <!--在main这个节点里写主体HTML。-->
-  <main class = 'css-reset full-screen overflow-hidden-auto'></main>
+  <!--<main class = 'css-reset full-screen overflow-hidden-auto'></main>-->
+  <component :is = 'state.currentView' />
 </template>
 <script
   setup
@@ -40,22 +30,38 @@ main {
 'use strict';
 
 import {
-  reactive,
   onMounted,
+  reactive,
 } from 'vue';
+
+import Index from './index/Index.Vue3.ts.vue';
+import HelloWorld from '../hello_world/HelloWorld.Vue3.ts.vue'
+import Upload from '../upload/Upload.Vue3.ts.vue'
 
 type TState = {
   [ key: string | number ]: any;
 };
 
-const state: TState = reactive( {
-  title: 'SPA',
+const routes = {
+    HelloWorld,
+    Upload,
+  },
+  state: TState = reactive( {
+    // @ts-expect-error
+    currentView: routes[ window.location.hash.slice( 1 ) ] ?? Index,
+  } );
+
+window.addEventListener( 'hashchange', (
+  // @ts-expect-error
+  event: Event
+): void => {
+  // @ts-expect-error
+  state.currentView = routes[ window.location.hash.slice( 1 ) ] ?? Index;
 } );
 
 onMounted( (): void => {
   console.log( `\n\n
-src/pages/SPA.Vue3.ts.vue，DOM已挂载。
+src/pages/spa/SPA.Vue3.ts.vue，DOM已挂载。
 \n\n` );
-  console.dir( state );
 } );
 </script>

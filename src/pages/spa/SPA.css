@@ -1,6 +1,6 @@
 /*
 Project: web-for-vite-project-template
-FileDirPath: src/pages/SPA.css
+FileDirPath: src/pages/spa/SPA.css
 Author: 12278
 Email: 1227839175@qq.com
 IDE: WebStorm
@@ -70,4 +70,13 @@ only screen and (max-width: 1300px) and (max-device-pixel-ratio: 1.9) and (min-d
 
 .overflow-hidden-auto {
   overflow: hidden auto;
+}
+
+html.css-reset.full-screen {
+  background: #78bcc8 url(./BGImg.png) center center no-repeat;
+  background-size: auto 100%;
+}
+
+body.css-reset.full-screen, #LocalScroll, #SPA {
+  background-color: transparent;
 }

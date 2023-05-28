@@ -376,8 +376,8 @@ function VitePluginHTMLConfig( {
      2、由于返回的值是给项目根目录下的vite.config.mjs使用的，所以设置的文件路径也是相对于项目根目录的。
      */
          ? GenerateSPAConfig( {
-      entry: 'src/pages/SPA.mts',
-      template: 'src/pages/SPA.ejs',
+      entry: 'src/pages/spa/SPA.mts',
+      template: 'src/pages/spa/SPA.ejs',
       filename: 'SPA.html',
       data: {
         VitePluginHTMLData: {
