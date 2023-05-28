@@ -248,7 +248,7 @@ const browserslist = [
     // 'opera55',
     // PC端完全支持ES 6（ECMAScript 2015）的主流浏览器 End
 
-    'es2022',
+    'es2023',
 
     // PC端各主流浏览器的最新版本，至20230504。Start
     'chrome113',
