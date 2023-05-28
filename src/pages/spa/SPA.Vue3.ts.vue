@@ -21,7 +21,7 @@ CreateDate: 2022-07-30 14:08:53 星期六
   <!--*********弹窗、悬浮一类节点的书写区域 End*********-->
   <!--在main这个节点里写主体HTML。-->
   <!--<main class = 'css-reset full-screen overflow-hidden-auto'></main>-->
-  <component :is = 'state.currentView' />
+  <component :is = 'currentView' />
 </template>
 <script
   setup
@@ -30,6 +30,7 @@ CreateDate: 2022-07-30 14:08:53 星期六
 'use strict';
 
 import {
+  computed,
   onMounted,
   reactive,
 } from 'vue';
@@ -47,16 +48,19 @@ const routes = {
     Upload,
   },
   state: TState = reactive( {
-    // @ts-expect-error
-    currentView: routes[ window.location.hash.slice( 1 ) ] ?? Index,
+    currentPath: window.location.hash.slice( 1 ),
   } );
 
 window.addEventListener( 'hashchange', (
   // @ts-expect-error
   event: Event
 ): void => {
+  state.currentPath = window.location.hash.slice( 1 );
+} );
+
+const currentView = computed( () => {
   // @ts-expect-error
-  state.currentView = routes[ window.location.hash.slice( 1 ) ] ?? Index;
+  return routes[ state.currentPath ] ?? Index;
 } );
 
 onMounted( (): void => {
