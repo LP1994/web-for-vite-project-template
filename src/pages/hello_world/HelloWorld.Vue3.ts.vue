@@ -40,6 +40,17 @@ import {
   onMounted,
 } from 'vue';
 
+import {
+  // type Router,
+  type RouteLocationNormalizedLoaded,
+
+  // useRouter,
+  useRoute,
+} from 'vue-router';
+
+// const router: Router = useRouter();
+const route: RouteLocationNormalizedLoaded = useRoute();
+
 type TState = {
   text001: string;
   [ key: string | number ]: any;
@@ -53,5 +64,11 @@ onMounted( (): void => {
   console.log( `\n\n
 src/pages/hello_world/HelloWorld.Vue3.ts.vue，DOM已挂载。
 \n\n` );
+
+  console.dir( route.name );
+  console.dir( route.path );
+  console.dir( route.hash );
+  console.dir( route.params );
+  console.dir( route.query );
 } );
 </script>

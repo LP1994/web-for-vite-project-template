@@ -21,7 +21,7 @@ CreateDate: 2022-07-30 14:08:53 星期六
   <!--*********弹窗、悬浮一类节点的书写区域 End*********-->
   <!--在main这个节点里写主体HTML。-->
   <!--<main class = 'css-reset full-screen overflow-hidden-auto'></main>-->
-  <component :is = 'currentView' />
+  <router-view></router-view>
 </template>
 <script
   setup
@@ -30,42 +30,8 @@ CreateDate: 2022-07-30 14:08:53 星期六
 'use strict';
 
 import {
-  type Component,
-
-  computed,
   onMounted,
-  reactive,
 } from 'vue';
-
-import Index from './index/Index.Vue3.ts.vue';
-import HelloWorld from '../hello_world/HelloWorld.Vue3.ts.vue'
-import Upload from '../upload/Upload.Vue3.ts.vue'
-
-type TState = {
-  currentPath: string;
-  [ key: string | number ]: any;
-};
-
-const routes: {
-    [ key: string ]: Component;
-  } = {
-    HelloWorld,
-    Upload,
-  },
-  state: TState = reactive( {
-    currentPath: window.location.hash,
-  } );
-
-window.addEventListener( 'hashchange', (
-  // @ts-expect-error
-  event: Event
-): void => {
-  state.currentPath = window.location.hash;
-} );
-
-const currentView: Component = computed( (): Component => {
-  return routes[ state.currentPath.slice( 1 ) ] ?? Index;
-} );
 
 onMounted( (): void => {
   console.log( `\n\n

@@ -92,6 +92,17 @@ import {
   reactive,
 } from 'vue';
 
+import {
+  type Router,
+  type RouteLocationNormalizedLoaded,
+
+  useRouter,
+  useRoute,
+} from 'vue-router';
+
+const router: Router = useRouter();
+const route: RouteLocationNormalizedLoaded = useRoute();
+
 import APPImg001 from './APPImg001.png';
 import APPImg002 from './APPImg002.png';
 
@@ -112,7 +123,13 @@ const state: TState = reactive( {
       alt: 'HelloWorld',
       appName: 'HelloWorld',
       goTo(): void{
-        window.location.hash = 'HelloWorld';
+        router.push( {
+          name: 'HelloWorld',
+          query: {
+            title: 'HelloWorld',
+          },
+          hash: '#HelloWorld',
+        } );
       },
     },
     {
@@ -120,39 +137,13 @@ const state: TState = reactive( {
       alt: 'Upload',
       appName: 'Upload',
       goTo(): void{
-        window.location.hash = 'Upload';
-      },
-    },
-    {
-      src: APPImg001,
-      alt: 'HelloWorld',
-      appName: 'HelloWorld',
-      goTo(): void{
-        window.location.hash = 'HelloWorld';
-      },
-    },
-    {
-      src: APPImg002,
-      alt: 'Upload',
-      appName: 'Upload',
-      goTo(): void{
-        window.location.hash = 'Upload';
-      },
-    },
-    {
-      src: APPImg001,
-      alt: 'HelloWorld',
-      appName: 'HelloWorld',
-      goTo(): void{
-        window.location.hash = 'HelloWorld';
-      },
-    },
-    {
-      src: APPImg002,
-      alt: 'Upload',
-      appName: 'Upload',
-      goTo(): void{
-        window.location.hash = 'Upload';
+        router.push( {
+          name: 'Upload',
+          query: {
+            title: 'Upload',
+          },
+          hash: '#Upload',
+        } );
       },
     },
   ],
@@ -162,5 +153,11 @@ onMounted( (): void => {
   console.log( `\n\n
 src/pages/spa/index/Index.Vue3.ts.vue，DOM已挂载。
 \n\n` );
+
+  console.dir( route.name );
+  console.dir( route.path );
+  console.dir( route.hash );
+  console.dir( route.params );
+  console.dir( route.query );
 } );
 </script>
