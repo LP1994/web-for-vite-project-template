@@ -41,6 +41,7 @@ import {
 } from 'vue';
 
 type TState = {
+  text001: string;
   [ key: string | number ]: any;
 };
 

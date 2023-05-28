@@ -182,6 +182,7 @@ import {
 } from 'vue';
 
 type TState = {
+  titleText: string;
   [ key: string | number ]: any;
 };
 

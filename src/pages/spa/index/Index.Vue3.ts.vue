@@ -96,11 +96,49 @@ import APPImg001 from './APPImg001.png';
 import APPImg002 from './APPImg002.png';
 
 type TState = {
+  appBtnConfig: Array<{
+    src: string;
+    alt: string;
+    appName: string;
+    goTo: () => void;
+  }>;
   [ key: string | number ]: any;
 };
 
 const state: TState = reactive( {
   appBtnConfig: [
+    {
+      src: APPImg001,
+      alt: 'HelloWorld',
+      appName: 'HelloWorld',
+      goTo(): void{
+        window.location.hash = 'HelloWorld';
+      },
+    },
+    {
+      src: APPImg002,
+      alt: 'Upload',
+      appName: 'Upload',
+      goTo(): void{
+        window.location.hash = 'Upload';
+      },
+    },
+    {
+      src: APPImg001,
+      alt: 'HelloWorld',
+      appName: 'HelloWorld',
+      goTo(): void{
+        window.location.hash = 'HelloWorld';
+      },
+    },
+    {
+      src: APPImg002,
+      alt: 'Upload',
+      appName: 'Upload',
+      goTo(): void{
+        window.location.hash = 'Upload';
+      },
+    },
     {
       src: APPImg001,
       alt: 'HelloWorld',

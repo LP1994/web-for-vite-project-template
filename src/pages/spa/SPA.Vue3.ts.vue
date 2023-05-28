@@ -30,6 +30,8 @@ CreateDate: 2022-07-30 14:08:53 星期六
 'use strict';
 
 import {
+  type Component,
+
   computed,
   onMounted,
   reactive,
@@ -40,10 +42,13 @@ import HelloWorld from '../hello_world/HelloWorld.Vue3.ts.vue'
 import Upload from '../upload/Upload.Vue3.ts.vue'
 
 type TState = {
+  currentPath: string;
   [ key: string | number ]: any;
 };
 
-const routes = {
+const routes: {
+    [ key: string ]: Component;
+  } = {
     HelloWorld,
     Upload,
   },
@@ -58,8 +63,7 @@ window.addEventListener( 'hashchange', (
   state.currentPath = window.location.hash;
 } );
 
-const currentView = computed( () => {
-  // @ts-expect-error
+const currentView: Component = computed( (): Component => {
   return routes[ state.currentPath.slice( 1 ) ] ?? Index;
 } );
 
