@@ -207,19 +207,19 @@ const browserslist = [
     // PC端完全支持ES 6（ECMAScript 2015）的主流浏览器 End
 
     // PC端各主流浏览器的最新版本，至20230504。Start
-    'Chrome >= 113',
+    'Chrome >= 114',
     // 这里的Edge是指新版的微软Edge，其基于Chromium，带有Blink和V8引擎，后来其最新的版本号，也基本跟Chrome版本号保持一致了。
-    'Edge >= 113',
-    'Firefox >= 113',
+    'Edge >= 114',
+    'Firefox >= 114',
     'Safari >= 16',
     'Opera >= 99',
     // PC端各主流浏览器的最新版本，至20230504。End
 
     // 移动端各主流浏览器的最新版本，至20230504。Start
-    'ChromeAndroid >= 113',
+    'ChromeAndroid >= 114',
     // 从Android 4.4后Android WebView直接跟Chrome同步。
-    'Android >= 113',
-    'FirefoxAndroid >= 113',
+    'Android >= 114',
+    'FirefoxAndroid >= 114',
     'iOS >= 16',
     // 移动端各主流浏览器的最新版本，至20230504。End
   ],
@@ -251,9 +251,9 @@ const browserslist = [
     'es2023',
 
     // PC端各主流浏览器的最新版本，至20230504。Start
-    'chrome113',
-    'edge113',
-    'firefox113',
+    'chrome114',
+    'edge114',
+    'firefox114',
     'safari16',
     'opera99',
     // PC端各主流浏览器的最新版本，至20230504。End
@@ -293,16 +293,16 @@ const browserslist = [
     // PC端完全支持ES 6（ECMAScript 2015）的主流浏览器 End
 
     // PC端各主流浏览器的最新版本，至20230504。Start
-    chrome: 113,
-    edge: 113,
-    firefox: 113,
+    chrome: 114,
+    edge: 114,
+    firefox: 114,
     safari: 16,
     opera: 99,
     // PC端各主流浏览器的最新版本，至20230504。End
 
     // 移动端各主流浏览器的最新版本，至20230504。Start
     /*从Android 4.4后Android WebView直接跟Chrome同步。*/
-    android: 113,
+    android: 114,
     ios: 16,
     // 移动端各主流浏览器的最新版本，至20230504。End
   };
@@ -1333,6 +1333,42 @@ export default defineConfig( async ( {
          */
         skipWrite: false,
       },
+
+      // 有趣的树摇 Start
+
+      /**
+       * 默认值：true
+       * 是否应用树形震荡，并对树形震荡过程进行微调。
+       * 把这个选项设置为false会产生更大的包，但可能会提高构建性能。
+       * 你也可以从3个预设中选择一个，如果有新的选项加入，预设会自动更新：
+       * "smallest"：
+       * 将为你选择选项值，以尽可能地减少输出大小。只要你不依赖某些模式，这对大多数代码库来说应该是可行的，而这些模式目前是：
+       * 有副作用的getters只有在返回值被使用时才会被保留（treeshake.propertyReadSideEffects: false）。
+       * 只有在至少使用一个导出值的情况下，才会保留导入模块的代码（treeshake.moduleSideEffects: false）。
+       * 你不应该捆绑依赖于检测破碎的内置程序的polyfills（treeshake.tryCatchDeoptimization: false）。
+       * 一些语义问题可能被吞噬（treeshake.unknownGlobalSideEffects: false, treeshake.correctVarValueBeforeDeclaration: false）。
+       *
+       * "recommended"：
+       * 对于大多数使用模式来说，应该可以很好地工作。不过，一些语义问题可能会被吞噬（treeshake.unknownGlobalSideEffects: false, treeshake.correctVarValueBeforeDeclaration: false)
+       *
+       * "safest"：
+       * 试图在提供一些基本的树形晃动功能的同时，尽可能地符合规范。
+       *
+       * true等同于不指定该选项，将总是选择默认值（见下文）。
+       */
+      treeshake: {
+        annotations: true,
+        correctVarValueBeforeDeclaration: true,
+        moduleSideEffects: ( id, external ) => {
+          return true;
+        },
+        preset: '',
+        propertyReadSideEffects: true,
+        tryCatchDeoptimization: true,
+        unknownGlobalSideEffects: true,
+      },
+
+      // 有趣的树摇 End
     };
 
   const viteConfig = {
