@@ -1781,6 +1781,7 @@ export default defineConfig( async ( {
          * 注意：<br />
          * 1、目前，有一个问题，就是在生产模式下，该选项生成的.JSON文件在生成后会被清除掉，因为生产模式在构建前，会清除输出目录，显然该选项的生成操作在“清除”操作之前了。<br />
          * 2、使用插件“vite-plugin-clean”也没法改变这个情况。<br />
+         * 3、当前将存放路径放在了“src/static/json/css_modules”文件夹下，这样当构建完成后，会随着文件夹“static”一起备拷贝到输出目录。<br />
          *
          * @param {string} cssFileName 如：G:/WebStormWS/xxx/Upload.Vue3.ts.vue?used&vue&type=style&index=1&lang.module.scss
          *
@@ -1791,7 +1792,7 @@ export default defineConfig( async ( {
          * @returns {void | Promise<any>}
          */
         getJSON: async ( cssFileName, json, outputFileName ) => {
-          await writeFile( resolve( __dirname, `./dist/${ env_platform }/styles/${ basename( cssFileName )
+          await writeFile( resolve( __dirname, `./src/static/json/css_modules/${ basename( cssFileName )
           .replace( new URL( cssFileName ).search, '' ) }.css.modules.json` ), JSON.stringify( json ), {
             flag: 'w+',
           } );
