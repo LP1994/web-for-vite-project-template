@@ -74,7 +74,7 @@ only screen and (max-width: 1300px) and (max-device-pixel-ratio: 1.9) and (min-d
 
 html.css-reset.full-screen {
   background: #78bcc8 url(./BGImg.png) center center no-repeat;
-  background-size: auto 100%;
+  background-size: 100% auto;
 }
 
 body.css-reset.full-screen, #LocalScroll, #SPA {
