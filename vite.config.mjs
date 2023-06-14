@@ -1373,8 +1373,8 @@ export default defineConfig( async ( {
         moduleSideEffects: ( id, external ) => {
           return true;
         },
-        preset: '',
-        propertyReadSideEffects: true,
+        preset: 'recommended',
+        propertyReadSideEffects: 'always',
         tryCatchDeoptimization: true,
         unknownGlobalSideEffects: true,
       },
