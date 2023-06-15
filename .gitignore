@@ -4,6 +4,11 @@
 
 # /dist/
 
+# /log/
+
+# /simulation_servers/deno/log/
+/simulation_servers/deno/node_modules/
+
 /node_modules/
 /node_modules.7z
 /node_modules.zip
