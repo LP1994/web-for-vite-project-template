@@ -1,13 +1,15 @@
 /**
  * Project: web-for-vite-project-template
- * FileDirPath: simulation_servers/deno/test/npm_mongoose_for_deno.test.mts
+ * FileDirPath: simulation_servers/deno/src/database/mongo/MongooseConfig.esm.mts
  * Author: 12278
  * Email: 1227839175@qq.com
  * IDE: WebStorm
- * CreateDate: 2023-03-22 20:40:24 星期三
+ * CreateDate: 2022-12-07 08:33:39 星期三
  */
 
 /**
+ * 配置使用“mongoose”连接“MongoDB”数据库时，需要的连接参数。
+ * 注意：
  * 1、直到2023年05月12日，基于：npm包mongoose@7.1.1（该版本的mongoose也是基于npm包mongodb@5.5.0）、MongoDB社区版@6.0.5、deno@1.33.2，还是无法使用TLS以及客户端证书跟数据库进行连接。
  * 但是同样的npm包mongoose@7.1.1（该版本的mongoose也是基于npm包mongodb@5.5.0）、MongoDB社区版@6.0.5在node中是可以的。
  *
@@ -32,39 +34,19 @@
 
 import {
   type ConnectOptions,
-  type Connection,
-  type Collection,
-
-  Mongoose,
 } from 'npm:mongoose';
 
 import {
   opensslDir,
 } from 'configures/GlobalParameters.esm.mts';
 
-interface StartupLogCollectionSchema {
-  _id: string;
-
-  hostname: string;
-
-  startTime: Date;
-
-  startTimeLocal: string;
-
-  pid: number;
-
-  cmdLine: object;
-
-  buildinfo: object;
-}
-
 /**
- * @type {ConnectOptions} node版本的mongoose驱动程序的客户端连接配置选项。该驱动程序的配置选项详细见：
+ * @type {ConnectOptions} node版本的mongoose驱动程序的客户端连接配置选项。该驱动程序的配置选项详细见：<br />
  * https://mongoosejs.com/docs/connections.html
  * https://www.mongodb.com/docs/drivers/node/current/fundamentals/connection/connection-options/#connection-options
- * https://mongodb.github.io/node-mongodb-native/5.1/interfaces/MongoClientOptions.html
+ * https://mongodb.github.io/node-mongodb-native/5.6/interfaces/MongoClientOptions.html
  */
-const mongooseClientConfig: ConnectOptions = {
+const config: ConnectOptions = {
   // 以下选项是mongoose自己的选项。Start
 
   /**
@@ -679,28 +661,24 @@ const mongooseClientConfig: ConnectOptions = {
   // 之所以还要强制使用“as”，是因为如果不这样，会报类型错误！真奇葩！
 } as ConnectOptions;
 
-const mongoose: Mongoose = new Mongoose();
+/**
+ * @type {string} 要连接到的数据库名。
+ */
+const dbName: string = 'simulation_servers_deno';
 
-let client: Connection;
+/**
+ * @type {string} 连接数据库的字符串uri。
+ */
+const uri: string = `mongodb://127.0.0.1:27777`;
 
-async function run(): Promise<void>{
-  try{
-    client = mongoose.createConnection( `mongodb://127.0.0.1:27777`, mongooseClientConfig ).useDb( 'local' );
+export {
+  config,
+  dbName,
+  uri,
+};
 
-    const startup_log_collection: Collection<StartupLogCollectionSchema> = client.collection<StartupLogCollectionSchema>( 'startup_log' );
-
-    const startup_log: Array<StartupLogCollectionSchema> = await ( await startup_log_collection.find<StartupLogCollectionSchema>( {
-      hostname: 'LPQAQ',
-    } ) ).toArray();
-
-    console.dir( startup_log );
-  }
-  catch( e: unknown ){
-    console.error( e );
-  }
-  finally{
-    await client.close( true );
-  }
-}
-
-await run();
+export default {
+  config,
+  dbName,
+  uri,
+};
