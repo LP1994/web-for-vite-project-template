@@ -206,22 +206,22 @@ const browserslist = [
     // 'Opera >= 55',
     // PC端完全支持ES 6（ECMAScript 2015）的主流浏览器 End
 
-    // PC端各主流浏览器的最新版本，至20230719。Start
+    // PC端各主流浏览器的最新版本，至20230808。Start
     'Chrome >= 115',
     // 这里的Edge是指新版的微软Edge，其基于Chromium，带有Blink和V8引擎，后来其最新的版本号，也基本跟Chrome版本号保持一致了。
     'Edge >= 115',
-    'Firefox >= 115',
+    'Firefox >= 116',
     'Safari >= 16',
-    'Opera >= 100',
-    // PC端各主流浏览器的最新版本，至20230719。End
+    'Opera >= 101',
+    // PC端各主流浏览器的最新版本，至20230808。End
 
-    // 移动端各主流浏览器的最新版本，至20230719。Start
+    // 移动端各主流浏览器的最新版本，至20230808。Start
     'ChromeAndroid >= 115',
     // 从Android 4.4后Android WebView直接跟Chrome同步。
     'Android >= 115',
-    'FirefoxAndroid >= 115',
+    'FirefoxAndroid >= 116',
     'iOS >= 16',
-    // 移动端各主流浏览器的最新版本，至20230719。End
+    // 移动端各主流浏览器的最新版本，至20230808。End
   ],
   /**
    * @type {string[]} 每个目标环境都是一个环境名称，后跟一个版本号。当前支持以下环境名称：<br />
@@ -250,17 +250,17 @@ const browserslist = [
 
     'es2023',
 
-    // PC端各主流浏览器的最新版本，至20230719。Start
+    // PC端各主流浏览器的最新版本，至20230808。Start
     'chrome115',
     'edge115',
-    'firefox115',
+    'firefox116',
     'safari16',
-    'opera100',
-    // PC端各主流浏览器的最新版本，至20230719。End
+    'opera101',
+    // PC端各主流浏览器的最新版本，至20230808。End
 
-    // 移动端各主流浏览器的最新版本，至20230719。Start
+    // 移动端各主流浏览器的最新版本，至20230808。Start
     'ios16',
-    // 移动端各主流浏览器的最新版本，至20230719。End
+    // 移动端各主流浏览器的最新版本，至20230808。End
   ],
   /**
    * @type {object} 目标浏览器版本。<br />
@@ -292,19 +292,19 @@ const browserslist = [
     // opera: 55,
     // PC端完全支持ES 6（ECMAScript 2015）的主流浏览器 End
 
-    // PC端各主流浏览器的最新版本，至20230719。Start
+    // PC端各主流浏览器的最新版本，至20230808。Start
     chrome: 115,
     edge: 115,
-    firefox: 115,
+    firefox: 116,
     safari: 16,
-    opera: 100,
-    // PC端各主流浏览器的最新版本，至20230719。End
+    opera: 101,
+    // PC端各主流浏览器的最新版本，至20230808。End
 
-    // 移动端各主流浏览器的最新版本，至20230719。Start
+    // 移动端各主流浏览器的最新版本，至20230808。Start
     /*从Android 4.4后Android WebView直接跟Chrome同步。*/
     android: 115,
     ios: 16,
-    // 移动端各主流浏览器的最新版本，至20230719。End
+    // 移动端各主流浏览器的最新版本，至20230808。End
   };
 
 // autoprefixer共有三种类型的控制注释：
@@ -1131,7 +1131,7 @@ export default defineConfig( async ( {
          */
         // externalImportAssertions: true,
         /**
-         * @type {"es5" | "es2015"| { arrowFunctions?: boolean, constBindings?: boolean, objectShorthand?: boolean, preset?: "es5"| "es2015", reservedNamesAsProps?: boolean, symbols?: boolean }} 默认值："es5"。<br />
+         * @type {'es5' | 'es2015'| { arrowFunctions?: boolean, constBindings?: boolean, objectShorthand?: boolean, preset?: 'es5'| 'es2015', reservedNamesAsProps?: boolean, symbols?: boolean }} 默认值："es5"。<br />
          * 1、Rollup可以在生成的代码中安全地使用哪些语言特性。这不会转译任何用户代码，而只是改变Rollup在包装器和帮助器中使用的代码。你可以从几个预设中选择一个：<br />
          * "es5"：不要使用ES2015+的功能，如箭头函数，但不要引用作为道具的保留名称。<br />
          * "es2015"：使用ES2015之前的任何JavaScript特性。<br />
@@ -1158,7 +1158,7 @@ export default defineConfig( async ( {
          */
         // inlineDynamicImports: false,
         /**
-         * @type {"compat" | "auto"| "esModule"| "default"| "defaultOnly"| ((id: string) => "compat"| "auto"| "esModule"| "default"| "defaultOnly")} 默认值："default"。<br />
+         * @type {'compat' | 'auto'| 'esModule'| 'default'| 'defaultOnly'| ((id: string) => 'compat'| 'auto'| 'esModule'| 'default'| 'defaultOnly')} 默认值："default"。<br />
          * 1、控制Rollup如何处理默认、命名空间和来自外部依赖的动态导入，像CommonJS这样的格式不原生支持这些概念。<br />
          * 2、请注意，"default "的默认模式是模仿NodeJS的行为，与TypeScript的esModuleInterop不同。<br />
          * 3、要获得TypeScript的行为，明确地将该值设置为 "auto"。<br />
@@ -1194,7 +1194,7 @@ export default defineConfig( async ( {
        */
       cache: true,
       /**
-       * @type {boolean| "ifRelativeSource"} 默认值：'ifRelativeSource'。决定绝对的外部路径是否应该在输出中转换为相对路径。这不仅适用于源文件中的绝对路径，也适用于由插件或Rollup核心解析为绝对路径的路径。<br />
+       * @type {boolean| 'ifRelativeSource'} 默认值：'ifRelativeSource'。决定绝对的外部路径是否应该在输出中转换为相对路径。这不仅适用于源文件中的绝对路径，也适用于由插件或Rollup核心解析为绝对路径的路径。<br />
        * 1、对于这种情况，"ifRelativeSource "检查原始导入是否是相对导入，然后才在输出中转换为相对导入。选择 "false "将在输出中保持所有路径为绝对路径。<br />
        */
       // makeAbsoluteExternalsRelative: 'ifRelativeSource',
@@ -1205,7 +1205,7 @@ export default defineConfig( async ( {
        */
       maxParallelFileOps: 200 + cpus().length - 1,
       /**
-       * @type {"strict" | "allow-extension" | "exports-only"| false} 默认值："exports-only"。控制汇总是否尝试确保条目区块与基础条目模块具有相同的导出。<br />
+       * @type {'strict' | 'allow-extension' | 'exports-only'| false} 默认值："exports-only"。控制汇总是否尝试确保条目区块与基础条目模块具有相同的导出。<br />
        * 1、如果设置为“strict”，Rollup将在条目块中创建与相应条目模块中完全相同的导出。如果这是不可能的，因为需要向区块添加额外的内部导出，Rollup将创建一个“facade”入口区块，该区块只从其他区块重新导出必要的绑定，但不包含其他代码。这是库的建议设置。<br />
        * 2、"allow-extension"将在入口块中创建入口模块的所有导出，但如果需要，也可以添加额外的导出，从而避免“facade”入口块。此设置对于不需要严格签名的库是有意义的。<br />
        * 3、如果入口模块具有导出，则“exports-only”的行为类似于“strict”，否则的行为类似“allow-extension”。<br />
@@ -1509,7 +1509,7 @@ export default defineConfig( async ( {
        */
       commonjsOptions: {
         /**
-         * @type {"auto" | boolean | "debug" | string[]} 默认值："auto"，默认情况下，这个插件将尝试把require语句作为import挂在每个文件的顶部。<br />
+         * @type {'auto' | boolean | 'debug' | string[]} 默认值："auto"，默认情况下，这个插件将尝试把require语句作为import挂在每个文件的顶部。<br />
          * 1、虽然这对许多代码库来说效果很好，并允许非常有效的ESM输出，但它不能完美地捕捉CommonJS的语义，因为所需模块的初始化顺序会有所不同。<br />
          * 由此产生的副作用可能包括日志语句以不同的顺序排放，一些依赖于require语句中polyfills的初始化顺序的代码可能无法工作。<br />
          * 但是，当CommonJS模块之间存在循环的requirement调用时，问题就特别大了，因为这些模块往往依赖于嵌套requirement调用的懒惰执行。<br />
@@ -1620,7 +1620,7 @@ export default defineConfig( async ( {
          */
         // esmExternals: false,
         /**
-         * @type {boolean | "auto"} 默认值："auto"。当从ES模块导入CommonJS文件时，控制什么是默认导出。<br />
+         * @type {boolean | 'auto'} 默认值："auto"。当从ES模块导入CommonJS文件时，控制什么是默认导出。<br />
          * 1、true：默认导出的值是module.exports。目前这与Node.js在导入CommonJS文件时的行为一致。<br />
          * 例子：<br />
          * // mod.cjs
@@ -1654,7 +1654,7 @@ export default defineConfig( async ( {
          */
         // defaultIsModuleExports: 'auto',
         /**
-         * @type {boolean | "namespace" | "auto" | "preferred" | ((id: string) => boolean | "auto" | "preferred")} 默认值：false。<br />
+         * @type {boolean | 'namespace' | 'auto' | 'preferred' | ((id: string) => boolean | 'auto' | 'preferred')} 默认值：false。<br />
          * 1、控制当需要一个来自CommonJS文件的ES模块时，会返回什么。当使用esmExternals选项时，这也将适用于外部模块。默认情况下，这个插件将把这些导入呈现为命名空间导入。<br />
          * 例如：<br />
          * // input
@@ -2454,16 +2454,16 @@ export default defineConfig( async ( {
        * {
        *   // import { Promise } from 'es6-promise'
        *   Promise: [ 'es6-promise', 'Promise' ],
-       * 
+       *
        *   // import { Promise as P } from 'es6-promise'
        *   P: [ 'es6-promise', 'Promise' ],
-       * 
+       *
        *   // import $ from 'jquery'
        *   $: 'jquery',
-       * 
+       *
        *   // import * as fs from 'fs'
        *   fs: [ 'fs', '*' ],
-       * 
+       *
        *   // use a local module instead of a third-party one
        *   'Object.assign': path.resolve( 'src/helpers/object-assign.js' ),
        * }
