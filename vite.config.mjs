@@ -206,22 +206,22 @@ const browserslist = [
     // 'Opera >= 55',
     // PC端完全支持ES 6（ECMAScript 2015）的主流浏览器 End
 
-    // PC端各主流浏览器的最新版本，至20231115。Start
+    // PC端各主流浏览器的最新版本，至20231122。Start
     'Chrome >= 119',
     // 这里的Edge是指新版的微软Edge，其基于Chromium，带有Blink和V8引擎，后来其最新的版本号，也基本跟Chrome版本号保持一致了。
     'Edge >= 119',
-    'Firefox >= 119',
+    'Firefox >= 120',
     'Safari >= 17',
     'Opera >= 105',
-    // PC端各主流浏览器的最新版本，至20231115。End
+    // PC端各主流浏览器的最新版本，至20231122。End
 
-    // 移动端各主流浏览器的最新版本，至20231115。Start
+    // 移动端各主流浏览器的最新版本，至20231122。Start
     'ChromeAndroid >= 119',
     // 从Android 4.4后Android WebView直接跟Chrome同步。
     'Android >= 119',
-    'FirefoxAndroid >= 119',
+    'FirefoxAndroid >= 120',
     'iOS >= 17',
-    // 移动端各主流浏览器的最新版本，至20231115。End
+    // 移动端各主流浏览器的最新版本，至20231122。End
   ],
   /**
    * @type {string[]} 每个目标环境都是一个环境名称，后跟一个版本号。当前支持以下环境名称：<br />
@@ -248,19 +248,20 @@ const browserslist = [
     // 'opera55',
     // PC端完全支持ES 6（ECMAScript 2015）的主流浏览器 End
 
-    'es2023',
+    // 截至2023年11月21日，发现esbuild目前还没有“es2023”的标识，而且用“es2023”会报错！所以用“esnext”来代表最新的语法。
+    'esnext',
 
-    // PC端各主流浏览器的最新版本，至20231115。Start
+    // PC端各主流浏览器的最新版本，至20231122。Start
     'chrome119',
     'edge119',
-    'firefox119',
+    'firefox120',
     'safari17',
     'opera105',
-    // PC端各主流浏览器的最新版本，至20231115。End
+    // PC端各主流浏览器的最新版本，至20231122。End
 
-    // 移动端各主流浏览器的最新版本，至20231115。Start
+    // 移动端各主流浏览器的最新版本，至20231122。Start
     'ios17',
-    // 移动端各主流浏览器的最新版本，至20231115。End
+    // 移动端各主流浏览器的最新版本，至20231122。End
   ],
   /**
    * @type {object} 目标浏览器版本。<br />
@@ -292,19 +293,19 @@ const browserslist = [
     // opera: 55,
     // PC端完全支持ES 6（ECMAScript 2015）的主流浏览器 End
 
-    // PC端各主流浏览器的最新版本，至20231115。Start
+    // PC端各主流浏览器的最新版本，至20231122。Start
     chrome: 119,
     edge: 119,
-    firefox: 119,
+    firefox: 120,
     safari: 17,
     opera: 105,
-    // PC端各主流浏览器的最新版本，至20231115。End
+    // PC端各主流浏览器的最新版本，至20231122。End
 
-    // 移动端各主流浏览器的最新版本，至20231115。Start
+    // 移动端各主流浏览器的最新版本，至20231122。Start
     /*从Android 4.4后Android WebView直接跟Chrome同步。*/
     android: 119,
     ios: 17,
-    // 移动端各主流浏览器的最新版本，至20231115。End
+    // 移动端各主流浏览器的最新版本，至20231122。End
   };
 
 // autoprefixer共有三种类型的控制注释：
@@ -570,8 +571,8 @@ export default defineConfig( async ( {
      * @type {string|string[]|{[p: string]: string}} Vite的build.rollupOptions.input的配置，也就是“entry points”的配置。
      */
     entryConfig = EntryConfig( {
-      appType,
-    } ),
+                                 appType,
+                               } ),
     /**
      * @type {ESBuildOptions | false} 默认情况下，esbuild会被应用在ts、jsx、tsx文件。ESBuildOptions扩展了esbuild自己的transform选项。<br />
      * 1、你可以通过esbuild.include和esbuild.exclude对要处理的文件类型进行配置，这两个配置的值可以是一个正则表达式、一个picomatch模式，或是一个值为这两种类型的数组。<br />
@@ -588,17 +589,17 @@ export default defineConfig( async ( {
     esbuild = {
       include: [
         new RegExp( `\\.(` + Array.from( new Set( [
-          'js',
-          'cjs',
-          'mjs',
+                                                    'js',
+                                                    'cjs',
+                                                    'mjs',
 
-          'ts',
-          'cts',
-          'mts',
+                                                    'ts',
+                                                    'cts',
+                                                    'mts',
 
-          'jsx',
-          'tsx',
-        ] ) ).join( '|' ) + `)(\\?.*)?$`, ),
+                                                    'jsx',
+                                                    'tsx',
+                                                  ] ) ).join( '|' ) + `)(\\?.*)?$`, ),
       ],
       exclude: [
         `**/node_modules/**/*`,
@@ -784,13 +785,13 @@ export default defineConfig( async ( {
         }
 
         return JSON.stringify( {
-          compilerOptions: {
-            ...JSON.parse( JSON.stringify( resultCompilerOptionsObj ) ),
-            esModuleInterop: true,
-            // 选项'isolatedModules'是多余的，不能与选项'verbatimModuleSyntax'一起指定，优先使用verbatimModuleSyntax。
-            // isolatedModules: true,
-          },
-        } );
+                                 compilerOptions: {
+                                   ...JSON.parse( JSON.stringify( resultCompilerOptionsObj ) ),
+                                   esModuleInterop: true,
+                                   // 选项'isolatedModules'是多余的，不能与选项'verbatimModuleSyntax'一起指定，优先使用verbatimModuleSyntax。
+                                   // isolatedModules: true,
+                                 },
+                               } );
       } )( './tsconfig.vite.json' ),
       minifyWhitespace: isProduction,
       minifyIdentifiers: isProduction,
@@ -1395,12 +1396,12 @@ export default defineConfig( async ( {
     assetsInclude: [
       ( () => {
         const KNOWN_ASSET_TYPES = Array.from( new Set( [
-          ...fontsForAssets,
-          ...imgForAssets,
-          ...musicForAssets,
-          ...videosForAssets,
-          ...pwa_manifestForAssets,
-        ] ) );
+                                                         ...fontsForAssets,
+                                                         ...imgForAssets,
+                                                         ...musicForAssets,
+                                                         ...videosForAssets,
+                                                         ...pwa_manifestForAssets,
+                                                       ] ) );
 
         return new RegExp( `\\.(` + KNOWN_ASSET_TYPES.join( '|' ) + `)(\\?.*)?$`, );
       } )(),
@@ -1804,9 +1805,9 @@ export default defineConfig( async ( {
          */
         getJSON: async ( cssFileName, json, outputFileName ) => {
           await writeFile( resolve( __dirname, `./src/static/json/css_modules/${ basename( cssFileName )
-          .replace( new URL( cssFileName ).search, '' ) }.css.modules.json` ), JSON.stringify( json ), {
-            flag: 'w+',
-          } );
+            .replace( new URL( cssFileName ).search, '' ) }.css.modules.json` ), JSON.stringify( json ), {
+                             flag: 'w+',
+                           } );
         },
         /**
          * @type {'global' | 'local'} 默认情况下，该插件假定所有的类都是'local'。值有：'global'、'local'。
@@ -1880,39 +1881,39 @@ export default defineConfig( async ( {
 
           // postcss-preset-env
           ( await import('postcss-preset-env') ).default( {
-            /**
-             * 根据它们在成为实施Web标准的过程中的稳定性来确定要填充哪些CSS功能。<br />
-             * 1、阶段可以是0（实验）到4（稳定），也可以是false。将stage设置为false将禁用每个polyfill。仅当您打算专门使用features选项时，这样做才有用。<br />
-             * 2、默认值为2。<br />
-             * 3、为了在PostCSS Preset Env更新之间获得更高的稳定性，您可以设置stage: 3和minimumVendorImplementations: 2。保持接近标准的一个副作用是您可以更轻松地将项目迁移到其他工具。<br />
-             */
-            stage: 0,
-            /**
-             * 根据实现状态确定要填充哪些CSS功能。这可用于启用浏览器中可用的插件，无论规范状态如何。<br />
-             * 1、可以是0（没有供应商实现它）到 3（所有主要供应商）。<br />
-             * 2、默认值为0。<br />
-             * 3、当任何供应商尚未实施某个功能时，可以将其视为实验性的。<br />
-             * 4、即使只有一个实现，它也可能在未来发生变化。<br />
-             * 5、有时，功能/规范的问题只有在它可用后才会被发现。<br />
-             * 6、当您只想使用那些应该稳定的功能时，建议使用值2。<br />
-             * 7、拥有2个独立的实现是提案成为标准的关键步骤，也是功能稳定性的良好指标。<br />
-             * 8、为了在PostCSS Preset Env更新之间获得更高的稳定性，您可以设置stage: 3和minimumVendorImplementations: 2。保持接近标准的一个副作用是您可以更轻松地将项目迁移到其他工具。<br />
-             */
-            minimumVendorImplementations: 0,
-            browsers: browserslist,
-            preserve: true,
-            // debug: !isProduction,
-            // 请注意，通过“feature”选项手动启用/禁用功能会覆盖此标志。
-            enableClientSidePolyfills: true,
-            // autoprefixer共有三种类型的控制注释：
-            // /* autoprefixer: (on|off) */：在注释前后“启用/禁用”整个块的所有Autoprefixer翻译。
-            // /* autoprefixer: ignore next */：仅为下一个属性或下一个规则选择器或规则参数（但不规则/规则正文）禁用自动前缀。
-            // /* autoprefixer grid: (autoplace|no-autoplace|off) */：控制Autoprefixer如何处理整个块的网格转换：
-            // autoplace：启用带有自动放置支持的网格翻译。
-            // no-autoplace：在禁用自动放置支持的情况下启用网格转换，但不支持自动放置（该值是值on的别名，但是值on是一个已弃用的值）。
-            // off：禁用所有网格翻译。
-            autoprefixer: autoprefixerConfig,
-          } ),
+                                                            /**
+                                                             * 根据它们在成为实施Web标准的过程中的稳定性来确定要填充哪些CSS功能。<br />
+                                                             * 1、阶段可以是0（实验）到4（稳定），也可以是false。将stage设置为false将禁用每个polyfill。仅当您打算专门使用features选项时，这样做才有用。<br />
+                                                             * 2、默认值为2。<br />
+                                                             * 3、为了在PostCSS Preset Env更新之间获得更高的稳定性，您可以设置stage: 3和minimumVendorImplementations: 2。保持接近标准的一个副作用是您可以更轻松地将项目迁移到其他工具。<br />
+                                                             */
+                                                            stage: 0,
+                                                            /**
+                                                             * 根据实现状态确定要填充哪些CSS功能。这可用于启用浏览器中可用的插件，无论规范状态如何。<br />
+                                                             * 1、可以是0（没有供应商实现它）到 3（所有主要供应商）。<br />
+                                                             * 2、默认值为0。<br />
+                                                             * 3、当任何供应商尚未实施某个功能时，可以将其视为实验性的。<br />
+                                                             * 4、即使只有一个实现，它也可能在未来发生变化。<br />
+                                                             * 5、有时，功能/规范的问题只有在它可用后才会被发现。<br />
+                                                             * 6、当您只想使用那些应该稳定的功能时，建议使用值2。<br />
+                                                             * 7、拥有2个独立的实现是提案成为标准的关键步骤，也是功能稳定性的良好指标。<br />
+                                                             * 8、为了在PostCSS Preset Env更新之间获得更高的稳定性，您可以设置stage: 3和minimumVendorImplementations: 2。保持接近标准的一个副作用是您可以更轻松地将项目迁移到其他工具。<br />
+                                                             */
+                                                            minimumVendorImplementations: 0,
+                                                            browsers: browserslist,
+                                                            preserve: true,
+                                                            // debug: !isProduction,
+                                                            // 请注意，通过“feature”选项手动启用/禁用功能会覆盖此标志。
+                                                            enableClientSidePolyfills: true,
+                                                            // autoprefixer共有三种类型的控制注释：
+                                                            // /* autoprefixer: (on|off) */：在注释前后“启用/禁用”整个块的所有Autoprefixer翻译。
+                                                            // /* autoprefixer: ignore next */：仅为下一个属性或下一个规则选择器或规则参数（但不规则/规则正文）禁用自动前缀。
+                                                            // /* autoprefixer grid: (autoplace|no-autoplace|off) */：控制Autoprefixer如何处理整个块的网格转换：
+                                                            // autoplace：启用带有自动放置支持的网格翻译。
+                                                            // no-autoplace：在禁用自动放置支持的情况下启用网格转换，但不支持自动放置（该值是值on的别名，但是值on是一个已弃用的值）。
+                                                            // off：禁用所有网格翻译。
+                                                            autoprefixer: autoprefixerConfig,
+                                                          } ),
 
           // 优化性插件，这里个人设置成只做优化，不对特殊的、非标准的CSS语法（符合W3C的CSS语法）做处理 Start
 
@@ -1928,8 +1929,8 @@ export default defineConfig( async ( {
 
           // @csstools/postcss-nested-calc，处理calc函数的嵌套，文档见：https://github.com/csstools/postcss-plugins/tree/main/plugins/postcss-nested-calc。<br />
           ( await import('@csstools/postcss-nested-calc') ).default( {
-            preserve: false,
-          } ),
+                                                                       preserve: false,
+                                                                     } ),
 
           /**
            * postcss-calc
@@ -1972,11 +1973,11 @@ export default defineConfig( async ( {
             ? []
             : [
                 ( await import('postcss-combine-duplicated-selectors') ).default( {
-                  // 可以选择组合重复的属性，启用后会移除重复的属性，后面的会覆盖前面的，从而保留最后的那个属性。
-                  removeDuplicatedProperties: true,
-                  // 限制仅在值相等时才组合属性，启用后会移除重复的属性，后面的会覆盖前面的，从而保留最后的那个属性。但是必须保证其值是全等的，对于使用了自定义属性的，还是会保留自定义属性的。
-                  removeDuplicatedValues: true,
-                } ),
+                                                                                    // 可以选择组合重复的属性，启用后会移除重复的属性，后面的会覆盖前面的，从而保留最后的那个属性。
+                                                                                    removeDuplicatedProperties: true,
+                                                                                    // 限制仅在值相等时才组合属性，启用后会移除重复的属性，后面的会覆盖前面的，从而保留最后的那个属性。但是必须保证其值是全等的，对于使用了自定义属性的，还是会保留自定义属性的。
+                                                                                    removeDuplicatedValues: true,
+                                                                                  } ),
               ]
           ),
 
@@ -1986,14 +1987,14 @@ export default defineConfig( async ( {
 
           // postcss-pseudo-element-colons，转换伪元素的双冒号、单冒号，对于新的标准的W3C规范，伪元素最好都用双冒号，虽然单冒号也被支持，但是它是不规范或者旧的规范版本。
           ( await import('postcss-pseudo-element-colons') ).default( {
-            selectors: [
-              'before',
-              'after',
-              'first-letter',
-              'first-line',
-            ],
-            'colon-notation': 'double',
-          } ),
+                                                                       selectors: [
+                                                                         'before',
+                                                                         'after',
+                                                                         'first-letter',
+                                                                         'first-line',
+                                                                       ],
+                                                                       'colon-notation': 'double',
+                                                                     } ),
 
           /**
            * postcss-viewport-height-correction，解决height: 100vh在移动端浏览器（尤其是iOS端的浏览器）上出现的“怪异”现象，哪怕不是100vh，如：50vh、75vh、-1vh也会出现怪异现象。
@@ -2004,38 +2005,38 @@ export default defineConfig( async ( {
            * https://github.com/Faisal-Manzer/postcss-viewport-height-correction
            */
           ( await import('postcss-viewport-height-correction') ).default( {
-            /**
-             * 注意：仅使用纯字母字符作为自定义变量名称。我们正在使用正则表达式来修补视口值，任何带有特殊字符的变量都可能导致未知问题。<br />
-             * 1、自定义属性名称区分大小写--my-color将被视为与--My-color不同的自定义属性。<br />
-             * 2、默认值为：vh。<br />
-             * 3、该设置值要跟JS中的变量customViewportCorrectionVariable的值保持一致。<br />
-             */
-            variable: postcssViewportHeightCorrectionCustomViewportCorrectionVariable,
-          } ),
+                                                                            /**
+                                                                             * 注意：仅使用纯字母字符作为自定义变量名称。我们正在使用正则表达式来修补视口值，任何带有特殊字符的变量都可能导致未知问题。<br />
+                                                                             * 1、自定义属性名称区分大小写--my-color将被视为与--My-color不同的自定义属性。<br />
+                                                                             * 2、默认值为：vh。<br />
+                                                                             * 3、该设置值要跟JS中的变量customViewportCorrectionVariable的值保持一致。<br />
+                                                                             */
+                                                                            variable: postcssViewportHeightCorrectionCustomViewportCorrectionVariable,
+                                                                          } ),
 
           // 特殊处理 End
 
           // postcss-browser-reporter，如果您想涵盖所有可能的警告，请将此插件放在所有插件之后。
           ( await import('postcss-browser-reporter') ).default( {
-            selector: 'html::before',
-            styles: {
-              display: 'block !important',
-              position: 'fixed !important',
-              top: '0 !important',
-              right: '0 !important',
-              bottom: '0 !important',
-              left: '0 !important',
-              'z-index': '202200000000 !important',
-              content: '',
-              width: '100% !important',
-              height: '100% !important',
-              'background-color': 'red !important',
-              color: 'white !important',
-              'font-size': '12px !important',
-              overflow: 'hidden !important',
-              'white-space': 'pre-wrap !important',
-            },
-          } ),
+                                                                  selector: 'html::before',
+                                                                  styles: {
+                                                                    display: 'block !important',
+                                                                    position: 'fixed !important',
+                                                                    top: '0 !important',
+                                                                    right: '0 !important',
+                                                                    bottom: '0 !important',
+                                                                    left: '0 !important',
+                                                                    'z-index': '202200000000 !important',
+                                                                    content: '',
+                                                                    width: '100% !important',
+                                                                    height: '100% !important',
+                                                                    'background-color': 'red !important',
+                                                                    color: 'white !important',
+                                                                    'font-size': '12px !important',
+                                                                    overflow: 'hidden !important',
+                                                                    'white-space': 'pre-wrap !important',
+                                                                  },
+                                                                } ),
         ],
       },
       /**
@@ -2332,9 +2333,9 @@ export default defineConfig( async ( {
      * 在这里定义的全局常量，当在TS中使用时，一般会被“TS类型检查”鉴定为未定义的错误！可以在“src/custom_declare_types/define.d.ts”这里定义这些全局常量的类型描述。这样就不会报类型错误了。<br />
      */
     define: DefineConfig( {
-      env_platform,
-      isProduction,
-    } ),
+                            env_platform,
+                            isProduction,
+                          } ),
     /**
      * @type {string} 默认值同顶级配置选项“root”的值。用于加载.env文件的目录。可以是一个绝对路径，也可以是相对于项目根的路径。<br />
      */
@@ -2469,20 +2470,20 @@ export default defineConfig( async ( {
        * }
        */
       VitePluginInject( {
-        // include: [],
-        // exclude: [],
-        sourceMap: false,
-        modules: {
-          $: [
-            resolve( join( __dirname, './node_modules/jquery/dist/jquery.js' ) ),
-            '*',
-          ],
-          jQuery: [
-            resolve( join( __dirname, './node_modules/jquery/dist/jquery.js' ) ),
-            '*',
-          ],
-        },
-      } ),
+                          // include: [],
+                          // exclude: [],
+                          sourceMap: false,
+                          modules: {
+                            $: [
+                              resolve( join( __dirname, './node_modules/jquery/dist/jquery.js' ) ),
+                              '*',
+                            ],
+                            jQuery: [
+                              resolve( join( __dirname, './node_modules/jquery/dist/jquery.js' ) ),
+                              '*',
+                            ],
+                          },
+                        } ),
 
       /**
        * 将WebAssembly ESM集成（又名Webpack的asyncWebAssembly）添加到Vite中，并支持wasm-pack生成的模块。<br />
@@ -2502,494 +2503,494 @@ export default defineConfig( async ( {
       VitePluginTopLevelAwait(),
 
       VitePluginLegacy( {
-        targets: vite_plugin_legacy_target,
-        polyfills: true,
-        /**
-         * @type {string[]} 添加自定义导入到传统的polyfills块中。<br />
-         * 1、由于基于使用的polyfill检测只包括ES语言功能，可能需要使用这个选项手动指定额外的DOM API polyfills。<br />
-         * 2、注意：如果现代和传统块都需要额外的polyfills，它们可以简单地在应用程序源代码中导入。<br />
-         */
-        // additionalLegacyPolyfills: [],
-        /**
-         * @type {boolean}
-         */
-        ignoreBrowserslistConfig: false,
-        // modernPolyfills: false,
-        // renderLegacyChunks: true,
-        // externalSystemJS: false,
-      } ),
+                          targets: vite_plugin_legacy_target,
+                          polyfills: true,
+                          /**
+                           * @type {string[]} 添加自定义导入到传统的polyfills块中。<br />
+                           * 1、由于基于使用的polyfill检测只包括ES语言功能，可能需要使用这个选项手动指定额外的DOM API polyfills。<br />
+                           * 2、注意：如果现代和传统块都需要额外的polyfills，它们可以简单地在应用程序源代码中导入。<br />
+                           */
+                          // additionalLegacyPolyfills: [],
+                          /**
+                           * @type {boolean}
+                           */
+                          ignoreBrowserslistConfig: false,
+                          // modernPolyfills: false,
+                          // renderLegacyChunks: true,
+                          // externalSystemJS: false,
+                        } ),
       /**
        * 该插件的详细配置选项见：<br />
        * node_modules/@vitejs/plugin-vue/dist/index.d.ts:20
        * https://github.com/vitejs/vite-plugin-vue/tree/main/packages/plugin-vue#options
        */
       vue( {
-        isProduction,
-        script: {
-          /**
-           * 设置该选项后会报错！因为内部代码有BUG！
-           * 详细见：
-           * TypeError: Cannot read properties of undefined (reading 'name')
-           *     at registerBinding (G:\WebStormWS\web-for-vite-project-template\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:4653:19)
-           *     at walkObjectPattern (G:\WebStormWS\web-for-vite-project-template\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:4734:13)
-           *     at walkDeclaration (G:\WebStormWS\web-for-vite-project-template\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:4698:21)
-           *     at Object.compileScript (G:\WebStormWS\web-for-vite-project-template\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:4263:13)
-           *     at resolveScript (file:///G:/WebStormWS/web-for-vite-project-template/node_modules/@vitejs/plugin-vue/dist/index.mjs:283:31)
-           *     at genScriptCode (file:///G:/WebStormWS/web-for-vite-project-template/node_modules/@vitejs/plugin-vue/dist/index.mjs:2469:18)
-           *     at transformMain (file:///G:/WebStormWS/web-for-vite-project-template/node_modules/@vitejs/plugin-vue/dist/index.mjs:2282:54)
-           *     at Object.transform (file:///G:/WebStormWS/web-for-vite-project-template/node_modules/@vitejs/plugin-vue/dist/index.mjs:2785:16)
-           *     at file:///G:/WebStormWS/web-for-vite-project-template/node_modules/rollup/dist/es/shared/node-entry.js:24551:40
-           */
-          ...( isEnabled => {
-            return isEnabled
-                   ? {
-                babelParserPlugins: [
-                  // Language extensions Start
+             isProduction,
+             script: {
+               /**
+                * 设置该选项后会报错！因为内部代码有BUG！
+                * 详细见：
+                * TypeError: Cannot read properties of undefined (reading 'name')
+                *     at registerBinding (G:\WebStormWS\web-for-vite-project-template\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:4653:19)
+                *     at walkObjectPattern (G:\WebStormWS\web-for-vite-project-template\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:4734:13)
+                *     at walkDeclaration (G:\WebStormWS\web-for-vite-project-template\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:4698:21)
+                *     at Object.compileScript (G:\WebStormWS\web-for-vite-project-template\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:4263:13)
+                *     at resolveScript (file:///G:/WebStormWS/web-for-vite-project-template/node_modules/@vitejs/plugin-vue/dist/index.mjs:283:31)
+                *     at genScriptCode (file:///G:/WebStormWS/web-for-vite-project-template/node_modules/@vitejs/plugin-vue/dist/index.mjs:2469:18)
+                *     at transformMain (file:///G:/WebStormWS/web-for-vite-project-template/node_modules/@vitejs/plugin-vue/dist/index.mjs:2282:54)
+                *     at Object.transform (file:///G:/WebStormWS/web-for-vite-project-template/node_modules/@vitejs/plugin-vue/dist/index.mjs:2785:16)
+                *     at file:///G:/WebStormWS/web-for-vite-project-template/node_modules/rollup/dist/es/shared/node-entry.js:24551:40
+                */
+               ...( isEnabled => {
+                 return isEnabled
+                        ? {
+                     babelParserPlugins: [
+                       // Language extensions Start
 
-                  /**
-                   * 1、["pipelineOperator", { proposal: "hack" }]跟插件“placeholders”有冲突，二者只能取其一。
-                   * 2、placeholders跟v8intrinsic不能同时使用。
-                   */
-                  // 'placeholders',
-                  /**
-                   * 1、["pipelineOperator", { proposal: "hack" }]跟插件“v8intrinsic”有冲突，二者只能取其一。
-                   * 2、placeholders跟v8intrinsic不能同时使用。
-                   */
-                  // 'v8intrinsic',
-                  // flow跟typescript不能同时使用。
-                  /*
-                   [
-                   'flow',
-                   {
-                   // 默认值为：false。
-                   all: false,
-                   enums: true,
-                   },
-                   ],
-                   */
-                  // flow跟typescript不能同时使用。
-                  [
-                    'typescript',
-                    {
-                      // 默认值为：false。
-                      dts: false,
-                      // 默认值为：false。
-                      disallowAmbiguousJSXLike: false,
-                    },
-                  ],
-                  'flowComments',
-                  'jsx',
+                       /**
+                        * 1、["pipelineOperator", { proposal: "hack" }]跟插件“placeholders”有冲突，二者只能取其一。
+                        * 2、placeholders跟v8intrinsic不能同时使用。
+                        */
+                       // 'placeholders',
+                       /**
+                        * 1、["pipelineOperator", { proposal: "hack" }]跟插件“v8intrinsic”有冲突，二者只能取其一。
+                        * 2、placeholders跟v8intrinsic不能同时使用。
+                        */
+                       // 'v8intrinsic',
+                       // flow跟typescript不能同时使用。
+                       /*
+                        [
+                        'flow',
+                        {
+                        // 默认值为：false。
+                        all: false,
+                        enums: true,
+                        },
+                        ],
+                        */
+                       // flow跟typescript不能同时使用。
+                       [
+                         'typescript',
+                         {
+                           // 默认值为：false。
+                           dts: false,
+                           // 默认值为：false。
+                           disallowAmbiguousJSXLike: false,
+                         },
+                       ],
+                       'flowComments',
+                       'jsx',
 
-                  // Language extensions End
+                       // Language extensions End
 
-                  // ECMAScript proposals Start
+                       // ECMAScript proposals Start
 
-                  'doExpressions',
-                  'explicitResourceManagement',
-                  // asyncDoExpressions依赖上面的doExpressions。
-                  'asyncDoExpressions',
-                  'decimal',
-                  // decorators和decorators-legacy不能同时使用，建议使用decorators。
-                  // 'decorators-legacy',
-                  // decorators和decorators-legacy不能同时使用，建议使用decorators。
-                  [
-                    'decorators',
-                    {
-                      // 在2022年3月的TC39会议上就Stage 3达成共识的提案版本要求decoratorsBeforeExport为false，allowCallParenthesized也为false。
-                      decoratorsBeforeExport: false,
-                      // 在2022年3月的TC39会议上就Stage 3达成共识的提案版本要求decoratorsBeforeExport为false，allowCallParenthesized也为false。
-                      allowCallParenthesized: false,
-                    },
-                  ],
-                  'decoratorAutoAccessors',
-                  'destructuringPrivate',
-                  'exportDefaultFrom',
-                  'functionBind',
-                  // importAssertions跟moduleAttributes不能同时使用，且importAssertions已经取代了moduleAttributes。
-                  // 'importAssertions',
-                  // importAttributes已经取代了importAssertions。
-                  [
-                    'importAttributes',
-                    {
-                      deprecatedAssertSyntax: true,
-                    },
-                  ],
-                  'importReflection',
-                  // importAssertions跟moduleAttributes不能同时使用，且importAssertions已经取代了moduleAttributes。
-                  /*
-                   [
-                   'moduleAttributes',
-                   {
-                   version: 'may-2020',
-                   },
-                   ],
-                   */
-                  'moduleBlocks',
-                  'partialApplication',
-                  [
-                    'pipelineOperator',
-                    {
-                      /**
-                       * 1、["pipelineOperator", { proposal: "smart" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
-                       * 2、["pipelineOperator", { proposal: "hack" }]跟插件“placeholders”有冲突，二者只能取其一。
-                       * 3、["pipelineOperator", { proposal: "hack" }]跟插件“v8intrinsic”有冲突，二者只能取其一。
-                       * 4、["pipelineOperator", { proposal: "hack", topicToken: "#" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
-                       */
-                      proposal: 'hack',
-                      /**
-                       * 1、["pipelineOperator", { proposal: "hack", topicToken: "#" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
-                       */
-                      topicToken: '^^',
-                    },
-                  ],
-                  [
-                    'recordAndTuple',
-                    {
-                      /**
-                       * 1、["pipelineOperator", { proposal: "hack", topicToken: "#" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
-                       * 2、["pipelineOperator", { proposal: "smart" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
-                       */
-                      syntaxType: 'hash',
-                    },
-                  ],
-                  'regexpUnicodeSets',
-                  'throwExpressions',
-                  'importMeta',
-                  [
-                    'estree',
-                    {
-                      classFeatures: true,
-                    },
-                  ],
+                       'doExpressions',
+                       'explicitResourceManagement',
+                       // asyncDoExpressions依赖上面的doExpressions。
+                       'asyncDoExpressions',
+                       'decimal',
+                       // decorators和decorators-legacy不能同时使用，建议使用decorators。
+                       // 'decorators-legacy',
+                       // decorators和decorators-legacy不能同时使用，建议使用decorators。
+                       [
+                         'decorators',
+                         {
+                           // 在2022年3月的TC39会议上就Stage 3达成共识的提案版本要求decoratorsBeforeExport为false，allowCallParenthesized也为false。
+                           decoratorsBeforeExport: false,
+                           // 在2022年3月的TC39会议上就Stage 3达成共识的提案版本要求decoratorsBeforeExport为false，allowCallParenthesized也为false。
+                           allowCallParenthesized: false,
+                         },
+                       ],
+                       'decoratorAutoAccessors',
+                       'destructuringPrivate',
+                       'exportDefaultFrom',
+                       'functionBind',
+                       // importAssertions跟moduleAttributes不能同时使用，且importAssertions已经取代了moduleAttributes。
+                       // 'importAssertions',
+                       // importAttributes已经取代了importAssertions。
+                       [
+                         'importAttributes',
+                         {
+                           deprecatedAssertSyntax: true,
+                         },
+                       ],
+                       'importReflection',
+                       // importAssertions跟moduleAttributes不能同时使用，且importAssertions已经取代了moduleAttributes。
+                       /*
+                        [
+                        'moduleAttributes',
+                        {
+                        version: 'may-2020',
+                        },
+                        ],
+                        */
+                       'moduleBlocks',
+                       'partialApplication',
+                       [
+                         'pipelineOperator',
+                         {
+                           /**
+                            * 1、["pipelineOperator", { proposal: "smart" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
+                            * 2、["pipelineOperator", { proposal: "hack" }]跟插件“placeholders”有冲突，二者只能取其一。
+                            * 3、["pipelineOperator", { proposal: "hack" }]跟插件“v8intrinsic”有冲突，二者只能取其一。
+                            * 4、["pipelineOperator", { proposal: "hack", topicToken: "#" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
+                            */
+                           proposal: 'hack',
+                           /**
+                            * 1、["pipelineOperator", { proposal: "hack", topicToken: "#" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
+                            */
+                           topicToken: '^^',
+                         },
+                       ],
+                       [
+                         'recordAndTuple',
+                         {
+                           /**
+                            * 1、["pipelineOperator", { proposal: "hack", topicToken: "#" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
+                            * 2、["pipelineOperator", { proposal: "smart" }]跟["recordAndtuple", { syntaxType: "hash"}]有冲突，二者只能取其一。
+                            */
+                           syntaxType: 'hash',
+                         },
+                       ],
+                       'regexpUnicodeSets',
+                       'throwExpressions',
+                       'importMeta',
+                       [
+                         'estree',
+                         {
+                           classFeatures: true,
+                         },
+                       ],
 
-                  // ECMAScript proposals End
+                       // ECMAScript proposals End
 
-                  // Latest ECMAScript features Start
+                       // Latest ECMAScript features Start
 
-                  'asyncGenerators',
-                  'bigInt',
-                  'classPrivateMethods',
-                  'classPrivateProperties',
-                  'classProperties',
-                  // Enabled by default
-                  'classStaticBlock',
-                  'dynamicImport',
-                  // deprecated
-                  'exportNamespaceFrom',
-                  'functionSent',
-                  'logicalAssignment',
-                  'moduleStringNames',
-                  'nullishCoalescingOperator',
-                  'numericSeparator',
-                  'objectRestSpread',
-                  'optionalCatchBinding',
-                  'optionalChaining',
-                  // Enabled by default
-                  'privateIn',
-                  'topLevelAwait',
+                       'asyncGenerators',
+                       'bigInt',
+                       'classPrivateMethods',
+                       'classPrivateProperties',
+                       'classProperties',
+                       // Enabled by default
+                       'classStaticBlock',
+                       'dynamicImport',
+                       // deprecated
+                       'exportNamespaceFrom',
+                       'functionSent',
+                       'logicalAssignment',
+                       'moduleStringNames',
+                       'nullishCoalescingOperator',
+                       'numericSeparator',
+                       'objectRestSpread',
+                       'optionalCatchBinding',
+                       'optionalChaining',
+                       // Enabled by default
+                       'privateIn',
+                       'topLevelAwait',
 
-                  // Latest ECMAScript features End
-                ],
-              }
-                   : {};
-          } )( false ),
-          /**
-           * 在使用Vue的反应性API时，引入一组编译器转换来改善人体工程学，特别是能够使用没有.value的refs。<br />
-           * 1、具体可阅https://github.com/vuejs/rfcs/discussions/369 <br />
-           * 2、仅在SFC中生效。<br />
-           * 3、该选项会在3.4版本中被删除！反应性转换提案已被删除。如果你打算继续使用它，请禁用它并切换到[Vue Macros implementation](https://vue-macros.sxzz.moe/features/reactivity-transform.html)。<br />
-           */
-          // reactivityTransform: true,
+                       // Latest ECMAScript features End
+                     ],
+                   }
+                        : {};
+               } )( false ),
+               /**
+                * 在使用Vue的反应性API时，引入一组编译器转换来改善人体工程学，特别是能够使用没有.value的refs。<br />
+                * 1、具体可阅https://github.com/vuejs/rfcs/discussions/369 <br />
+                * 2、仅在SFC中生效。<br />
+                * 3、该选项会在3.4版本中被删除！反应性转换提案已被删除。如果你打算继续使用它，请禁用它并切换到[Vue Macros implementation](https://vue-macros.sxzz.moe/features/reactivity-transform.html)。<br />
+                */
+               // reactivityTransform: true,
 
-          /**
-           * 实验性选项。true表示启用宏“defineModel”。
-           */
-          defineModel: true,
-          /**
-           * 实验性选项。true表示为“defineProps”启用反应式解构。
-           */
-          propsDestructure: true,
-        },
-        template: {
-          /**
-           * @type {TemplateCompiler | string} 设置编译器，用于编译单文件组件中的<template>块。<br />
-           * 1、对于Vue 2.X使用“vue-template-compiler”，对于Vue 3.X使用“@vue/compiler-sfc”。<br />
-           * 2、该选项值可以是字符串的包名，如：'@vue/compiler-sfc'、'vue-template-compiler'。<br />
-           * 3、也可以是上面两个包导出的对象（该对象必需包含2个函数实现：compile、parse），详细见：node_modules/@vue/compiler-sfc/dist/compiler-sfc.d.ts:304<br />
-           * 该选项详细见：<br />
-           * node_modules/vue-loader/dist/index.d.ts:8
-           * node_modules/@vue/compiler-sfc/dist/compiler-sfc.d.ts:304
-           *
-           * PS：<br />
-           * 1、实际测试了一下，当该选项设置值为'@vue/compiler-sfc'时，会报错！因为没有找到“compile”函数！<br />
-           * 在'@vue/compiler-sfc'源码中发现，有“parse”函数的实现（见：node_modules/@vue/compiler-sfc/dist/compiler-sfc.d.ts:95）。<br />
-           * 但是没有“compile”函数的实现，貌似是被命名为“compileTemplate”（见：node_modules/@vue/compiler-sfc/dist/compiler-sfc.d.ts:61），<br />
-           * 但是该“compileTemplate”函数的声明不是符合规定的“compile”函数的声明（见：node_modules/@vue/compiler-sfc/dist/compiler-sfc.d.ts:305）。<br />
-           *
-           * 2、顺便查看了“vue-template-compiler”源码，发现了“compile”函数的实现，见：<br />
-           * node_modules/vue-template-compiler/types/index.d.ts:214
-           * node_modules/vue-template-compiler/types/index.d.ts:219
-           * 而“parse”函数的实现，貌似被重命名为“parseComponent”函数，见：node_modules/vue-template-compiler/types/index.d.ts:238
-           *
-           * 因此，该选项不用设置，貌似内部自动处理设置了。<br />
-           */
-          // compiler: '@vue/compiler-sfc',
+               /**
+                * 实验性选项。true表示启用宏“defineModel”。
+                */
+               defineModel: true,
+               /**
+                * 实验性选项。true表示为“defineProps”启用反应式解构。
+                */
+               propsDestructure: true,
+             },
+             template: {
+               /**
+                * @type {TemplateCompiler | string} 设置编译器，用于编译单文件组件中的<template>块。<br />
+                * 1、对于Vue 2.X使用“vue-template-compiler”，对于Vue 3.X使用“@vue/compiler-sfc”。<br />
+                * 2、该选项值可以是字符串的包名，如：'@vue/compiler-sfc'、'vue-template-compiler'。<br />
+                * 3、也可以是上面两个包导出的对象（该对象必需包含2个函数实现：compile、parse），详细见：node_modules/@vue/compiler-sfc/dist/compiler-sfc.d.ts:304<br />
+                * 该选项详细见：<br />
+                * node_modules/vue-loader/dist/index.d.ts:8
+                * node_modules/@vue/compiler-sfc/dist/compiler-sfc.d.ts:304
+                *
+                * PS：<br />
+                * 1、实际测试了一下，当该选项设置值为'@vue/compiler-sfc'时，会报错！因为没有找到“compile”函数！<br />
+                * 在'@vue/compiler-sfc'源码中发现，有“parse”函数的实现（见：node_modules/@vue/compiler-sfc/dist/compiler-sfc.d.ts:95）。<br />
+                * 但是没有“compile”函数的实现，貌似是被命名为“compileTemplate”（见：node_modules/@vue/compiler-sfc/dist/compiler-sfc.d.ts:61），<br />
+                * 但是该“compileTemplate”函数的声明不是符合规定的“compile”函数的声明（见：node_modules/@vue/compiler-sfc/dist/compiler-sfc.d.ts:305）。<br />
+                *
+                * 2、顺便查看了“vue-template-compiler”源码，发现了“compile”函数的实现，见：<br />
+                * node_modules/vue-template-compiler/types/index.d.ts:214
+                * node_modules/vue-template-compiler/types/index.d.ts:219
+                * 而“parse”函数的实现，貌似被重命名为“parseComponent”函数，见：node_modules/vue-template-compiler/types/index.d.ts:238
+                *
+                * 因此，该选项不用设置，貌似内部自动处理设置了。<br />
+                */
+               // compiler: '@vue/compiler-sfc',
 
-          // preprocessOptions: any,
+               // preprocessOptions: any,
 
-          // preprocessCustomRequire: (id: string) => any,
+               // preprocessCustomRequire: (id: string) => any,
 
-          compilerOptions: {
-            /**
-             * 值有："module"、"function"（默认值）。<br />
-             * `module`模式将为帮助器生成ES模块导入语句 并将渲染函数作为默认导出。<br />
-             * `function`模式将产生一个单一的“const { helpers... } = Vue”语句并返回渲染函数。它希望`Vue`是全局可用的（或者通过用IIFE包装代码来传递）。它是用来与`new Function(code)()`一起使用，在运行时生成一个渲染函数。<br />
-             *
-             * 当mode: 'function'时，会报“scopeId”错误，说是“scopeId”只能跟“mode: 'module'”一起使用，见：node_modules/@vue/compiler-core/dist/compiler-core.d.ts:1151
-             * 当在Vue的SFC里书写“<script type = 'module'>”时，就会使用“mode: 'module'”了。<br />
-             * 该选项一般不用设置，内部会自动设置。<br />
-             *
-             * 详细见：<br />
-             * node_modules/@vue/compiler-core/dist/compiler-core.d.ts:170
-             */
-            // mode: 'module',
-            /**
-             * 将表达式（如 {{ foo }} 转换为 _ctx.foo）。如果此选项为 false，则生成的代码将被包装在一个 with (this) { ... } 块中。<br />
-             * 这在mode === 'module'是强制启用的，因为模块默认是严格的，不能使用with。<br />
-             * 一般不要设置这个选项，交由内部自行处理。<br />
-             */
-            // prefixIdentifiers: true,
-            /**
-             * 缓存v-on处理程序以避免在每次渲染时创建新的内联函数，也避免了通过包装动态修补处理程序的需要。<br />
-             * 例如`@click="foo"`默认编译为`{onClick: foo }`。<br />
-             * 有了这个选项，它就被编译成：<br />
-             * { onClick: _cache[0] || (_cache[0] = e => _ctx.foo(e)) }
-             * 需要启用 "prefixIdentifiers"，因为它依靠范围分析来确定处理程序是否可以安全缓存。<br />
-             * 分析来确定一个处理程序是否可以安全地进行缓存。<br />
-             * 一般不要设置这个选项，交由内部自行处理。<br />
-             * 详细见：<br />
-             * node_modules/@vue/compiler-core/dist/compiler-core.d.ts:1141
-             */
-            // cacheHandlers: true,
-            /**
-             * 通过变量赋值优化帮助程序导入绑定的选项（仅用于webpack代码拆分），默认值为：false。<br />
-             * 一般不要设置这个选项，交由内部自行处理。<br />
-             * 详细见：node_modules/@vue/compiler-core/dist/compiler-core.d.ts:185
-             */
-            // optimizeImports: isProduction,
-            comments: !isProduction,
-            whitespace: !isProduction
-                        ? 'preserve'
-                        : 'condense',
-          },
-          transformAssetUrls: {
-            video: [
-              'src',
-              'poster',
-            ],
-            source: 'src',
-            img: 'src',
-            image: [
-              'xlink:href',
-              'href',
-            ],
-            use: [
-              'xlink:href',
-              'href',
-            ],
-            audio: 'src',
-          },
-        },
-        style: {
-          trim: true,
-        },
-        /**
-         * 启用自定义元素模式。在自定义元素模式下加载的SFC将其<style>标记内联为组件样式选项下的字符串。<br />
-         * 1、当与Vue核心的defineCustomElement一起使用时，样式将被注入到自定义元素的阴影根中。<br />
-         * 2、默认值为：/\.ce\.vue$/。<br />
-         * 3、该选项的值类型为：boolean、RegExp。<br />
-         * 4、设置为true将以“自定义元素模式”处理所有.vue文件。<br />
-         */
-        // customElement: /\.ce\.vue$/,
-        /**
-         * 在使用Vue的反应性API时，引入一组编译器转换来改善人体工程学，特别是能够使用没有.value的refs。<br />
-         * 1、具体可阅https://github.com/vuejs/rfcs/discussions/369 <br />
-         * 2、仅在SFC中生效。<br />
-         * 3、该选项会在3.4版本中被删除！反应性转换提案已被删除。如果你打算继续使用它，请禁用它并切换到[Vue Macros implementation](https://vue-macros.sxzz.moe/features/reactivity-transform.html)。<br />
-         */
-        // reactivityTransform: true,
-        /**
-         * 使用自定义compiler-sfc实例。可用于强制使用特定版本。
-         */
-        // compiler: typeof _compiler,
-      } ),
+               compilerOptions: {
+                 /**
+                  * 值有："module"、"function"（默认值）。<br />
+                  * `module`模式将为帮助器生成ES模块导入语句 并将渲染函数作为默认导出。<br />
+                  * `function`模式将产生一个单一的“const { helpers... } = Vue”语句并返回渲染函数。它希望`Vue`是全局可用的（或者通过用IIFE包装代码来传递）。它是用来与`new Function(code)()`一起使用，在运行时生成一个渲染函数。<br />
+                  *
+                  * 当mode: 'function'时，会报“scopeId”错误，说是“scopeId”只能跟“mode: 'module'”一起使用，见：node_modules/@vue/compiler-core/dist/compiler-core.d.ts:1151
+                  * 当在Vue的SFC里书写“<script type = 'module'>”时，就会使用“mode: 'module'”了。<br />
+                  * 该选项一般不用设置，内部会自动设置。<br />
+                  *
+                  * 详细见：<br />
+                  * node_modules/@vue/compiler-core/dist/compiler-core.d.ts:170
+                  */
+                 // mode: 'module',
+                 /**
+                  * 将表达式（如 {{ foo }} 转换为 _ctx.foo）。如果此选项为 false，则生成的代码将被包装在一个 with (this) { ... } 块中。<br />
+                  * 这在mode === 'module'是强制启用的，因为模块默认是严格的，不能使用with。<br />
+                  * 一般不要设置这个选项，交由内部自行处理。<br />
+                  */
+                 // prefixIdentifiers: true,
+                 /**
+                  * 缓存v-on处理程序以避免在每次渲染时创建新的内联函数，也避免了通过包装动态修补处理程序的需要。<br />
+                  * 例如`@click="foo"`默认编译为`{onClick: foo }`。<br />
+                  * 有了这个选项，它就被编译成：<br />
+                  * { onClick: _cache[0] || (_cache[0] = e => _ctx.foo(e)) }
+                  * 需要启用 "prefixIdentifiers"，因为它依靠范围分析来确定处理程序是否可以安全缓存。<br />
+                  * 分析来确定一个处理程序是否可以安全地进行缓存。<br />
+                  * 一般不要设置这个选项，交由内部自行处理。<br />
+                  * 详细见：<br />
+                  * node_modules/@vue/compiler-core/dist/compiler-core.d.ts:1141
+                  */
+                 // cacheHandlers: true,
+                 /**
+                  * 通过变量赋值优化帮助程序导入绑定的选项（仅用于webpack代码拆分），默认值为：false。<br />
+                  * 一般不要设置这个选项，交由内部自行处理。<br />
+                  * 详细见：node_modules/@vue/compiler-core/dist/compiler-core.d.ts:185
+                  */
+                 // optimizeImports: isProduction,
+                 comments: !isProduction,
+                 whitespace: !isProduction
+                             ? 'preserve'
+                             : 'condense',
+               },
+               transformAssetUrls: {
+                 video: [
+                   'src',
+                   'poster',
+                 ],
+                 source: 'src',
+                 img: 'src',
+                 image: [
+                   'xlink:href',
+                   'href',
+                 ],
+                 use: [
+                   'xlink:href',
+                   'href',
+                 ],
+                 audio: 'src',
+               },
+             },
+             style: {
+               trim: true,
+             },
+             /**
+              * 启用自定义元素模式。在自定义元素模式下加载的SFC将其<style>标记内联为组件样式选项下的字符串。<br />
+              * 1、当与Vue核心的defineCustomElement一起使用时，样式将被注入到自定义元素的阴影根中。<br />
+              * 2、默认值为：/\.ce\.vue$/。<br />
+              * 3、该选项的值类型为：boolean、RegExp。<br />
+              * 4、设置为true将以“自定义元素模式”处理所有.vue文件。<br />
+              */
+             // customElement: /\.ce\.vue$/,
+             /**
+              * 在使用Vue的反应性API时，引入一组编译器转换来改善人体工程学，特别是能够使用没有.value的refs。<br />
+              * 1、具体可阅https://github.com/vuejs/rfcs/discussions/369 <br />
+              * 2、仅在SFC中生效。<br />
+              * 3、该选项会在3.4版本中被删除！反应性转换提案已被删除。如果你打算继续使用它，请禁用它并切换到[Vue Macros implementation](https://vue-macros.sxzz.moe/features/reactivity-transform.html)。<br />
+              */
+             // reactivityTransform: true,
+             /**
+              * 使用自定义compiler-sfc实例。可用于强制使用特定版本。
+              */
+             // compiler: typeof _compiler,
+           } ),
       checker( {
-        overlay: {
-          initialIsOpen: true,
-          position: 'bl',
-          /**
-           * 使用它向徽章按钮添加额外的样式字符串，字符串格式为：[Svelte style](https://svelte.dev/docs#template-syntax-element-directives-style-property)<br />
-           * 例如，如果要隐藏徽章，可以将“display: none;”传递给badgeStyle属性。<br />
-           */
-          // badgeStyle: ``,
-          /**
-           * 使用它向诊断面板添加额外的样式字符串，字符串格式为：[Svelte style](https://svelte.dev/docs#template-syntax-element-directives-style-property)<br />
-           * 例如，如果要更改面板的不透明度，可以将“opacity: 0.8;”传递给panelStyle属性。<br />
-           */
-          // panelStyle: ``,
-        },
-        terminal: true,
-        // Enable checking in build mode.
-        enableBuild: true,
-        typescript: {
-          root: resolve( __dirname, `./` ),
-          tsconfigPath: './tsconfig.vite.json',
-          // Add --build to tsc flag, note that noEmit does NOT work if buildMode is true.
-          buildMode: false,
-        },
-        // 供Vue3使用。
-        vueTsc: {
-          root: resolve( __dirname, `./` ),
-          tsconfigPath: './tsconfig.vite.json',
-        },
-        // 供Vue2使用。
-        // vls: true,
-      } ),
+                 overlay: {
+                   initialIsOpen: true,
+                   position: 'bl',
+                   /**
+                    * 使用它向徽章按钮添加额外的样式字符串，字符串格式为：[Svelte style](https://svelte.dev/docs#template-syntax-element-directives-style-property)<br />
+                    * 例如，如果要隐藏徽章，可以将“display: none;”传递给badgeStyle属性。<br />
+                    */
+                   // badgeStyle: ``,
+                   /**
+                    * 使用它向诊断面板添加额外的样式字符串，字符串格式为：[Svelte style](https://svelte.dev/docs#template-syntax-element-directives-style-property)<br />
+                    * 例如，如果要更改面板的不透明度，可以将“opacity: 0.8;”传递给panelStyle属性。<br />
+                    */
+                   // panelStyle: ``,
+                 },
+                 terminal: true,
+                 // Enable checking in build mode.
+                 enableBuild: true,
+                 typescript: {
+                   root: resolve( __dirname, `./` ),
+                   tsconfigPath: './tsconfig.vite.json',
+                   // Add --build to tsc flag, note that noEmit does NOT work if buildMode is true.
+                   buildMode: false,
+                 },
+                 // 供Vue3使用。
+                 vueTsc: {
+                   root: resolve( __dirname, `./` ),
+                   tsconfigPath: './tsconfig.vite.json',
+                 },
+                 // 供Vue2使用。
+                 // vls: true,
+               } ),
       VitePluginHTMLByCustom( VitePluginHTMLConfig( {
-        appType,
-        entryConfig,
-        isProduction,
-        /**
-         * @type {object} HTML压缩配置。
-         * 详细见：
-         * node_modules/@types/html-minifier-terser/index.d.ts:15
-         */
-        HTMLMinifyConfig: {
-          // 以区分大小写的方式处理属性（对自定义HTML标签有用）。
-          caseSensitive: false,
-          // 从布尔属性中省略属性值。
-          collapseBooleanAttributes: false,
-          // 不要在display:inline;之间留下任何空格。折叠时的元素。必须与collapseWhitespace=true结合使用。
-          collapseInlineTagWhitespace: true,
-          // 折叠有助于文档树中文本节点的空白。
-          collapseWhitespace: true,
-          // 总是折叠到1个空格（永远不要完全删除它）。必须collapseWhitespace=true结合使用。
-          conservativeCollapse: false,
-          // 处理解析错误而不是中止。
-          continueOnParseError: false,
-          // 尽可能使用直接Unicode字符。
-          decodeEntities: false,
-          // 根据HTML5规范解析输入。
-          html5: true,
-          // 插入HTML解析器生成的标签。
-          includeAutoGeneratedTags: true,
-          // 在单例元素上保留斜杠。
-          keepClosingSlash: true,
-          // 缩小样式元素和样式属性中的CSS（使用clean-css）。
-          minifyCSS: isProduction,
-          // 缩小脚本元素和事件属性中的JavaScript（使用Terser）。
-          minifyJS: isProduction,
-          // 缩小各种属性中的URL（使用relateurl来处理的）。
-          minifyURLs: false,
-          // 切勿在关闭元素的标记之前添加换行符。
-          noNewlinesBeforeTagClose: false,
-          // 当标签之间的空格包含换行符时，总是折叠到1个换行符（永远不要完全删除它）。必须与collapseWhitespace=true结合使用。
-          preserveLineBreaks: false,
-          // 防止属性值的转义。
-          preventAttributesEscaping: false,
-          // 通过minifier处理条件注释的内容。
-          processConditionalComments: false,
-          // 尽可能删除属性周围的引号。
-          removeAttributeQuotes: false,
-          // 去除HTML注释。
-          removeComments: true,
-          // 删除所有具有纯空格值的属性。
-          removeEmptyAttributes: false,
-          // 删除所有内容为空的元素。
-          removeEmptyElements: false,
-          // 删除可选标签。
-          removeOptionalTags: false,
-          // 当值与默认值匹配时删除属性。
-          removeRedundantAttributes: false,
-          // 从脚本标签中删除type="text/javascript"其他类型属性值保持不变。
-          removeScriptTypeAttributes: false,
-          // 从样式和链接标签中删除type="text/css"其他类型属性值保持不变。
-          removeStyleLinkTypeAttributes: false,
-          // 尽可能删除属性之间的空格。请注意，这将导致HTML无效！
-          removeTagWhitespace: false,
-          // 按频率排序属性。
-          sortAttributes: false,
-          // 按频率对样式类进行排序。
-          sortClassName: false,
-          // 修剪ignoreCustomFragments周围的空白。
-          trimCustomFragments: false,
-          // 用短 (HTML5) 文档类型替换文档类型。
-          useShortDoctype: false,
-        },
-      } ) ),
+                                                      appType,
+                                                      entryConfig,
+                                                      isProduction,
+                                                      /**
+                                                       * @type {object} HTML压缩配置。
+                                                       * 详细见：
+                                                       * node_modules/@types/html-minifier-terser/index.d.ts:15
+                                                       */
+                                                      HTMLMinifyConfig: {
+                                                        // 以区分大小写的方式处理属性（对自定义HTML标签有用）。
+                                                        caseSensitive: false,
+                                                        // 从布尔属性中省略属性值。
+                                                        collapseBooleanAttributes: false,
+                                                        // 不要在display:inline;之间留下任何空格。折叠时的元素。必须与collapseWhitespace=true结合使用。
+                                                        collapseInlineTagWhitespace: true,
+                                                        // 折叠有助于文档树中文本节点的空白。
+                                                        collapseWhitespace: true,
+                                                        // 总是折叠到1个空格（永远不要完全删除它）。必须collapseWhitespace=true结合使用。
+                                                        conservativeCollapse: false,
+                                                        // 处理解析错误而不是中止。
+                                                        continueOnParseError: false,
+                                                        // 尽可能使用直接Unicode字符。
+                                                        decodeEntities: false,
+                                                        // 根据HTML5规范解析输入。
+                                                        html5: true,
+                                                        // 插入HTML解析器生成的标签。
+                                                        includeAutoGeneratedTags: true,
+                                                        // 在单例元素上保留斜杠。
+                                                        keepClosingSlash: true,
+                                                        // 缩小样式元素和样式属性中的CSS（使用clean-css）。
+                                                        minifyCSS: isProduction,
+                                                        // 缩小脚本元素和事件属性中的JavaScript（使用Terser）。
+                                                        minifyJS: isProduction,
+                                                        // 缩小各种属性中的URL（使用relateurl来处理的）。
+                                                        minifyURLs: false,
+                                                        // 切勿在关闭元素的标记之前添加换行符。
+                                                        noNewlinesBeforeTagClose: false,
+                                                        // 当标签之间的空格包含换行符时，总是折叠到1个换行符（永远不要完全删除它）。必须与collapseWhitespace=true结合使用。
+                                                        preserveLineBreaks: false,
+                                                        // 防止属性值的转义。
+                                                        preventAttributesEscaping: false,
+                                                        // 通过minifier处理条件注释的内容。
+                                                        processConditionalComments: false,
+                                                        // 尽可能删除属性周围的引号。
+                                                        removeAttributeQuotes: false,
+                                                        // 去除HTML注释。
+                                                        removeComments: true,
+                                                        // 删除所有具有纯空格值的属性。
+                                                        removeEmptyAttributes: false,
+                                                        // 删除所有内容为空的元素。
+                                                        removeEmptyElements: false,
+                                                        // 删除可选标签。
+                                                        removeOptionalTags: false,
+                                                        // 当值与默认值匹配时删除属性。
+                                                        removeRedundantAttributes: false,
+                                                        // 从脚本标签中删除type="text/javascript"其他类型属性值保持不变。
+                                                        removeScriptTypeAttributes: false,
+                                                        // 从样式和链接标签中删除type="text/css"其他类型属性值保持不变。
+                                                        removeStyleLinkTypeAttributes: false,
+                                                        // 尽可能删除属性之间的空格。请注意，这将导致HTML无效！
+                                                        removeTagWhitespace: false,
+                                                        // 按频率排序属性。
+                                                        sortAttributes: false,
+                                                        // 按频率对样式类进行排序。
+                                                        sortClassName: false,
+                                                        // 修剪ignoreCustomFragments周围的空白。
+                                                        trimCustomFragments: false,
+                                                        // 用短 (HTML5) 文档类型替换文档类型。
+                                                        useShortDoctype: false,
+                                                      },
+                                                    } ) ),
       VitePluginSRIByCustom( {
-        hashFuncNames: 'sha512',
-        warn: false,
-      } ),
+                               hashFuncNames: 'sha512',
+                               warn: false,
+                             } ),
 
       // .cson
       RollupPluginCSON( {
-        compact: isProduction,
-        // indent: '\t',
-        namedExports: true,
-        objectShorthand: true,
-        preferConst: true,
-        include: [
-          /node_modules[\\/].*\.(cson)$/i,
-          /src[\\/].*\.(cson)$/i,
-          /webpack_location[\\/].*\.(cson)$/i,
-        ],
-        exclude: [
-          /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(cson)$/i,
-          /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(cson)$/i,
-          /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(cson)$/i,
-          /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(cson)$/i,
-          /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(cson)$/i,
-          /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(cson)$/i,
-          /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(cson)$/i,
-          /src[\\/]assets[\\/]fonts[\\/].*\.(cson)$/i,
-          /src[\\/]assets[\\/]img[\\/].*\.(cson)$/i,
-          /src[\\/]assets[\\/]music[\\/].*\.(cson)$/i,
-          /src[\\/]assets[\\/]videos[\\/].*\.(cson)$/i,
-          /src[\\/]custom_declare_types[\\/].*\.(cson)$/i,
-          /src[\\/]graphQL[\\/].*\.(cson)$/i,
-          /src[\\/]pwa_manifest[\\/].*\.(cson)$/i,
-          /src[\\/]static[\\/].*\.(cson)$/i,
-          /src[\\/]styles[\\/].*\.(cson)$/i,
-          /src[\\/]wasm[\\/].*\.(cson)$/i,
-        ],
-      } ),
+                          compact: isProduction,
+                          // indent: '\t',
+                          namedExports: true,
+                          objectShorthand: true,
+                          preferConst: true,
+                          include: [
+                            /node_modules[\\/].*\.(cson)$/i,
+                            /src[\\/].*\.(cson)$/i,
+                            /webpack_location[\\/].*\.(cson)$/i,
+                          ],
+                          exclude: [
+                            /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(cson)$/i,
+                            /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(cson)$/i,
+                            /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(cson)$/i,
+                            /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(cson)$/i,
+                            /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(cson)$/i,
+                            /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(cson)$/i,
+                            /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(cson)$/i,
+                            /src[\\/]assets[\\/]fonts[\\/].*\.(cson)$/i,
+                            /src[\\/]assets[\\/]img[\\/].*\.(cson)$/i,
+                            /src[\\/]assets[\\/]music[\\/].*\.(cson)$/i,
+                            /src[\\/]assets[\\/]videos[\\/].*\.(cson)$/i,
+                            /src[\\/]custom_declare_types[\\/].*\.(cson)$/i,
+                            /src[\\/]graphQL[\\/].*\.(cson)$/i,
+                            /src[\\/]pwa_manifest[\\/].*\.(cson)$/i,
+                            /src[\\/]static[\\/].*\.(cson)$/i,
+                            /src[\\/]styles[\\/].*\.(cson)$/i,
+                            /src[\\/]wasm[\\/].*\.(cson)$/i,
+                          ],
+                        } ),
       // .csv、.tsv
       RollupPluginDSV( {
-        include: [
-          /node_modules[\\/].*\.(csv|tsv)$/i,
-          /src[\\/].*\.(csv|tsv)$/i,
-          /webpack_location[\\/].*\.(csv|tsv)$/i,
-        ],
-        exclude: [
-          /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(csv|tsv)$/i,
-          /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(csv|tsv)$/i,
-          /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(csv|tsv)$/i,
-          /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(csv|tsv)$/i,
-          /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(csv|tsv)$/i,
-          /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(csv|tsv)$/i,
-          /src[\\/]assets[\\/]fonts[\\/].*\.(csv|tsv)$/i,
-          /src[\\/]assets[\\/]img[\\/].*\.(csv|tsv)$/i,
-          /src[\\/]assets[\\/]music[\\/].*\.(csv|tsv)$/i,
-          /src[\\/]assets[\\/]videos[\\/].*\.(csv|tsv)$/i,
-          /src[\\/]custom_declare_types[\\/].*\.(csv|tsv)$/i,
-          /src[\\/]graphQL[\\/].*\.(csv|tsv)$/i,
-          /src[\\/]pwa_manifest[\\/].*\.(csv|tsv)$/i,
-          /src[\\/]static[\\/].*\.(csv|tsv)$/i,
-          /src[\\/]styles[\\/].*\.(csv|tsv)$/i,
-          /src[\\/]wasm[\\/].*\.(csv|tsv)$/i,
-        ],
-      } ),
+                         include: [
+                           /node_modules[\\/].*\.(csv|tsv)$/i,
+                           /src[\\/].*\.(csv|tsv)$/i,
+                           /webpack_location[\\/].*\.(csv|tsv)$/i,
+                         ],
+                         exclude: [
+                           /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(csv|tsv)$/i,
+                           /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(csv|tsv)$/i,
+                           /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(csv|tsv)$/i,
+                           /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(csv|tsv)$/i,
+                           /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(csv|tsv)$/i,
+                           /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(csv|tsv)$/i,
+                           /src[\\/]assets[\\/]fonts[\\/].*\.(csv|tsv)$/i,
+                           /src[\\/]assets[\\/]img[\\/].*\.(csv|tsv)$/i,
+                           /src[\\/]assets[\\/]music[\\/].*\.(csv|tsv)$/i,
+                           /src[\\/]assets[\\/]videos[\\/].*\.(csv|tsv)$/i,
+                           /src[\\/]custom_declare_types[\\/].*\.(csv|tsv)$/i,
+                           /src[\\/]graphQL[\\/].*\.(csv|tsv)$/i,
+                           /src[\\/]pwa_manifest[\\/].*\.(csv|tsv)$/i,
+                           /src[\\/]static[\\/].*\.(csv|tsv)$/i,
+                           /src[\\/]styles[\\/].*\.(csv|tsv)$/i,
+                           /src[\\/]wasm[\\/].*\.(csv|tsv)$/i,
+                         ],
+                       } ),
       /**
        * .graphql、.graphqls、.gql
        * 1、如果想将对象转为字符串，可以这么干，而且这种方法还能按需导入：
@@ -3005,265 +3006,265 @@ export default defineConfig( async ( {
        * print( AlertQuery );
        */
       RollupPluginGraphQL( {
-        include: [
-          /node_modules[\\/].*\.(graphql|graphqls|gql)$/i,
-          /src[\\/].*\.(graphql|graphqls|gql)$/i,
-          /webpack_location[\\/].*\.(graphql|graphqls|gql)$/i,
-        ],
-        exclude: [
-          /src[\\/]assets[\\/].*\.(graphql|graphqls|gql)$/i,
-          /src[\\/]custom_declare_types[\\/].*\.(graphql|graphqls|gql)$/i,
-          /src[\\/]graphQL[\\/]doc[\\/].*\.(graphql|graphqls|gql)$/i,
-          /src[\\/]graphQL[\\/]test[\\/].*\.(graphql|graphqls|gql)$/i,
-          /src[\\/]pwa_manifest[\\/].*\.(graphql|graphqls|gql)$/i,
-          /src[\\/]static[\\/].*\.(graphql|graphqls|gql)$/i,
-          /src[\\/]styles[\\/].*\.(graphql|graphqls|gql)$/i,
-          /src[\\/]wasm[\\/].*\.(graphql|graphqls|gql)$/i,
-        ],
-      } ),
+                             include: [
+                               /node_modules[\\/].*\.(graphql|graphqls|gql)$/i,
+                               /src[\\/].*\.(graphql|graphqls|gql)$/i,
+                               /webpack_location[\\/].*\.(graphql|graphqls|gql)$/i,
+                             ],
+                             exclude: [
+                               /src[\\/]assets[\\/].*\.(graphql|graphqls|gql)$/i,
+                               /src[\\/]custom_declare_types[\\/].*\.(graphql|graphqls|gql)$/i,
+                               /src[\\/]graphQL[\\/]doc[\\/].*\.(graphql|graphqls|gql)$/i,
+                               /src[\\/]graphQL[\\/]test[\\/].*\.(graphql|graphqls|gql)$/i,
+                               /src[\\/]pwa_manifest[\\/].*\.(graphql|graphqls|gql)$/i,
+                               /src[\\/]static[\\/].*\.(graphql|graphqls|gql)$/i,
+                               /src[\\/]styles[\\/].*\.(graphql|graphqls|gql)$/i,
+                               /src[\\/]wasm[\\/].*\.(graphql|graphqls|gql)$/i,
+                             ],
+                           } ),
       // .handlebars、.hbs
       RollupPluginHandlebars( {
-        sourceMap: false,
-        noEscape: false,
-        strict: true,
-        preventIndent: true,
-        // 设置成true会报错！
-        compat: false,
-        assumeObjects: true,
-        // knownHelpers: true,
-        // knownHelpersOnly: false,
-        // ignoreStandalone: true,
-        // explicitPartialContext: false,
-        include: [
-          /node_modules[\\/].*\.(handlebars|hbs)$/i,
-          /src[\\/].*\.(handlebars|hbs)$/i,
-          /webpack_location[\\/].*\.(handlebars|hbs)$/i,
-        ],
-        exclude: [
-          /src[\\/]assets[\\/].*\.(handlebars|hbs)$/i,
-          /src[\\/]custom_declare_types[\\/].*\.(handlebars|hbs)$/i,
-          /src[\\/]graphQL[\\/].*\.(handlebars|hbs)$/i,
-          /src[\\/]pwa_manifest[\\/].*\.(handlebars|hbs)$/i,
-          /src[\\/]static[\\/].*\.(handlebars|hbs)$/i,
-          /src[\\/]styles[\\/].*\.(handlebars|hbs)$/i,
-          /src[\\/]template[\\/]ejs[\\/].*\.(handlebars|hbs)$/i,
-          /src[\\/]template[\\/]html[\\/].*\.(handlebars|hbs)$/i,
-          /src[\\/]template[\\/]markdown[\\/].*\.(handlebars|hbs)$/i,
-          /src[\\/]template[\\/]mustache[\\/].*\.(handlebars|hbs)$/i,
-          /src[\\/]template[\\/]pug_jade[\\/].*\.(handlebars|hbs)$/i,
-          /src[\\/]wasm[\\/].*\.(handlebars|hbs)$/i,
-        ],
-      } ),
+                                sourceMap: false,
+                                noEscape: false,
+                                strict: true,
+                                preventIndent: true,
+                                // 设置成true会报错！
+                                compat: false,
+                                assumeObjects: true,
+                                // knownHelpers: true,
+                                // knownHelpersOnly: false,
+                                // ignoreStandalone: true,
+                                // explicitPartialContext: false,
+                                include: [
+                                  /node_modules[\\/].*\.(handlebars|hbs)$/i,
+                                  /src[\\/].*\.(handlebars|hbs)$/i,
+                                  /webpack_location[\\/].*\.(handlebars|hbs)$/i,
+                                ],
+                                exclude: [
+                                  /src[\\/]assets[\\/].*\.(handlebars|hbs)$/i,
+                                  /src[\\/]custom_declare_types[\\/].*\.(handlebars|hbs)$/i,
+                                  /src[\\/]graphQL[\\/].*\.(handlebars|hbs)$/i,
+                                  /src[\\/]pwa_manifest[\\/].*\.(handlebars|hbs)$/i,
+                                  /src[\\/]static[\\/].*\.(handlebars|hbs)$/i,
+                                  /src[\\/]styles[\\/].*\.(handlebars|hbs)$/i,
+                                  /src[\\/]template[\\/]ejs[\\/].*\.(handlebars|hbs)$/i,
+                                  /src[\\/]template[\\/]html[\\/].*\.(handlebars|hbs)$/i,
+                                  /src[\\/]template[\\/]markdown[\\/].*\.(handlebars|hbs)$/i,
+                                  /src[\\/]template[\\/]mustache[\\/].*\.(handlebars|hbs)$/i,
+                                  /src[\\/]template[\\/]pug_jade[\\/].*\.(handlebars|hbs)$/i,
+                                  /src[\\/]wasm[\\/].*\.(handlebars|hbs)$/i,
+                                ],
+                              } ),
       // .json5、.jsonc
       VitePluginJSON5( {
-        include: [
-          /node_modules[\\/].*\.(json5)$/i,
-          /src[\\/].*\.(json5)$/i,
-          /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(json5)$/i,
-          /webpack_location[\\/].*\.(json5)$/i,
-        ],
-        exclude: [
-          /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(json5)$/i,
-          /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(json5)$/i,
-          /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(json5)$/i,
-          /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(json5)$/i,
-          /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(json5)$/i,
-          /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(json5)$/i,
-          /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(json5)$/i,
-          /src[\\/]assets[\\/]fonts[\\/].*\.(json5)$/i,
-          /src[\\/]assets[\\/]img[\\/].*\.(json5)$/i,
-          /src[\\/]assets[\\/]music[\\/].*\.(json5)$/i,
-          /src[\\/]assets[\\/]videos[\\/].*\.(json5)$/i,
-          /src[\\/]custom_declare_types[\\/].*\.(json5)$/i,
-          /src[\\/]graphQL[\\/].*\.(json5)$/i,
-          /src[\\/]pwa_manifest[\\/].*\.(json5)$/i,
-          /src[\\/]static[\\/].*\.(json5)$/i,
-          /src[\\/]styles[\\/].*\.(json5)$/i,
-          /src[\\/]wasm[\\/].*\.(json5)$/i,
-        ],
-      } ),
+                         include: [
+                           /node_modules[\\/].*\.(json5)$/i,
+                           /src[\\/].*\.(json5)$/i,
+                           /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(json5)$/i,
+                           /webpack_location[\\/].*\.(json5)$/i,
+                         ],
+                         exclude: [
+                           /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(json5)$/i,
+                           /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(json5)$/i,
+                           /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(json5)$/i,
+                           /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(json5)$/i,
+                           /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(json5)$/i,
+                           /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(json5)$/i,
+                           /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(json5)$/i,
+                           /src[\\/]assets[\\/]fonts[\\/].*\.(json5)$/i,
+                           /src[\\/]assets[\\/]img[\\/].*\.(json5)$/i,
+                           /src[\\/]assets[\\/]music[\\/].*\.(json5)$/i,
+                           /src[\\/]assets[\\/]videos[\\/].*\.(json5)$/i,
+                           /src[\\/]custom_declare_types[\\/].*\.(json5)$/i,
+                           /src[\\/]graphQL[\\/].*\.(json5)$/i,
+                           /src[\\/]pwa_manifest[\\/].*\.(json5)$/i,
+                           /src[\\/]static[\\/].*\.(json5)$/i,
+                           /src[\\/]styles[\\/].*\.(json5)$/i,
+                           /src[\\/]wasm[\\/].*\.(json5)$/i,
+                         ],
+                       } ),
       // .md
       VitePluginMarkdown( {
-        mode: [
-          'html',
-          'markdown',
-          'toc',
-          'react',
-          'vue',
-        ],
-        markdownIt: {
-          html: false,
-          xhtmlOut: true,
-          breaks: false,
-          langPrefix: 'language-',
-          linkify: true,
-          typographer: true,
-          quotes: '“”‘’',
-        },
-        include: [
-          /node_modules[\\/].*\.(md)$/i,
-          /src[\\/].*\.(md)$/i,
-          /webpack_location[\\/].*\.(md)$/i,
-        ],
-        exclude: [
-          /src[\\/]assets[\\/].*\.(md)$/i,
-          /src[\\/]custom_declare_types[\\/].*\.(md)$/i,
-          /src[\\/]graphQL[\\/].*\.(md)$/i,
-          /src[\\/]pwa_manifest[\\/].*\.(md)$/i,
-          /src[\\/]static[\\/].*\.(md)$/i,
-          /src[\\/]styles[\\/].*\.(md)$/i,
-          /src[\\/]template[\\/]ejs[\\/].*\.(md)$/i,
-          /src[\\/]template[\\/]handlebars[\\/].*\.(md)$/i,
-          /src[\\/]template[\\/]html[\\/].*\.(md)$/i,
-          /src[\\/]template[\\/]mustache[\\/].*\.(md)$/i,
-          /src[\\/]template[\\/]pug_jade[\\/].*\.(md)$/i,
-          /src[\\/]wasm[\\/].*\.(md)$/i,
-        ],
-      } ),
+                            mode: [
+                              'html',
+                              'markdown',
+                              'toc',
+                              'react',
+                              'vue',
+                            ],
+                            markdownIt: {
+                              html: false,
+                              xhtmlOut: true,
+                              breaks: false,
+                              langPrefix: 'language-',
+                              linkify: true,
+                              typographer: true,
+                              quotes: '“”‘’',
+                            },
+                            include: [
+                              /node_modules[\\/].*\.(md)$/i,
+                              /src[\\/].*\.(md)$/i,
+                              /webpack_location[\\/].*\.(md)$/i,
+                            ],
+                            exclude: [
+                              /src[\\/]assets[\\/].*\.(md)$/i,
+                              /src[\\/]custom_declare_types[\\/].*\.(md)$/i,
+                              /src[\\/]graphQL[\\/].*\.(md)$/i,
+                              /src[\\/]pwa_manifest[\\/].*\.(md)$/i,
+                              /src[\\/]static[\\/].*\.(md)$/i,
+                              /src[\\/]styles[\\/].*\.(md)$/i,
+                              /src[\\/]template[\\/]ejs[\\/].*\.(md)$/i,
+                              /src[\\/]template[\\/]handlebars[\\/].*\.(md)$/i,
+                              /src[\\/]template[\\/]html[\\/].*\.(md)$/i,
+                              /src[\\/]template[\\/]mustache[\\/].*\.(md)$/i,
+                              /src[\\/]template[\\/]pug_jade[\\/].*\.(md)$/i,
+                              /src[\\/]wasm[\\/].*\.(md)$/i,
+                            ],
+                          } ),
       // .mustache
       RollupPluginMustache( {
-        hoganKey: `hogan.js`,
-        include: [
-          /node_modules[\\/].*\.(mustache)$/i,
-          /src[\\/].*\.(mustache)$/i,
-          /webpack_location[\\/].*\.(mustache)$/i,
-        ],
-        exclude: [
-          /src[\\/]assets[\\/].*\.(mustache)$/i,
-          /src[\\/]custom_declare_types[\\/].*\.(mustache)$/i,
-          /src[\\/]graphQL[\\/].*\.(mustache)$/i,
-          /src[\\/]pwa_manifest[\\/].*\.(mustache)$/i,
-          /src[\\/]static[\\/].*\.(mustache)$/i,
-          /src[\\/]styles[\\/].*\.(mustache)$/i,
-          /src[\\/]template[\\/]ejs[\\/].*\.(mustache)$/i,
-          /src[\\/]template[\\/]handlebars[\\/].*\.(mustache)$/i,
-          /src[\\/]template[\\/]html[\\/].*\.(mustache)$/i,
-          /src[\\/]template[\\/]markdown[\\/].*\.(mustache)$/i,
-          /src[\\/]template[\\/]pug_jade[\\/].*\.(mustache)$/i,
-          /src[\\/]wasm[\\/].*\.(mustache)$/i,
-        ],
-      } ),
+                              hoganKey: `hogan.js`,
+                              include: [
+                                /node_modules[\\/].*\.(mustache)$/i,
+                                /src[\\/].*\.(mustache)$/i,
+                                /webpack_location[\\/].*\.(mustache)$/i,
+                              ],
+                              exclude: [
+                                /src[\\/]assets[\\/].*\.(mustache)$/i,
+                                /src[\\/]custom_declare_types[\\/].*\.(mustache)$/i,
+                                /src[\\/]graphQL[\\/].*\.(mustache)$/i,
+                                /src[\\/]pwa_manifest[\\/].*\.(mustache)$/i,
+                                /src[\\/]static[\\/].*\.(mustache)$/i,
+                                /src[\\/]styles[\\/].*\.(mustache)$/i,
+                                /src[\\/]template[\\/]ejs[\\/].*\.(mustache)$/i,
+                                /src[\\/]template[\\/]handlebars[\\/].*\.(mustache)$/i,
+                                /src[\\/]template[\\/]html[\\/].*\.(mustache)$/i,
+                                /src[\\/]template[\\/]markdown[\\/].*\.(mustache)$/i,
+                                /src[\\/]template[\\/]pug_jade[\\/].*\.(mustache)$/i,
+                                /src[\\/]wasm[\\/].*\.(mustache)$/i,
+                              ],
+                            } ),
       // .pug、.jade
       RollupPluginPUG( {
-        doctype: 'html',
-        pretty: !isProduction,
-        compileDebug: !isProduction,
-        debug: false,
-        sourceMap: false,
-        staticPattern: /\.(static|html)\.(pug|jade)$/i,
-        extensions: [
-          '.pug',
-          '.jade',
-        ],
-        include: [
-          /node_modules[\\/].*\.(pug|jade)$/i,
-          /src[\\/].*\.(pug|jade)$/i,
-          /webpack_location[\\/].*\.(pug|jade)$/i,
-        ],
-        exclude: [
-          /\.(static|html)\.(pug|jade)$/i,
-          /src[\\/]assets[\\/].*\.(pug|jade)$/i,
-          /src[\\/]custom_declare_types[\\/].*\.(pug|jade)$/i,
-          /src[\\/]graphQL[\\/].*\.(pug|jade)$/i,
-          /src[\\/]pwa_manifest[\\/].*\.(pug|jade)$/i,
-          /src[\\/]static[\\/].*\.(pug|jade)$/i,
-          /src[\\/]styles[\\/].*\.(pug|jade)$/i,
-          /src[\\/]template[\\/]ejs[\\/].*\.(pug|jade)$/i,
-          /src[\\/]template[\\/]handlebars[\\/].*\.(pug|jade)$/i,
-          /src[\\/]template[\\/]html[\\/].*\.(pug|jade)$/i,
-          /src[\\/]template[\\/]markdown[\\/].*\.(pug|jade)$/i,
-          /src[\\/]template[\\/]mustache[\\/].*\.(pug|jade)$/i,
-          /src[\\/]wasm[\\/].*\.(pug|jade)$/i,
-        ],
-      } ),
+                         doctype: 'html',
+                         pretty: !isProduction,
+                         compileDebug: !isProduction,
+                         debug: false,
+                         sourceMap: false,
+                         staticPattern: /\.(static|html)\.(pug|jade)$/i,
+                         extensions: [
+                           '.pug',
+                           '.jade',
+                         ],
+                         include: [
+                           /node_modules[\\/].*\.(pug|jade)$/i,
+                           /src[\\/].*\.(pug|jade)$/i,
+                           /webpack_location[\\/].*\.(pug|jade)$/i,
+                         ],
+                         exclude: [
+                           /\.(static|html)\.(pug|jade)$/i,
+                           /src[\\/]assets[\\/].*\.(pug|jade)$/i,
+                           /src[\\/]custom_declare_types[\\/].*\.(pug|jade)$/i,
+                           /src[\\/]graphQL[\\/].*\.(pug|jade)$/i,
+                           /src[\\/]pwa_manifest[\\/].*\.(pug|jade)$/i,
+                           /src[\\/]static[\\/].*\.(pug|jade)$/i,
+                           /src[\\/]styles[\\/].*\.(pug|jade)$/i,
+                           /src[\\/]template[\\/]ejs[\\/].*\.(pug|jade)$/i,
+                           /src[\\/]template[\\/]handlebars[\\/].*\.(pug|jade)$/i,
+                           /src[\\/]template[\\/]html[\\/].*\.(pug|jade)$/i,
+                           /src[\\/]template[\\/]markdown[\\/].*\.(pug|jade)$/i,
+                           /src[\\/]template[\\/]mustache[\\/].*\.(pug|jade)$/i,
+                           /src[\\/]wasm[\\/].*\.(pug|jade)$/i,
+                         ],
+                       } ),
       // .toml
       VitePluginTOML( {
-        namedExports: true,
-        include: [
-          /node_modules[\\/].*\.(toml)$/i,
-          /src[\\/].*\.(toml)$/i,
-          /webpack_location[\\/].*\.(toml)$/i,
-        ],
-        exclude: [
-          /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(toml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(toml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(toml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(toml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(toml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(toml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(toml)$/i,
-          /src[\\/]assets[\\/]fonts[\\/].*\.(toml)$/i,
-          /src[\\/]assets[\\/]img[\\/].*\.(toml)$/i,
-          /src[\\/]assets[\\/]music[\\/].*\.(toml)$/i,
-          /src[\\/]assets[\\/]videos[\\/].*\.(toml)$/i,
-          /src[\\/]custom_declare_types[\\/].*\.(toml)$/i,
-          /src[\\/]graphQL[\\/].*\.(toml)$/i,
-          /src[\\/]pwa_manifest[\\/].*\.(toml)$/i,
-          /src[\\/]static[\\/].*\.(toml)$/i,
-          /src[\\/]styles[\\/].*\.(toml)$/i,
-          /src[\\/]wasm[\\/].*\.(toml)$/i,
-        ],
-      } ),
+                        namedExports: true,
+                        include: [
+                          /node_modules[\\/].*\.(toml)$/i,
+                          /src[\\/].*\.(toml)$/i,
+                          /webpack_location[\\/].*\.(toml)$/i,
+                        ],
+                        exclude: [
+                          /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(toml)$/i,
+                          /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(toml)$/i,
+                          /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(toml)$/i,
+                          /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(toml)$/i,
+                          /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(toml)$/i,
+                          /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(toml)$/i,
+                          /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(toml)$/i,
+                          /src[\\/]assets[\\/]fonts[\\/].*\.(toml)$/i,
+                          /src[\\/]assets[\\/]img[\\/].*\.(toml)$/i,
+                          /src[\\/]assets[\\/]music[\\/].*\.(toml)$/i,
+                          /src[\\/]assets[\\/]videos[\\/].*\.(toml)$/i,
+                          /src[\\/]custom_declare_types[\\/].*\.(toml)$/i,
+                          /src[\\/]graphQL[\\/].*\.(toml)$/i,
+                          /src[\\/]pwa_manifest[\\/].*\.(toml)$/i,
+                          /src[\\/]static[\\/].*\.(toml)$/i,
+                          /src[\\/]styles[\\/].*\.(toml)$/i,
+                          /src[\\/]wasm[\\/].*\.(toml)$/i,
+                        ],
+                      } ),
       // .xml
       VitePluginXML.default( {
-        include: [
-          /node_modules[\\/].*\.(xml)$/i,
-          /src[\\/].*\.(xml)$/i,
-          /webpack_location[\\/].*\.(xml)$/i,
-        ],
-        exclude: [
-          /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(xml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(xml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(xml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(xml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(xml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(xml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(xml)$/i,
-          /src[\\/]assets[\\/]fonts[\\/].*\.(xml)$/i,
-          /src[\\/]assets[\\/]img[\\/].*\.(xml)$/i,
-          /src[\\/]assets[\\/]music[\\/].*\.(xml)$/i,
-          /src[\\/]assets[\\/]videos[\\/].*\.(xml)$/i,
-          /src[\\/]custom_declare_types[\\/].*\.(xml)$/i,
-          /src[\\/]graphQL[\\/].*\.(xml)$/i,
-          /src[\\/]pwa_manifest[\\/].*\.(xml)$/i,
-          /src[\\/]static[\\/].*\.(xml)$/i,
-          /src[\\/]styles[\\/].*\.(xml)$/i,
-          /src[\\/]wasm[\\/].*\.(xml)$/i,
-        ],
-      } ),
+                               include: [
+                                 /node_modules[\\/].*\.(xml)$/i,
+                                 /src[\\/].*\.(xml)$/i,
+                                 /webpack_location[\\/].*\.(xml)$/i,
+                               ],
+                               exclude: [
+                                 /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(xml)$/i,
+                                 /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(xml)$/i,
+                                 /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(xml)$/i,
+                                 /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(xml)$/i,
+                                 /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(xml)$/i,
+                                 /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(xml)$/i,
+                                 /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(xml)$/i,
+                                 /src[\\/]assets[\\/]fonts[\\/].*\.(xml)$/i,
+                                 /src[\\/]assets[\\/]img[\\/].*\.(xml)$/i,
+                                 /src[\\/]assets[\\/]music[\\/].*\.(xml)$/i,
+                                 /src[\\/]assets[\\/]videos[\\/].*\.(xml)$/i,
+                                 /src[\\/]custom_declare_types[\\/].*\.(xml)$/i,
+                                 /src[\\/]graphQL[\\/].*\.(xml)$/i,
+                                 /src[\\/]pwa_manifest[\\/].*\.(xml)$/i,
+                                 /src[\\/]static[\\/].*\.(xml)$/i,
+                                 /src[\\/]styles[\\/].*\.(xml)$/i,
+                                 /src[\\/]wasm[\\/].*\.(xml)$/i,
+                               ],
+                             } ),
       // .yaml、.yml
       RollupPluginYAML( {
-        documentMode: 'single',
-        safe: true,
-        extensions: [
-          '.yaml',
-          '.yml',
-        ],
-        include: [
-          /node_modules[\\/].*\.(yaml|yml)$/i,
-          /src[\\/].*\.(yaml|yml)$/i,
-          /webpack_location[\\/].*\.(yaml|yml)$/i,
-        ],
-        exclude: [
-          /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(yaml|yml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(yaml|yml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(yaml|yml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(yaml|yml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(yaml|yml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(yaml|yml)$/i,
-          /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(yaml|yml)$/i,
-          /src[\\/]assets[\\/]fonts[\\/].*\.(yaml|yml)$/i,
-          /src[\\/]assets[\\/]img[\\/].*\.(yaml|yml)$/i,
-          /src[\\/]assets[\\/]music[\\/].*\.(yaml|yml)$/i,
-          /src[\\/]assets[\\/]videos[\\/].*\.(yaml|yml)$/i,
-          /src[\\/]custom_declare_types[\\/].*\.(yaml|yml)$/i,
-          /src[\\/]graphQL[\\/].*\.(yaml|yml)$/i,
-          /src[\\/]pwa_manifest[\\/].*\.(yaml|yml)$/i,
-          /src[\\/]static[\\/].*\.(yaml|yml)$/i,
-          /src[\\/]styles[\\/].*\.(yaml|yml)$/i,
-          /src[\\/]wasm[\\/].*\.(yaml|yml)$/i,
-        ],
-      } ),
+                          documentMode: 'single',
+                          safe: true,
+                          extensions: [
+                            '.yaml',
+                            '.yml',
+                          ],
+                          include: [
+                            /node_modules[\\/].*\.(yaml|yml)$/i,
+                            /src[\\/].*\.(yaml|yml)$/i,
+                            /webpack_location[\\/].*\.(yaml|yml)$/i,
+                          ],
+                          exclude: [
+                            /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(yaml|yml)$/i,
+                            /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(yaml|yml)$/i,
+                            /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(yaml|yml)$/i,
+                            /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(yaml|yml)$/i,
+                            /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(yaml|yml)$/i,
+                            /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(yaml|yml)$/i,
+                            /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(yaml|yml)$/i,
+                            /src[\\/]assets[\\/]fonts[\\/].*\.(yaml|yml)$/i,
+                            /src[\\/]assets[\\/]img[\\/].*\.(yaml|yml)$/i,
+                            /src[\\/]assets[\\/]music[\\/].*\.(yaml|yml)$/i,
+                            /src[\\/]assets[\\/]videos[\\/].*\.(yaml|yml)$/i,
+                            /src[\\/]custom_declare_types[\\/].*\.(yaml|yml)$/i,
+                            /src[\\/]graphQL[\\/].*\.(yaml|yml)$/i,
+                            /src[\\/]pwa_manifest[\\/].*\.(yaml|yml)$/i,
+                            /src[\\/]static[\\/].*\.(yaml|yml)$/i,
+                            /src[\\/]styles[\\/].*\.(yaml|yml)$/i,
+                            /src[\\/]wasm[\\/].*\.(yaml|yml)$/i,
+                          ],
+                        } ),
 
       /**
        * 拷贝插件。<br />
@@ -3296,22 +3297,22 @@ export default defineConfig( async ( {
           reloadPageOnChange: !isProduction,
         },
       } ) )( [
-        // 该设置会将项目根目录下的文件“favicon.ico”复制到Vite的顶级选项build.outDir设置的文件夹下。
-        {
-          // 该选项值是相对于项目根目录的。
-          src: `./favicon.ico`,
-          // 该值是相对于Vite的顶级选项build.outDir设置的值。
-          dest: `./`,
-        },
+               // 该设置会将项目根目录下的文件“favicon.ico”复制到Vite的顶级选项build.outDir设置的文件夹下。
+               {
+                 // 该选项值是相对于项目根目录的。
+                 src: `./favicon.ico`,
+                 // 该值是相对于Vite的顶级选项build.outDir设置的值。
+                 dest: `./`,
+               },
 
-        // 该设置会将文件夹“src/static”整个原样复制到Vite的顶级选项build.outDir设置的文件夹下。
-        {
-          // 该选项值是相对于项目根目录的。
-          src: `./src/static`,
-          // 该值是相对于Vite的顶级选项build.outDir设置的值。
-          dest: `./`,
-        },
-      ] ) ),
+               // 该设置会将文件夹“src/static”整个原样复制到Vite的顶级选项build.outDir设置的文件夹下。
+               {
+                 // 该选项值是相对于项目根目录的。
+                 src: `./src/static`,
+                 // 该值是相对于Vite的顶级选项build.outDir设置的值。
+                 dest: `./`,
+               },
+             ] ) ),
 
       /**
        * 这个插件通过获取ViteJS的输出资产，在生产模式下的构建时添加预加载（“preload”）链接。<br />
@@ -3337,35 +3338,35 @@ export default defineConfig( async ( {
           injectTo: 'head-prepend',
         };
       } )( [
-        {
-          match: /.*\.(preload)\.(.*)$/i,
-          attributes: {
-            // rel: 'preload',
-            // href: 'http://localhost:8090/web-for-vite-project-template/dist/test/HelloWorld.html',
-            // as: 'font',
-            // type: 'font/otf',
-            crossorigin: 'anonymous',
+             {
+               match: /.*\.(preload)\.(.*)$/i,
+               attributes: {
+                 // rel: 'preload',
+                 // href: 'http://localhost:8090/web-for-vite-project-template/dist/test/HelloWorld.html',
+                 // as: 'font',
+                 // type: 'font/otf',
+                 crossorigin: 'anonymous',
 
-            // 'data-font-format': 'opentype',
+                 // 'data-font-format': 'opentype',
 
-            // 还可以有其他自定义的属性（如：data-font-format）或者其他标准属性。
-          },
-        },
-        {
-          match: /.*\.(preload)(-|_)(.*)\.(.*)$/i,
-          attributes: {
-            // rel: 'preload',
-            // href: 'http://localhost:8090/web-for-vite-project-template/dist/test/HelloWorld.html',
-            // as: 'font',
-            // type: 'font/otf',
-            crossorigin: 'anonymous',
+                 // 还可以有其他自定义的属性（如：data-font-format）或者其他标准属性。
+               },
+             },
+             {
+               match: /.*\.(preload)(-|_)(.*)\.(.*)$/i,
+               attributes: {
+                 // rel: 'preload',
+                 // href: 'http://localhost:8090/web-for-vite-project-template/dist/test/HelloWorld.html',
+                 // as: 'font',
+                 // type: 'font/otf',
+                 crossorigin: 'anonymous',
 
-            // 'data-font-format': 'opentype',
+                 // 'data-font-format': 'opentype',
 
-            // 还可以有其他自定义的属性（如：data-font-format）或者其他标准属性。
-          },
-        },
-      ] ) ),
+                 // 还可以有其他自定义的属性（如：data-font-format）或者其他标准属性。
+               },
+             },
+           ] ) ),
     ],
     /**
      * @type {string|boolean} 默认值：“public”。作为“静态资源服务”的文件夹。<br />
@@ -3506,348 +3507,351 @@ export default defineConfig( async ( {
        */
       // format: 'iife',
       /**
-       * @type {(Plugin | Plugin[])[]} 适用于worker bundle的Vite插件。请注意，Vite的顶级配置plugins选项只适用于dev中的worker，对于build，应该在这里进行配置。<br />
-       * 1、一般来说，如果插件支持Web Worker中使用时，会在它的说明文档中提到！没有特别说明的，也可以试试！<br />
-       * 2、不要跟全局的插件配置共享同一个插件的实例、配置等等！要单独在这里添加插件。<br />
+       * @type {() => (Plugin | Plugin[])[]} 适用于worker bundle的Vite插件。请注意，Vite的顶级配置plugins选项只适用于dev中的worker，对于build，应该在这里进行配置。<br />
+       * 1、该函数应返回新插件实例，因为它们用于并行卷积Worker构建。因此，在配置钩子中修改config.worker选项将被忽略。<br />
+       * 2、一般来说，如果插件支持Web Worker中使用时，会在它的说明文档中提到！没有特别说明的，也可以试试！<br />
+       * 3、不要跟全局的插件配置共享同一个插件的实例、配置等等！要单独在这里添加插件。<br />
        */
-      plugins: [
-        /**
-         * 将WebAssembly ESM集成（又名Webpack的asyncWebAssembly）添加到Vite中，并支持wasm-pack生成的模块。<br />
-         * 详细见：<br />
-         * https://github.com/Menci/vite-plugin-wasm
-         * 1、在针对Firefox时，请将worker.format的值设置为iife。<br />
-         */
-        VitePluginWASM(),
-        /**
-         * 转化代码以支持Vite的普通浏览器的顶层等待。支持Vite默认目标的所有现代浏览器，无需将build.target设置为esnext。<br />
-         * 详细见：<br />
-         * https://github.com/Menci/vite-plugin-top-level-await
-         * 1、如果worker.format的值是es，该插件也可以正常工作的。<br />
-         * 2、如果worker.format的值是iife，该插件首先让Vite将您的工作者构建为ES捆绑包，因为IIFE不支持顶层等待，然后将转换后的ES捆绑包构建为IIFE。<br />
-         * 3、在针对Firefox时，请将worker.format的值设置为iife。<br />
-         */
-        VitePluginTopLevelAwait(),
+      plugins: () => {
+        return [
+          /**
+           * 将WebAssembly ESM集成（又名Webpack的asyncWebAssembly）添加到Vite中，并支持wasm-pack生成的模块。<br />
+           * 详细见：<br />
+           * https://github.com/Menci/vite-plugin-wasm
+           * 1、在针对Firefox时，请将worker.format的值设置为iife。<br />
+           */
+          VitePluginWASM(),
+          /**
+           * 转化代码以支持Vite的普通浏览器的顶层等待。支持Vite默认目标的所有现代浏览器，无需将build.target设置为esnext。<br />
+           * 详细见：<br />
+           * https://github.com/Menci/vite-plugin-top-level-await
+           * 1、如果worker.format的值是es，该插件也可以正常工作的。<br />
+           * 2、如果worker.format的值是iife，该插件首先让Vite将您的工作者构建为ES捆绑包，因为IIFE不支持顶层等待，然后将转换后的ES捆绑包构建为IIFE。<br />
+           * 3、在针对Firefox时，请将worker.format的值设置为iife。<br />
+           */
+          VitePluginTopLevelAwait(),
 
-        // .cson
-        RollupPluginCSON( {
-          compact: isProduction,
-          // indent: '\t',
-          namedExports: true,
-          objectShorthand: true,
-          preferConst: true,
-          include: [
-            /node_modules[\\/].*\.(cson)$/i,
-            /src[\\/].*\.(cson)$/i,
-            /webpack_location[\\/].*\.(cson)$/i,
-          ],
-          exclude: [
-            /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(cson)$/i,
-            /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(cson)$/i,
-            /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(cson)$/i,
-            /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(cson)$/i,
-            /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(cson)$/i,
-            /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(cson)$/i,
-            /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(cson)$/i,
-            /src[\\/]assets[\\/]fonts[\\/].*\.(cson)$/i,
-            /src[\\/]assets[\\/]img[\\/].*\.(cson)$/i,
-            /src[\\/]assets[\\/]music[\\/].*\.(cson)$/i,
-            /src[\\/]assets[\\/]videos[\\/].*\.(cson)$/i,
-            /src[\\/]custom_declare_types[\\/].*\.(cson)$/i,
-            /src[\\/]graphQL[\\/].*\.(cson)$/i,
-            /src[\\/]pwa_manifest[\\/].*\.(cson)$/i,
-            /src[\\/]static[\\/].*\.(cson)$/i,
-            /src[\\/]styles[\\/].*\.(cson)$/i,
-            /src[\\/]wasm[\\/].*\.(cson)$/i,
-          ],
-        } ),
-        // .csv、.tsv
-        RollupPluginDSV( {
-          include: [
-            /node_modules[\\/].*\.(csv|tsv)$/i,
-            /src[\\/].*\.(csv|tsv)$/i,
-            /webpack_location[\\/].*\.(csv|tsv)$/i,
-          ],
-          exclude: [
-            /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(csv|tsv)$/i,
-            /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(csv|tsv)$/i,
-            /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(csv|tsv)$/i,
-            /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(csv|tsv)$/i,
-            /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(csv|tsv)$/i,
-            /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(csv|tsv)$/i,
-            /src[\\/]assets[\\/]fonts[\\/].*\.(csv|tsv)$/i,
-            /src[\\/]assets[\\/]img[\\/].*\.(csv|tsv)$/i,
-            /src[\\/]assets[\\/]music[\\/].*\.(csv|tsv)$/i,
-            /src[\\/]assets[\\/]videos[\\/].*\.(csv|tsv)$/i,
-            /src[\\/]custom_declare_types[\\/].*\.(csv|tsv)$/i,
-            /src[\\/]graphQL[\\/].*\.(csv|tsv)$/i,
-            /src[\\/]pwa_manifest[\\/].*\.(csv|tsv)$/i,
-            /src[\\/]static[\\/].*\.(csv|tsv)$/i,
-            /src[\\/]styles[\\/].*\.(csv|tsv)$/i,
-            /src[\\/]wasm[\\/].*\.(csv|tsv)$/i,
-          ],
-        } ),
-        // .graphql、.graphqls、.gql
-        RollupPluginGraphQL( {
-          include: [
-            /node_modules[\\/].*\.(graphql|graphqls|gql)$/i,
-            /src[\\/].*\.(graphql|graphqls|gql)$/i,
-            /webpack_location[\\/].*\.(graphql|graphqls|gql)$/i,
-          ],
-          exclude: [
-            /src[\\/]assets[\\/].*\.(graphql|graphqls|gql)$/i,
-            /src[\\/]custom_declare_types[\\/].*\.(graphql|graphqls|gql)$/i,
-            /src[\\/]graphQL[\\/]doc[\\/].*\.(graphql|graphqls|gql)$/i,
-            /src[\\/]graphQL[\\/]test[\\/].*\.(graphql|graphqls|gql)$/i,
-            /src[\\/]pwa_manifest[\\/].*\.(graphql|graphqls|gql)$/i,
-            /src[\\/]static[\\/].*\.(graphql|graphqls|gql)$/i,
-            /src[\\/]styles[\\/].*\.(graphql|graphqls|gql)$/i,
-            /src[\\/]wasm[\\/].*\.(graphql|graphqls|gql)$/i,
-          ],
-        } ),
-        // .handlebars、.hbs
-        RollupPluginHandlebars( {
-          sourceMap: false,
-          noEscape: false,
-          strict: true,
-          preventIndent: true,
-          // 设置成true会报错！
-          compat: false,
-          assumeObjects: true,
-          // knownHelpers: true,
-          // knownHelpersOnly: false,
-          // ignoreStandalone: true,
-          // explicitPartialContext: false,
-          include: [
-            /node_modules[\\/].*\.(handlebars|hbs)$/i,
-            /src[\\/].*\.(handlebars|hbs)$/i,
-            /webpack_location[\\/].*\.(handlebars|hbs)$/i,
-          ],
-          exclude: [
-            /src[\\/]assets[\\/].*\.(handlebars|hbs)$/i,
-            /src[\\/]custom_declare_types[\\/].*\.(handlebars|hbs)$/i,
-            /src[\\/]graphQL[\\/].*\.(handlebars|hbs)$/i,
-            /src[\\/]pwa_manifest[\\/].*\.(handlebars|hbs)$/i,
-            /src[\\/]static[\\/].*\.(handlebars|hbs)$/i,
-            /src[\\/]styles[\\/].*\.(handlebars|hbs)$/i,
-            /src[\\/]template[\\/]ejs[\\/].*\.(handlebars|hbs)$/i,
-            /src[\\/]template[\\/]html[\\/].*\.(handlebars|hbs)$/i,
-            /src[\\/]template[\\/]markdown[\\/].*\.(handlebars|hbs)$/i,
-            /src[\\/]template[\\/]mustache[\\/].*\.(handlebars|hbs)$/i,
-            /src[\\/]template[\\/]pug_jade[\\/].*\.(handlebars|hbs)$/i,
-            /src[\\/]wasm[\\/].*\.(handlebars|hbs)$/i,
-          ],
-        } ),
-        // .json5、.jsonc
-        VitePluginJSON5( {
-          include: [
-            /node_modules[\\/].*\.(json5)$/i,
-            /src[\\/].*\.(json5)$/i,
-            /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(json5)$/i,
-            /webpack_location[\\/].*\.(json5)$/i,
-          ],
-          exclude: [
-            /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(json5)$/i,
-            /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(json5)$/i,
-            /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(json5)$/i,
-            /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(json5)$/i,
-            /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(json5)$/i,
-            /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(json5)$/i,
-            /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(json5)$/i,
-            /src[\\/]assets[\\/]fonts[\\/].*\.(json5)$/i,
-            /src[\\/]assets[\\/]img[\\/].*\.(json5)$/i,
-            /src[\\/]assets[\\/]music[\\/].*\.(json5)$/i,
-            /src[\\/]assets[\\/]videos[\\/].*\.(json5)$/i,
-            /src[\\/]custom_declare_types[\\/].*\.(json5)$/i,
-            /src[\\/]graphQL[\\/].*\.(json5)$/i,
-            /src[\\/]pwa_manifest[\\/].*\.(json5)$/i,
-            /src[\\/]static[\\/].*\.(json5)$/i,
-            /src[\\/]styles[\\/].*\.(json5)$/i,
-            /src[\\/]wasm[\\/].*\.(json5)$/i,
-          ],
-        } ),
-        // .md
-        VitePluginMarkdown( {
-          mode: [
-            'html',
-            'markdown',
-            'toc',
-            'react',
-            'vue',
-          ],
-          markdownIt: {
-            html: false,
-            xhtmlOut: true,
-            breaks: false,
-            langPrefix: 'language-',
-            linkify: true,
-            typographer: true,
-            quotes: '“”‘’',
-          },
-          include: [
-            /node_modules[\\/].*\.(md)$/i,
-            /src[\\/].*\.(md)$/i,
-            /webpack_location[\\/].*\.(md)$/i,
-          ],
-          exclude: [
-            /src[\\/]assets[\\/].*\.(md)$/i,
-            /src[\\/]custom_declare_types[\\/].*\.(md)$/i,
-            /src[\\/]graphQL[\\/].*\.(md)$/i,
-            /src[\\/]pwa_manifest[\\/].*\.(md)$/i,
-            /src[\\/]static[\\/].*\.(md)$/i,
-            /src[\\/]styles[\\/].*\.(md)$/i,
-            /src[\\/]template[\\/]ejs[\\/].*\.(md)$/i,
-            /src[\\/]template[\\/]handlebars[\\/].*\.(md)$/i,
-            /src[\\/]template[\\/]html[\\/].*\.(md)$/i,
-            /src[\\/]template[\\/]mustache[\\/].*\.(md)$/i,
-            /src[\\/]template[\\/]pug_jade[\\/].*\.(md)$/i,
-            /src[\\/]wasm[\\/].*\.(md)$/i,
-          ],
-        } ),
-        // .mustache
-        RollupPluginMustache( {
-          hoganKey: `hogan.js`,
-          include: [
-            /node_modules[\\/].*\.(mustache)$/i,
-            /src[\\/].*\.(mustache)$/i,
-            /webpack_location[\\/].*\.(mustache)$/i,
-          ],
-          exclude: [
-            /src[\\/]assets[\\/].*\.(mustache)$/i,
-            /src[\\/]custom_declare_types[\\/].*\.(mustache)$/i,
-            /src[\\/]graphQL[\\/].*\.(mustache)$/i,
-            /src[\\/]pwa_manifest[\\/].*\.(mustache)$/i,
-            /src[\\/]static[\\/].*\.(mustache)$/i,
-            /src[\\/]styles[\\/].*\.(mustache)$/i,
-            /src[\\/]template[\\/]ejs[\\/].*\.(mustache)$/i,
-            /src[\\/]template[\\/]handlebars[\\/].*\.(mustache)$/i,
-            /src[\\/]template[\\/]html[\\/].*\.(mustache)$/i,
-            /src[\\/]template[\\/]markdown[\\/].*\.(mustache)$/i,
-            /src[\\/]template[\\/]pug_jade[\\/].*\.(mustache)$/i,
-            /src[\\/]wasm[\\/].*\.(mustache)$/i,
-          ],
-        } ),
-        // .pug、.jade
-        RollupPluginPUG( {
-          doctype: 'html',
-          pretty: !isProduction,
-          compileDebug: !isProduction,
-          debug: false,
-          sourceMap: false,
-          staticPattern: /\.(static|html)\.(pug|jade)$/i,
-          extensions: [
-            '.pug',
-            '.jade',
-          ],
-          include: [
-            /node_modules[\\/].*\.(pug|jade)$/i,
-            /src[\\/].*\.(pug|jade)$/i,
-            /webpack_location[\\/].*\.(pug|jade)$/i,
-          ],
-          exclude: [
-            /\.(static|html)\.(pug|jade)$/i,
-            /src[\\/]assets[\\/].*\.(pug|jade)$/i,
-            /src[\\/]custom_declare_types[\\/].*\.(pug|jade)$/i,
-            /src[\\/]graphQL[\\/].*\.(pug|jade)$/i,
-            /src[\\/]pwa_manifest[\\/].*\.(pug|jade)$/i,
-            /src[\\/]static[\\/].*\.(pug|jade)$/i,
-            /src[\\/]styles[\\/].*\.(pug|jade)$/i,
-            /src[\\/]template[\\/]ejs[\\/].*\.(pug|jade)$/i,
-            /src[\\/]template[\\/]handlebars[\\/].*\.(pug|jade)$/i,
-            /src[\\/]template[\\/]html[\\/].*\.(pug|jade)$/i,
-            /src[\\/]template[\\/]markdown[\\/].*\.(pug|jade)$/i,
-            /src[\\/]template[\\/]mustache[\\/].*\.(pug|jade)$/i,
-            /src[\\/]wasm[\\/].*\.(pug|jade)$/i,
-          ],
-        } ),
-        // .toml
-        VitePluginTOML( {
-          namedExports: true,
-          include: [
-            /node_modules[\\/].*\.(toml)$/i,
-            /src[\\/].*\.(toml)$/i,
-            /webpack_location[\\/].*\.(toml)$/i,
-          ],
-          exclude: [
-            /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(toml)$/i,
-            /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(toml)$/i,
-            /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(toml)$/i,
-            /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(toml)$/i,
-            /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(toml)$/i,
-            /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(toml)$/i,
-            /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(toml)$/i,
-            /src[\\/]assets[\\/]fonts[\\/].*\.(toml)$/i,
-            /src[\\/]assets[\\/]img[\\/].*\.(toml)$/i,
-            /src[\\/]assets[\\/]music[\\/].*\.(toml)$/i,
-            /src[\\/]assets[\\/]videos[\\/].*\.(toml)$/i,
-            /src[\\/]custom_declare_types[\\/].*\.(toml)$/i,
-            /src[\\/]graphQL[\\/].*\.(toml)$/i,
-            /src[\\/]pwa_manifest[\\/].*\.(toml)$/i,
-            /src[\\/]static[\\/].*\.(toml)$/i,
-            /src[\\/]styles[\\/].*\.(toml)$/i,
-            /src[\\/]wasm[\\/].*\.(toml)$/i,
-          ],
-        } ),
-        // .xml
-        VitePluginXML.default( {
-          include: [
-            /node_modules[\\/].*\.(xml)$/i,
-            /src[\\/].*\.(xml)$/i,
-            /webpack_location[\\/].*\.(xml)$/i,
-          ],
-          exclude: [
-            /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(xml)$/i,
-            /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(xml)$/i,
-            /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(xml)$/i,
-            /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(xml)$/i,
-            /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(xml)$/i,
-            /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(xml)$/i,
-            /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(xml)$/i,
-            /src[\\/]assets[\\/]fonts[\\/].*\.(xml)$/i,
-            /src[\\/]assets[\\/]img[\\/].*\.(xml)$/i,
-            /src[\\/]assets[\\/]music[\\/].*\.(xml)$/i,
-            /src[\\/]assets[\\/]videos[\\/].*\.(xml)$/i,
-            /src[\\/]custom_declare_types[\\/].*\.(xml)$/i,
-            /src[\\/]graphQL[\\/].*\.(xml)$/i,
-            /src[\\/]pwa_manifest[\\/].*\.(xml)$/i,
-            /src[\\/]static[\\/].*\.(xml)$/i,
-            /src[\\/]styles[\\/].*\.(xml)$/i,
-            /src[\\/]wasm[\\/].*\.(xml)$/i,
-          ],
-        } ),
-        // .yaml、.yml
-        RollupPluginYAML( {
-          documentMode: 'single',
-          safe: true,
-          extensions: [
-            '.yaml',
-            '.yml',
-          ],
-          include: [
-            /node_modules[\\/].*\.(yaml|yml)$/i,
-            /src[\\/].*\.(yaml|yml)$/i,
-            /webpack_location[\\/].*\.(yaml|yml)$/i,
-          ],
-          exclude: [
-            /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(yaml|yml)$/i,
-            /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(yaml|yml)$/i,
-            /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(yaml|yml)$/i,
-            /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(yaml|yml)$/i,
-            /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(yaml|yml)$/i,
-            /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(yaml|yml)$/i,
-            /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(yaml|yml)$/i,
-            /src[\\/]assets[\\/]fonts[\\/].*\.(yaml|yml)$/i,
-            /src[\\/]assets[\\/]img[\\/].*\.(yaml|yml)$/i,
-            /src[\\/]assets[\\/]music[\\/].*\.(yaml|yml)$/i,
-            /src[\\/]assets[\\/]videos[\\/].*\.(yaml|yml)$/i,
-            /src[\\/]custom_declare_types[\\/].*\.(yaml|yml)$/i,
-            /src[\\/]graphQL[\\/].*\.(yaml|yml)$/i,
-            /src[\\/]pwa_manifest[\\/].*\.(yaml|yml)$/i,
-            /src[\\/]static[\\/].*\.(yaml|yml)$/i,
-            /src[\\/]styles[\\/].*\.(yaml|yml)$/i,
-            /src[\\/]wasm[\\/].*\.(yaml|yml)$/i,
-          ],
-        } ),
-      ],
+          // .cson
+          RollupPluginCSON( {
+                              compact: isProduction,
+                              // indent: '\t',
+                              namedExports: true,
+                              objectShorthand: true,
+                              preferConst: true,
+                              include: [
+                                /node_modules[\\/].*\.(cson)$/i,
+                                /src[\\/].*\.(cson)$/i,
+                                /webpack_location[\\/].*\.(cson)$/i,
+                              ],
+                              exclude: [
+                                /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(cson)$/i,
+                                /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(cson)$/i,
+                                /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(cson)$/i,
+                                /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(cson)$/i,
+                                /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(cson)$/i,
+                                /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(cson)$/i,
+                                /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(cson)$/i,
+                                /src[\\/]assets[\\/]fonts[\\/].*\.(cson)$/i,
+                                /src[\\/]assets[\\/]img[\\/].*\.(cson)$/i,
+                                /src[\\/]assets[\\/]music[\\/].*\.(cson)$/i,
+                                /src[\\/]assets[\\/]videos[\\/].*\.(cson)$/i,
+                                /src[\\/]custom_declare_types[\\/].*\.(cson)$/i,
+                                /src[\\/]graphQL[\\/].*\.(cson)$/i,
+                                /src[\\/]pwa_manifest[\\/].*\.(cson)$/i,
+                                /src[\\/]static[\\/].*\.(cson)$/i,
+                                /src[\\/]styles[\\/].*\.(cson)$/i,
+                                /src[\\/]wasm[\\/].*\.(cson)$/i,
+                              ],
+                            } ),
+          // .csv、.tsv
+          RollupPluginDSV( {
+                             include: [
+                               /node_modules[\\/].*\.(csv|tsv)$/i,
+                               /src[\\/].*\.(csv|tsv)$/i,
+                               /webpack_location[\\/].*\.(csv|tsv)$/i,
+                             ],
+                             exclude: [
+                               /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(csv|tsv)$/i,
+                               /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(csv|tsv)$/i,
+                               /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(csv|tsv)$/i,
+                               /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(csv|tsv)$/i,
+                               /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(csv|tsv)$/i,
+                               /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(csv|tsv)$/i,
+                               /src[\\/]assets[\\/]fonts[\\/].*\.(csv|tsv)$/i,
+                               /src[\\/]assets[\\/]img[\\/].*\.(csv|tsv)$/i,
+                               /src[\\/]assets[\\/]music[\\/].*\.(csv|tsv)$/i,
+                               /src[\\/]assets[\\/]videos[\\/].*\.(csv|tsv)$/i,
+                               /src[\\/]custom_declare_types[\\/].*\.(csv|tsv)$/i,
+                               /src[\\/]graphQL[\\/].*\.(csv|tsv)$/i,
+                               /src[\\/]pwa_manifest[\\/].*\.(csv|tsv)$/i,
+                               /src[\\/]static[\\/].*\.(csv|tsv)$/i,
+                               /src[\\/]styles[\\/].*\.(csv|tsv)$/i,
+                               /src[\\/]wasm[\\/].*\.(csv|tsv)$/i,
+                             ],
+                           } ),
+          // .graphql、.graphqls、.gql
+          RollupPluginGraphQL( {
+                                 include: [
+                                   /node_modules[\\/].*\.(graphql|graphqls|gql)$/i,
+                                   /src[\\/].*\.(graphql|graphqls|gql)$/i,
+                                   /webpack_location[\\/].*\.(graphql|graphqls|gql)$/i,
+                                 ],
+                                 exclude: [
+                                   /src[\\/]assets[\\/].*\.(graphql|graphqls|gql)$/i,
+                                   /src[\\/]custom_declare_types[\\/].*\.(graphql|graphqls|gql)$/i,
+                                   /src[\\/]graphQL[\\/]doc[\\/].*\.(graphql|graphqls|gql)$/i,
+                                   /src[\\/]graphQL[\\/]test[\\/].*\.(graphql|graphqls|gql)$/i,
+                                   /src[\\/]pwa_manifest[\\/].*\.(graphql|graphqls|gql)$/i,
+                                   /src[\\/]static[\\/].*\.(graphql|graphqls|gql)$/i,
+                                   /src[\\/]styles[\\/].*\.(graphql|graphqls|gql)$/i,
+                                   /src[\\/]wasm[\\/].*\.(graphql|graphqls|gql)$/i,
+                                 ],
+                               } ),
+          // .handlebars、.hbs
+          RollupPluginHandlebars( {
+                                    sourceMap: false,
+                                    noEscape: false,
+                                    strict: true,
+                                    preventIndent: true,
+                                    // 设置成true会报错！
+                                    compat: false,
+                                    assumeObjects: true,
+                                    // knownHelpers: true,
+                                    // knownHelpersOnly: false,
+                                    // ignoreStandalone: true,
+                                    // explicitPartialContext: false,
+                                    include: [
+                                      /node_modules[\\/].*\.(handlebars|hbs)$/i,
+                                      /src[\\/].*\.(handlebars|hbs)$/i,
+                                      /webpack_location[\\/].*\.(handlebars|hbs)$/i,
+                                    ],
+                                    exclude: [
+                                      /src[\\/]assets[\\/].*\.(handlebars|hbs)$/i,
+                                      /src[\\/]custom_declare_types[\\/].*\.(handlebars|hbs)$/i,
+                                      /src[\\/]graphQL[\\/].*\.(handlebars|hbs)$/i,
+                                      /src[\\/]pwa_manifest[\\/].*\.(handlebars|hbs)$/i,
+                                      /src[\\/]static[\\/].*\.(handlebars|hbs)$/i,
+                                      /src[\\/]styles[\\/].*\.(handlebars|hbs)$/i,
+                                      /src[\\/]template[\\/]ejs[\\/].*\.(handlebars|hbs)$/i,
+                                      /src[\\/]template[\\/]html[\\/].*\.(handlebars|hbs)$/i,
+                                      /src[\\/]template[\\/]markdown[\\/].*\.(handlebars|hbs)$/i,
+                                      /src[\\/]template[\\/]mustache[\\/].*\.(handlebars|hbs)$/i,
+                                      /src[\\/]template[\\/]pug_jade[\\/].*\.(handlebars|hbs)$/i,
+                                      /src[\\/]wasm[\\/].*\.(handlebars|hbs)$/i,
+                                    ],
+                                  } ),
+          // .json5、.jsonc
+          VitePluginJSON5( {
+                             include: [
+                               /node_modules[\\/].*\.(json5)$/i,
+                               /src[\\/].*\.(json5)$/i,
+                               /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(json5)$/i,
+                               /webpack_location[\\/].*\.(json5)$/i,
+                             ],
+                             exclude: [
+                               /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(json5)$/i,
+                               /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(json5)$/i,
+                               /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(json5)$/i,
+                               /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(json5)$/i,
+                               /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(json5)$/i,
+                               /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(json5)$/i,
+                               /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(json5)$/i,
+                               /src[\\/]assets[\\/]fonts[\\/].*\.(json5)$/i,
+                               /src[\\/]assets[\\/]img[\\/].*\.(json5)$/i,
+                               /src[\\/]assets[\\/]music[\\/].*\.(json5)$/i,
+                               /src[\\/]assets[\\/]videos[\\/].*\.(json5)$/i,
+                               /src[\\/]custom_declare_types[\\/].*\.(json5)$/i,
+                               /src[\\/]graphQL[\\/].*\.(json5)$/i,
+                               /src[\\/]pwa_manifest[\\/].*\.(json5)$/i,
+                               /src[\\/]static[\\/].*\.(json5)$/i,
+                               /src[\\/]styles[\\/].*\.(json5)$/i,
+                               /src[\\/]wasm[\\/].*\.(json5)$/i,
+                             ],
+                           } ),
+          // .md
+          VitePluginMarkdown( {
+                                mode: [
+                                  'html',
+                                  'markdown',
+                                  'toc',
+                                  'react',
+                                  'vue',
+                                ],
+                                markdownIt: {
+                                  html: false,
+                                  xhtmlOut: true,
+                                  breaks: false,
+                                  langPrefix: 'language-',
+                                  linkify: true,
+                                  typographer: true,
+                                  quotes: '“”‘’',
+                                },
+                                include: [
+                                  /node_modules[\\/].*\.(md)$/i,
+                                  /src[\\/].*\.(md)$/i,
+                                  /webpack_location[\\/].*\.(md)$/i,
+                                ],
+                                exclude: [
+                                  /src[\\/]assets[\\/].*\.(md)$/i,
+                                  /src[\\/]custom_declare_types[\\/].*\.(md)$/i,
+                                  /src[\\/]graphQL[\\/].*\.(md)$/i,
+                                  /src[\\/]pwa_manifest[\\/].*\.(md)$/i,
+                                  /src[\\/]static[\\/].*\.(md)$/i,
+                                  /src[\\/]styles[\\/].*\.(md)$/i,
+                                  /src[\\/]template[\\/]ejs[\\/].*\.(md)$/i,
+                                  /src[\\/]template[\\/]handlebars[\\/].*\.(md)$/i,
+                                  /src[\\/]template[\\/]html[\\/].*\.(md)$/i,
+                                  /src[\\/]template[\\/]mustache[\\/].*\.(md)$/i,
+                                  /src[\\/]template[\\/]pug_jade[\\/].*\.(md)$/i,
+                                  /src[\\/]wasm[\\/].*\.(md)$/i,
+                                ],
+                              } ),
+          // .mustache
+          RollupPluginMustache( {
+                                  hoganKey: `hogan.js`,
+                                  include: [
+                                    /node_modules[\\/].*\.(mustache)$/i,
+                                    /src[\\/].*\.(mustache)$/i,
+                                    /webpack_location[\\/].*\.(mustache)$/i,
+                                  ],
+                                  exclude: [
+                                    /src[\\/]assets[\\/].*\.(mustache)$/i,
+                                    /src[\\/]custom_declare_types[\\/].*\.(mustache)$/i,
+                                    /src[\\/]graphQL[\\/].*\.(mustache)$/i,
+                                    /src[\\/]pwa_manifest[\\/].*\.(mustache)$/i,
+                                    /src[\\/]static[\\/].*\.(mustache)$/i,
+                                    /src[\\/]styles[\\/].*\.(mustache)$/i,
+                                    /src[\\/]template[\\/]ejs[\\/].*\.(mustache)$/i,
+                                    /src[\\/]template[\\/]handlebars[\\/].*\.(mustache)$/i,
+                                    /src[\\/]template[\\/]html[\\/].*\.(mustache)$/i,
+                                    /src[\\/]template[\\/]markdown[\\/].*\.(mustache)$/i,
+                                    /src[\\/]template[\\/]pug_jade[\\/].*\.(mustache)$/i,
+                                    /src[\\/]wasm[\\/].*\.(mustache)$/i,
+                                  ],
+                                } ),
+          // .pug、.jade
+          RollupPluginPUG( {
+                             doctype: 'html',
+                             pretty: !isProduction,
+                             compileDebug: !isProduction,
+                             debug: false,
+                             sourceMap: false,
+                             staticPattern: /\.(static|html)\.(pug|jade)$/i,
+                             extensions: [
+                               '.pug',
+                               '.jade',
+                             ],
+                             include: [
+                               /node_modules[\\/].*\.(pug|jade)$/i,
+                               /src[\\/].*\.(pug|jade)$/i,
+                               /webpack_location[\\/].*\.(pug|jade)$/i,
+                             ],
+                             exclude: [
+                               /\.(static|html)\.(pug|jade)$/i,
+                               /src[\\/]assets[\\/].*\.(pug|jade)$/i,
+                               /src[\\/]custom_declare_types[\\/].*\.(pug|jade)$/i,
+                               /src[\\/]graphQL[\\/].*\.(pug|jade)$/i,
+                               /src[\\/]pwa_manifest[\\/].*\.(pug|jade)$/i,
+                               /src[\\/]static[\\/].*\.(pug|jade)$/i,
+                               /src[\\/]styles[\\/].*\.(pug|jade)$/i,
+                               /src[\\/]template[\\/]ejs[\\/].*\.(pug|jade)$/i,
+                               /src[\\/]template[\\/]handlebars[\\/].*\.(pug|jade)$/i,
+                               /src[\\/]template[\\/]html[\\/].*\.(pug|jade)$/i,
+                               /src[\\/]template[\\/]markdown[\\/].*\.(pug|jade)$/i,
+                               /src[\\/]template[\\/]mustache[\\/].*\.(pug|jade)$/i,
+                               /src[\\/]wasm[\\/].*\.(pug|jade)$/i,
+                             ],
+                           } ),
+          // .toml
+          VitePluginTOML( {
+                            namedExports: true,
+                            include: [
+                              /node_modules[\\/].*\.(toml)$/i,
+                              /src[\\/].*\.(toml)$/i,
+                              /webpack_location[\\/].*\.(toml)$/i,
+                            ],
+                            exclude: [
+                              /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(toml)$/i,
+                              /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(toml)$/i,
+                              /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(toml)$/i,
+                              /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(toml)$/i,
+                              /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(toml)$/i,
+                              /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(toml)$/i,
+                              /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(toml)$/i,
+                              /src[\\/]assets[\\/]fonts[\\/].*\.(toml)$/i,
+                              /src[\\/]assets[\\/]img[\\/].*\.(toml)$/i,
+                              /src[\\/]assets[\\/]music[\\/].*\.(toml)$/i,
+                              /src[\\/]assets[\\/]videos[\\/].*\.(toml)$/i,
+                              /src[\\/]custom_declare_types[\\/].*\.(toml)$/i,
+                              /src[\\/]graphQL[\\/].*\.(toml)$/i,
+                              /src[\\/]pwa_manifest[\\/].*\.(toml)$/i,
+                              /src[\\/]static[\\/].*\.(toml)$/i,
+                              /src[\\/]styles[\\/].*\.(toml)$/i,
+                              /src[\\/]wasm[\\/].*\.(toml)$/i,
+                            ],
+                          } ),
+          // .xml
+          VitePluginXML.default( {
+                                   include: [
+                                     /node_modules[\\/].*\.(xml)$/i,
+                                     /src[\\/].*\.(xml)$/i,
+                                     /webpack_location[\\/].*\.(xml)$/i,
+                                   ],
+                                   exclude: [
+                                     /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(xml)$/i,
+                                     /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(xml)$/i,
+                                     /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(xml)$/i,
+                                     /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(xml)$/i,
+                                     /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(xml)$/i,
+                                     /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(xml)$/i,
+                                     /src[\\/]assets[\\/]doc[\\/]yaml[\\/].*\.(xml)$/i,
+                                     /src[\\/]assets[\\/]fonts[\\/].*\.(xml)$/i,
+                                     /src[\\/]assets[\\/]img[\\/].*\.(xml)$/i,
+                                     /src[\\/]assets[\\/]music[\\/].*\.(xml)$/i,
+                                     /src[\\/]assets[\\/]videos[\\/].*\.(xml)$/i,
+                                     /src[\\/]custom_declare_types[\\/].*\.(xml)$/i,
+                                     /src[\\/]graphQL[\\/].*\.(xml)$/i,
+                                     /src[\\/]pwa_manifest[\\/].*\.(xml)$/i,
+                                     /src[\\/]static[\\/].*\.(xml)$/i,
+                                     /src[\\/]styles[\\/].*\.(xml)$/i,
+                                     /src[\\/]wasm[\\/].*\.(xml)$/i,
+                                   ],
+                                 } ),
+          // .yaml、.yml
+          RollupPluginYAML( {
+                              documentMode: 'single',
+                              safe: true,
+                              extensions: [
+                                '.yaml',
+                                '.yml',
+                              ],
+                              include: [
+                                /node_modules[\\/].*\.(yaml|yml)$/i,
+                                /src[\\/].*\.(yaml|yml)$/i,
+                                /webpack_location[\\/].*\.(yaml|yml)$/i,
+                              ],
+                              exclude: [
+                                /src[\\/]assets[\\/]doc[\\/]cson[\\/].*\.(yaml|yml)$/i,
+                                /src[\\/]assets[\\/]doc[\\/]csv[\\/].*\.(yaml|yml)$/i,
+                                /src[\\/]assets[\\/]doc[\\/]json[\\/].*\.(yaml|yml)$/i,
+                                /src[\\/]assets[\\/]doc[\\/]json5[\\/].*\.(yaml|yml)$/i,
+                                /src[\\/]assets[\\/]doc[\\/]toml[\\/].*\.(yaml|yml)$/i,
+                                /src[\\/]assets[\\/]doc[\\/]tsv[\\/].*\.(yaml|yml)$/i,
+                                /src[\\/]assets[\\/]doc[\\/]xml[\\/].*\.(yaml|yml)$/i,
+                                /src[\\/]assets[\\/]fonts[\\/].*\.(yaml|yml)$/i,
+                                /src[\\/]assets[\\/]img[\\/].*\.(yaml|yml)$/i,
+                                /src[\\/]assets[\\/]music[\\/].*\.(yaml|yml)$/i,
+                                /src[\\/]assets[\\/]videos[\\/].*\.(yaml|yml)$/i,
+                                /src[\\/]custom_declare_types[\\/].*\.(yaml|yml)$/i,
+                                /src[\\/]graphQL[\\/].*\.(yaml|yml)$/i,
+                                /src[\\/]pwa_manifest[\\/].*\.(yaml|yml)$/i,
+                                /src[\\/]static[\\/].*\.(yaml|yml)$/i,
+                                /src[\\/]styles[\\/].*\.(yaml|yml)$/i,
+                                /src[\\/]wasm[\\/].*\.(yaml|yml)$/i,
+                              ],
+                            } ),
+        ];
+      },
       /**
        * @type {RollupOptions} Rollup选项，建立worker bundle。注意，这个rollupOptions选项，是用来捆绑、压缩、编译“worker”中的代码。<br />
        * 1、直接定制底层的Rollup包。这与可以从Rollup配置文件中导出的选项相同，将与Vite的内部Rollup选项合并。<br />
@@ -4031,8 +4035,8 @@ export default defineConfig( async ( {
          * node_modules/vite/dist/node/index.d.ts:922
          */
         proxy: await ProxyConfig( {
-          env_platform,
-        } ),
+                                    env_platform,
+                                  } ),
         /**
          * @type {boolean | CorsOptions} 为开发服务器配置CORS。这在默认情况下是启用的，允许任何来源。传递一个选项对象来微调行为，或传递false来禁用。<br />
          * 详细见：<br />
@@ -4043,22 +4047,22 @@ export default defineConfig( async ( {
            * @type {boolean | string | regExp | ((string | regExp)[]) | function} 配置Access-Control-Allow-Origin CORS头。
            */
           origin: ( origin => origin.split( ',' )
-          .map( item => item.trim() ) )( httpHeaders[ 'Access-Control-Allow-Origin' ] ),
+                                    .map( item => item.trim() ) )( httpHeaders[ 'Access-Control-Allow-Origin' ] ),
           /**
            * @type {string | string[]} 配置Access-Control-Allow-Methods CORS头。希望是一个以逗号分隔的字符串（例如：'GET,PUT,POST'）或一个数组（例如：['GET', 'PUT', 'POST']）。
            */
           methods: ( methods => methods.split( ',' )
-          .map( item => item.trim() ) )( httpHeaders[ 'Access-Control-Allow-Methods' ] ),
+                                       .map( item => item.trim() ) )( httpHeaders[ 'Access-Control-Allow-Methods' ] ),
           /**
            * @type {string | string[]} 配置Access-Control-Allow-Headers CORS头。希望是一个以逗号分隔的字符串（例如：'Content-Type,Authorization'）或一个数组（例如：['Content-Type', 'Authorization']）。如果没有指定，默认为反映请求的Access-Control-Request-Headers头中指定的头。
            */
           allowedHeaders: ( allowedHeaders => allowedHeaders.split( ',' )
-          .map( item => item.trim() ) )( httpHeaders[ 'Access-Control-Allow-Headers' ] ),
+                                                            .map( item => item.trim() ) )( httpHeaders[ 'Access-Control-Allow-Headers' ] ),
           /**
            * @type {string | string[]} 配置Access-Control-Expose-Headers CORS标头。期待一个以逗号分隔的字符串（例如：'Content-Range,X-Content-Range'）或一个数组（例如：['Content-Range', 'X-Content-Range']）。如果不指定，就不会有自定义的头文件被暴露。
            */
           exposedHeaders: ( exposedHeaders => exposedHeaders.split( ',' )
-          .map( item => item.trim() ) )( httpHeaders[ 'Access-Control-Expose-Headers' ] ),
+                                                            .map( item => item.trim() ) )( httpHeaders[ 'Access-Control-Expose-Headers' ] ),
           /**
            * @type {boolean} 配置Access-Control-Allow-Credentials CORS头。设置为true以传递该头信息，否则就省略。
            */

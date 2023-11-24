@@ -59,7 +59,7 @@ function createPlugin( {
 
   return {
     name: 'vite:html',
-    enforce: 'pre',
+    order: 'pre',
     // 组建重写映射，并将filename添加到vite的input中
     config( conf ){
       const filename = path.basename( template );
@@ -254,8 +254,8 @@ function createPlugin( {
     },
     // vite特有钩子，填充html文件插槽
     transformIndexHtml: {
-      enforce: 'pre',
-      async transform( html, ctx ){
+      order: 'pre',
+      async handler( html, ctx ){
         let injectOptions,
           pageEntry;
 
@@ -353,7 +353,7 @@ async function minifyHtml( html, minify$1 ){
 function createMinifyHtmlPlugin( { minify = true } = {} ){
   return {
     name: 'vite:minify-html',
-    enforce: 'post',
+    order: 'post',
     async generateBundle( _, outBundle ){
       if( minify ){
         for( const bundle of
