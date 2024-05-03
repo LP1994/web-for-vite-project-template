@@ -24,7 +24,7 @@
 /**
  * 单个大文件上传（支持POST请求、PUT请求）。
  *
- * 允许在请求头中携带自定义的请求头标识“X-Custom-Header-File-SRI”，其值为使用“SHA3-512”计算的文件SRI值，来提前校验上传的文件是否已经存在。
+ * 允许在请求头中携带自定义的请求头标识“Deno-Custom-File-SRI”，其值为使用“SHA-512”计算的文件SRI值，来提前校验上传的文件是否已经存在。
  *
  * 例子：https://127.0.0.1:9200/simulation_servers_deno/upload?uploadType=bigFile&fileName=001.zip&isForcedWrite=false
  * 查询参数“isForcedWrite”是可选的，“fileName”也是可选的，但是最好带。
@@ -37,36 +37,30 @@
 
 import {
   extensionsByType,
-
-  // @ts-ignore
-} from 'media_types';
+} from 'deno_std_media_types';
 
 import {
   writableStreamFromWriter,
-
-  // @ts-ignore
-} from 'deno_streams/writable_stream_from_writer.ts';
+} from 'deno_std_streams/writable_stream_from_writer.ts';
 
 import {
-  crypto,
-  toHashString,
-
-  // @ts-ignore
-} from 'deno_crypto';
+  encodeHex,
+} from 'deno_std_encoding/hex.ts';
 
 import {
   uploadDir,
 
-  httpHeaders,
+  HttpResponseHeadersFun,
   resMessageStatus,
 } from 'configures/GlobalParameters.esm.mts';
 
 import {
-  type FileSRICollectionSchema,
+  type T_QueryOneResult,
+  type I_UploadFileSRISchema,
 
   UpdateOne,
   QueryOne,
-} from 'mongo/db/simulation_servers_deno/collections/upload_file_sri.esm.mts';
+} from 'mongo/simulation_servers_deno/upload_file_sri/UploadFileSRI.esm.mts';
 
 import {
   myURLPathName,
@@ -75,7 +69,7 @@ import {
 /**
  * 单个大文件上传（支持POST请求、PUT请求）。<br />
  *
- * 允许在请求头中携带自定义的请求头标识“X-Custom-Header-File-SRI”，其值为使用“SHA3-512”计算的文件SRI值，来提前校验上传的文件是否已经存在。<br />
+ * 允许在请求头中携带自定义的请求头标识“Deno-Custom-File-SRI”，其值为使用“SHA-512”计算的文件SRI值，来提前校验上传的文件是否已经存在。<br />
  *
  * 例子：https://127.0.0.1:9200/simulation_servers_deno/upload?uploadType=bigFile&fileName=001.zip&isForcedWrite=false<br />
  * 查询参数“isForcedWrite”是可选的，“fileName”也是可选的，但是最好带。<br />
@@ -116,8 +110,8 @@ async function UploadByBigFile( request: Request ): Promise<Response>{
         fileName001 = `Big_File`;
       }
 
-      const hash: ArrayBuffer = await crypto.subtle.digest( 'SHA3-512', ( request.clone().body as ReadableStream ) ),
-        sri: string = toHashString( hash, 'hex' );
+      const hash: ArrayBuffer = await crypto.subtle.digest( 'SHA-512', await request.clone().arrayBuffer() ),
+        sri: string = encodeHex( hash );
 
       let fileName: string = `${ sri }.${ ( extension as string[] )[ 0 ] as string }`;
 
@@ -132,7 +126,7 @@ async function UploadByBigFile( request: Request ): Promise<Response>{
         recursive: true,
       } );
 
-      let fileSRIInfo: FileSRICollectionSchema | undefined = ( await QueryOne( sri ) );
+      let fileSRIInfo: T_QueryOneResult = await QueryOne( sri );
 
       const handleFun001: () => Promise<void> = async (): Promise<void> => {
         const file001: Deno.FsFile = await Deno.open( savePath, {
@@ -142,8 +136,8 @@ async function UploadByBigFile( request: Request ): Promise<Response>{
 
         await ( _request.body as ReadableStream ).pipeTo( writableStreamFromWriter( file001 ) );
 
-        Object.assign( fileSRIInfo as FileSRICollectionSchema, {
-          shaType: 'SHA3-512',
+        Object.assign( fileSRIInfo as I_UploadFileSRISchema, {
+          shaType: 'SHA-512',
           sri,
           requestURL: decodeURI( _request.url ),
           savePath: savePath.href,
@@ -197,7 +191,7 @@ async function UploadByBigFile( request: Request ): Promise<Response>{
         }
       }
       else{
-        fileSRIInfo = {} as FileSRICollectionSchema;
+        fileSRIInfo = {} as I_UploadFileSRISchema;
 
         await handleFun001();
 
@@ -214,7 +208,7 @@ async function UploadByBigFile( request: Request ): Promise<Response>{
         } );
       }
 
-      await UpdateOne( fileSRIInfo as FileSRICollectionSchema );
+      await UpdateOne( fileSRIInfo as I_UploadFileSRISchema );
     }
     catch( error: unknown ){
       result = JSON.stringify( {
@@ -249,7 +243,7 @@ async function UploadByBigFile( request: Request ): Promise<Response>{
     status: 200,
     statusText: 'OK',
     headers: {
-      ...httpHeaders,
+      ...HttpResponseHeadersFun( request ),
       'content-type': 'application/json; charset=utf-8',
     },
   } );

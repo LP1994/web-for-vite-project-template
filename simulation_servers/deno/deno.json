@@ -1,4 +1,76 @@
 {
+  "tasks": {
+    "start": "deno run -A --config=./deno.json --lock-write --check --v8-flags=--max-old-space-size=1024000 --reload --unstable-hmr ./src/App.mts --color=16m"
+  },
+  "nodeModulesDir": false,
+  "lock": "./deno.lock",
+  "exclude": [],
+  "unstable": [
+    "webgpu",
+    "broadcast-channel",
+    "worker-options",
+    "cron",
+    "kv",
+    "ffi",
+    "fs",
+    "net",
+    "http",
+    "temporal"
+  ],
+  "lint": {
+    "include": [
+      "src/"
+    ],
+    "exclude": [
+      "src/custom_declare_types/",
+      "src/**/type_doc/doc/",
+      "src/**/third_party_modules/",
+      "src/**/graphql_schema_definition_to_ts_type_definition/",
+      "test/"
+    ],
+    "rules": {
+      "tags": [
+        "recommended"
+      ],
+      "include": [
+        "eqeqeq",
+        "explicit-function-return-type",
+        "guard-for-in",
+        "no-const-assign",
+        "no-eval",
+        "no-self-compare",
+        "no-sparse-arrays",
+        "no-throw-literal",
+        "no-undef",
+        "triple-slash-reference"
+      ],
+      "exclude": [
+        "no-explicit-any",
+        "ban-ts-comment",
+        "prefer-const",
+        "no-case-declarations",
+        "ban-untagged-todo",
+        "camelcase",
+        "default-param-last",
+        "explicit-module-boundary-types",
+        "fresh-handler-export",
+        "fresh-server-event-handlers",
+        "no-await-in-loop",
+        "no-console",
+        "no-external-import",
+        "no-implicit-declare-namespace-export",
+        "no-inferrable-types",
+        "no-non-null-asserted-optional-chain",
+        "no-non-null-assertion",
+        "no-top-level-await",
+        "prefer-ascii",
+        "prefer-primordials",
+        "single-var-declarator",
+        "verbatim-module-syntax",
+        "no-sync-fn-in-async-fn"
+      ]
+    }
+  },
   "compilerOptions": {
     "allowJs": true,
     "checkJs": false,
@@ -22,17 +94,25 @@
     "strictPropertyInitialization": true,
     "strictNullChecks": true,
 
-    "noImplicitUseStrict": false,
-
     "useUnknownInCatchVariables": true,
 
     "alwaysStrict": true,
     "exactOptionalPropertyTypes": true,
     "noPropertyAccessFromIndexSignature": false,
 
+    "allowArbitraryExtensions": true,
+    "verbatimModuleSyntax": true,
+    "removeComments": false,
+    "emitDecoratorMetadata": false,
+    "experimentalDecorators": false,
+    "moduleSuffixes": [
+      ""
+    ],
+
     "lib": [
       "deno.broadcast_channel",
       "deno.cache",
+      "deno.canvas",
       "deno.console",
       "deno.crypto",
       "deno.fetch",
@@ -42,6 +122,7 @@
       "deno.unstable",
       "deno.url",
       "deno.web",
+      "deno.webgpu",
       "deno.websocket",
       "deno.webstorage",
       "deno.window",
@@ -60,6 +141,7 @@
       "es2016",
       "es2016.array.include",
       "es2017",
+      "es2017.date",
       "es2017.intl",
       "es2017.object",
       "es2017.sharedmemory",
@@ -101,24 +183,69 @@
       "es2022.string",
       "es2023",
       "es2023.array",
+      "es2023.collection",
       "es5",
       "es6",
       "esnext",
-      "esnext.array",
-      "esnext.asynciterable",
-      "esnext.bigint",
+      "esnext.collection",
+      "esnext.decorators",
+      "esnext.disposable",
       "esnext.intl",
-      "esnext.promise",
-      "esnext.string",
-      "esnext.symbol",
-      "esnext.weakref"
+      "esnext.object",
+      "esnext.promise"
     ]
   },
-  "tasks": {
-    "start": "deno run -A --watch --config=./deno.json --lock-write --unstable --prompt --check --v8-flags=--max-old-space-size=8192 --reload ./src/App.mts --color=16m"
-  },
-  "exclude": [],
-  "nodeModulesDir": false,
-  "importMap": "./import_map.json",
-  "lock": "./deno.lock"
+  "imports": {
+    "deno_std/": "https://deno.land/std/",
+    "deno_std_encoding/": "https://deno.land/std/encoding/",
+    "deno_std_streams/": "https://deno.land/std/streams/",
+    "deno_std_media_types": "https://deno.land/std/media_types/mod.ts",
+    "deno_std_path": "https://deno.land/std/path/mod.ts",
+
+    "deno_x/": "https://deno.land/x/",
+    "deno_x_corejs": "https://deno.land/x/corejs/index.js",
+    "deno_x_ejs": "https://deno.land/x/dejs/mod.ts",
+    "deno_x_mongo": "https://deno.land/x/mongo/mod.ts",
+
+    "esm_sh/": "https://esm.sh/",
+    "esm_sh_graphql": "https://esm.sh/graphql",
+
+    "preact/": "https://cdn.skypack.dev/preact/",
+    "preact_jsx-runtime": "https://cdn.skypack.dev/preact/jsx-runtime?dts",
+    "preact_jsx-dev-runtime": "https://cdn.skypack.dev/preact/jsx-dev-runtime?dts",
+
+    "deno_src/": "./src/",
+    "configures/": "./src/configures/",
+    "route_map_config/": "./src/configures/route_map_config/",
+    "database/": "./src/database/",
+    "deno_db/": "./src/database/deno_db/",
+    "firebase/": "./src/database/firebase/",
+    "graphql/": "./src/database/graphql/",
+    "mongo/": "./src/database/mongo/",
+    "mysql/": "./src/database/mysql/",
+    "postgres/": "./src/database/postgres/",
+    "sqlite/": "./src/database/sqlite/",
+    "supabase/": "./src/database/supabase/",
+    "public/": "./src/public/",
+    "routers/": "./src/routers/",
+    "servers/": "./src/servers/",
+    "services/": "./src/services/",
+    "ssr/": "./src/ssr/",
+    "template/": "./src/template/",
+    "ejs/": "./src/template/ejs/",
+    "handlebars/": "./src/template/handlebars/",
+    "html/": "./src/template/html/",
+    "markdown/": "./src/template/markdown/",
+    "mustache/": "./src/template/mustache/",
+    "pug_jade/": "./src/template/pug_jade/",
+    "tools/": "./src/tools/",
+    "third_party_modules/": "./src/tools/third_party_modules/",
+    "universal_tool_for_deno/": "./src/tools/universal_tool_for_deno/",
+    "static/": "./static/",
+    "test/": "./test/",
+    "upload/": "./upload/",
+    "web/": "./web/",
+
+    "GSD2TSTD": "./src/graphql_schema_definition_to_ts_type_definition/GSD2TSTD.esm.mts"
+  }
 }

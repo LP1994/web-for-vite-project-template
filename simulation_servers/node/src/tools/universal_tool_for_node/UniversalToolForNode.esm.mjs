@@ -8,11 +8,11 @@
  */
 
 /**
- * 该工具库是公共的、通用的、不特定于某个项目使用的脚本工具库。
+ * 该工具库是使用“JavaScript”编写的公共的、通用的、不特定于某个项目使用的脚本工具库。
  * 该通用工具仅用于Node环境，并且不是特定于某个项目才能使用的，使用“ECMAScript modules(ECMAScript模块)”写法。
- */
-
-/**
+ *
+ *
+ *
  * 编写原则：
  * 1、能用模块化的API尽量用模块化的，少用或者不用全局的，目的是为了让“编码风格”尽量符合“模块化”的理念。
  *
@@ -24,13 +24,16 @@
  *
  * 5、那些需要被导出供外部调用使用的函数、类等等，一定要记得也要同时部署在“默认导出”中。
  *
- * 6、编程范式使用“函数式编程”，这样更好得便于被Webpack等工具进行“Tree-shaking”，只打包那些被使用的。
- */
-
-/**
+ * 6、编程范式使用“函数式编程”，结合“JavaScript”编写，这样更好得便于被Webpack等工具进行“Tree-shaking”，只打包那些被使用的。
+ *
+ * 7、那些用于限定、描述数据类型的类型声明也要记得导出，以便供外部使用，如：export type T_MyString001 = string。
+ *
+ *
+ *
  * 关于“严格模式”的注意事项：
  * 1、'use strict'严格模式会在函数内部自动深度的传递严格模式的效果。
  * 如：
+ * ```ts
  * function Fun1( x ){
  * 'use strict';
  *
@@ -42,6 +45,7 @@
  *
  * Fun2();
  * }
+ * ```
  * 说明：
  * Fun1里的'use strict'严格模式的效果会传递到Fun2内部！
  * 但是，Fun1里的'use strict'严格模式却不会作用于Fun2的默认函数参数，但是Fun2里的this还是会为undefined！
@@ -55,15 +59,27 @@
  *
  * 5、严格模式下的this还是可以通过apply、bind、call来设置的，否则还是undefined。
  * 如：
+ * ```ts
  * 'use strict';
  *
  * function Fun1(){
  * 'use strict';
- * 
+ *
  * console.dir( this );
  * }
  *
  * Fun1.call( { a: 1, } ); // 输出：{ a: 1, }，而不是undefined。
+ * ```
+ *
+ *
+ *
+ * 该工具经过了如下优化(以后的代码添加、修改都应该尽量遵循如下的优化标准)：
+ * PS：
+ * 只要函数参数使用了默认值、解构赋值、或者扩展运算符，那么函数内部就不能显式设定为严格模式，否则会报错。
+ *
+ * 1、函数尾调用优化；
+ * 2、算法时间复杂度优化；
+ * 3、算法空间复杂度优化；
  */
 
 'use strict';
@@ -135,19 +151,19 @@ export function Get__filename( import_meta_url = import.meta.url ){
  *
  * @param {() => any} func 包装函数，当它被执行时，会返回期望中的单例对象，必需。
  *
- * @returns {() => { singleton: 其值就是上面的“包装函数”中所返回的那个期望的单例对象, clear: “clear”函数（支持清除后的回调函数操作），用于清除并置空已经生成的期望的单例对象 }} 返回一个生成单例的函数，执行它就会返回一个对象，这个对象中有个“singleton”属性，其值就是上面的“包装函数”中所返回的那个期望的单例对象。
- * 返回的对象里还有一个“clear”函数（支持清除后的回调函数操作，详细见下面的“clear”函数描述），用于清除并置空已经生成的期望的单例对象。
+ * @returns {() => { singleton: 其值就是上面的“包装函数”中所返回的那个期望的单例对象, clear: “clear”函数（支持清除后的回调函数操作），用于清除并置空已经生成的期望的单例对象 }} 返回一个生成单例的函数，执行它就会返回一个对象，这个对象中有个“singleton”属性，其值就是上面的“包装函数”中所返回的那个期望的单例对象。<br />
+ * 返回的对象里还有一个“clear”函数（支持清除后的回调函数操作，详细见下面的“clear”函数描述），用于清除并置空已经生成的期望的单例对象。<br />
  */
 export function SingletonFactory( func = () => {
 } ){
   let singleton = null;
 
   /**
-   * 一个生成单例的函数，执行它就会返回一个对象，这个对象中有个“singleton”属性，其值就是上面的“包装函数”中所返回的那个期望的单例对象。
-   * 返回的对象里还有一个“clear”函数（支持清除后的回调函数操作，详细见下面的“clear”函数的描述），用于清除并置空已经生成的期望的单例对象。
+   * 一个生成单例的函数，执行它就会返回一个对象，这个对象中有个“singleton”属性，其值就是上面的“包装函数”中所返回的那个期望的单例对象。<br />
+   * 返回的对象里还有一个“clear”函数（支持清除后的回调函数操作，详细见下面的“clear”函数的描述），用于清除并置空已经生成的期望的单例对象。<br />
    *
-   * @returns {() => TypeSingleton<T>} 返回一个对象，这个对象中有个“singleton”属性，其值就是上面的“包装函数”中所返回的那个期望的单例对象。
-   * 返回的对象里还有一个“clear”函数（支持清除后的回调函数操作，详细见下面的“clear”函数的描述），用于清除并置空已经生成的期望的单例对象。
+   * @returns {() => { singleton: 其值就是上面的“包装函数”中所返回的那个期望的单例对象, clear: “clear”函数（支持清除后的回调函数操作），用于清除并置空已经生成的期望的单例对象 }} 返回一个生成单例的函数，执行它就会返回一个对象，这个对象中有个“singleton”属性，其值就是上面的“包装函数”中所返回的那个期望的单例对象。<br />
+   * 返回的对象里还有一个“clear”函数（支持清除后的回调函数操作，详细见下面的“clear”函数描述），用于清除并置空已经生成的期望的单例对象。<br />
    */
   return () => {
     if( singleton === null ){
@@ -178,6 +194,58 @@ export function SingletonFactory( func = () => {
   };
 }
 
+/**
+ * @internal
+ *
+ * @type {any}
+ */
+let singletonByGlobal = null;
+
+/**
+ * 支持泛型参数的“全局模式”的单例工厂。
+ *
+ * @param {() => any} func 包装函数，当它被执行时，会返回期望中的“全局模式”的单例对象，必需。
+ *
+ * @returns {() => { singletonByGlobal: 其值就是上面的“包装函数”中所返回的那个期望的“全局模式”的单例对象, clear: “clear”函数（支持清除后的回调函数操作），用于清除并置空已经生成的期望的“全局模式”的单例对象 }} 返回一个生成“全局模式”的单例的函数，执行它就会返回一个对象，这个对象中有个“singletonByGlobal”属性，其值就是上面的“包装函数”中所返回的那个期望的“全局模式”的单例对象。<br />
+ * 返回的对象里还有一个“clear”函数（支持清除后的回调函数操作，详细见下面的“clear”函数描述），用于清除并置空已经生成的期望的“全局模式”的单例对象。<br />
+ */
+export function SingletonFactoryByGlobal( func ){
+  /**
+   * 一个生成“全局模式”的单例的函数，执行它就会返回一个对象，这个对象中有个“singletonByGlobal”属性，其值就是上面的“包装函数”中所返回的那个期望的“全局模式”的单例对象。<br />
+   * 返回的对象里还有一个“clear”函数（支持清除后的回调函数操作，详细见上面的泛型别名“T_SingletonByGlobal>”），用于清除并置空已经生成的期望的“全局模式”的单例对象。<br />
+   *
+   * @returns {() => { singletonByGlobal: 其值就是上面的“包装函数”中所返回的那个期望的“全局模式”的单例对象, clear: “clear”函数（支持清除后的回调函数操作），用于清除并置空已经生成的期望的“全局模式”的单例对象 }} 返回一个生成“全局模式”的单例的函数，执行它就会返回一个对象，这个对象中有个“singletonByGlobal”属性，其值就是上面的“包装函数”中所返回的那个期望的“全局模式”的单例对象。<br />
+   * 返回的对象里还有一个“clear”函数（支持清除后的回调函数操作，详细见下面的“clear”函数描述），用于清除并置空已经生成的期望的“全局模式”的单例对象。<br />
+   */
+  return () => {
+    if( singletonByGlobal === null ){
+      singletonByGlobal = func();
+    }
+
+    return {
+      /**
+       * 已生成的期望的“全局模式”的单例对象。
+       */
+      singletonByGlobal,
+      /**
+       * 用于清除并置空已经生成的期望的“全局模式”的单例对象，支持清除后的回调函数操作。
+       *
+       * @param {() => any} cb 完成清除并置空已经生成的期望的“全局模式”的单例对象后，所要执行的回调函数，用于做一些在清除后的操作，可选。
+       *
+       * @returns {any|void} 如果传入了上面的“cb”参数，那么“cb”参数在执行后返回的值就是“clear”函数的返回值，如果没传入上面的“cb”参数，那就返回void。
+       */
+      clear( cb = () => {
+      } ){
+        singletonByGlobal = null;
+
+        if( cb && typeof cb === 'function' ){
+          return cb();
+        }
+      },
+    };
+  };
+}
+
 // 支持泛型参数的单例工厂。End
 
 // 类型转换。Start
@@ -190,6 +258,8 @@ export function SingletonFactory( func = () => {
  * @returns {Uint8Array} 转换成“Uint8Array”类型的数据。
  */
 export function StringToUint8Array( data ){
+  'use strict';
+
   return new TextEncoder().encode( data );
 }
 
@@ -201,6 +271,8 @@ export function StringToUint8Array( data ){
  * @returns {string} 转换成“String”类型的数据。
  */
 export function Uint8ArrayToString( data ){
+  'use strict';
+
   return new TextDecoder().decode( data );
 }
 
@@ -300,6 +372,7 @@ export function IsString( arg ){
  * 数组A、数组B两者之间是否没有交集，true表示没有交集，反之表示有交集。
  *
  * @param {Array<any>} arrA 数组A，默认值为空数组，可选。
+ *
  * @param {Array<any>} arrB 数组B，默认值为空数组，可选。
  *
  * @returns {boolean} 数组A、数组B两者之间是否没有交集，true表示没有交集，反之表示有交集。
@@ -316,6 +389,7 @@ export function IsDisjointFrom( arrA = [], arrB = [] ){
  * 数组B是否是数组A的子集，true表示是，反之表示不是。
  *
  * @param {Array<any>} arrA 数组A，默认值为空数组，可选。
+ *
  * @param {Array<any>} arrB 数组B，默认值为空数组，可选。
  *
  * @returns {boolean} 数组B是否是数组A的子集，true表示是，反之表示不是。
@@ -332,6 +406,7 @@ export function IsSubsetOf( arrA = [], arrB = [] ){
  * 数组B是否是数组A的超集，true表示是，反之表示不是。
  *
  * @param {Array<any>} arrA 数组A，默认值为空数组，可选。
+ *
  * @param {Array<any>} arrB 数组B，默认值为空数组，可选。
  *
  * @returns {boolean} 数组B是否是数组A的超集，true表示是，反之表示不是。
@@ -443,14 +518,18 @@ export function Union( arrA = [], arrB = [] ){
 export class MyConsole {
 
   /**
-   * @type {ChalkInstance} 私有实例属性。<br />
+   * 私有实例属性。<br />
+   *
+   * @type {ChalkInstance}
    *
    * @private
    */
   #myChalk = chalk;
 
   /**
-   * @type {ChalkInstance} 私有静态属性。<br />
+   * 私有静态属性。<br />
+   *
+   * @type {ChalkInstance}
    *
    * @private
    */
@@ -1765,6 +1844,530 @@ export class MyConsole {
 
 }
 
+// 事件的发布、订阅的工具类 Start
+
+/**
+ * 事件的发布、订阅的工具类。
+ */
+export class Events4PublishSubscribe {
+
+  /**
+   * 用于存储事件(模拟队列)的对象。
+   *
+   * @type {Record<string, Array<T_PublishFun>>}
+   *
+   * @private
+   */
+  #events4Queue = {};
+
+  /**
+   * 用于事件发布的初始化。
+   *
+   * @param {string} type 字符串，事件名，必须的。
+   *
+   * @private
+   */
+  #init( type ){
+    !this.#events4Queue[ type ] && ( this.#events4Queue[ type ] = [] );
+  }
+
+  /**
+   * 事件的发布、订阅的工具类的构造函数。
+   */
+  constructor(){
+  }
+
+  /**
+   * 根据指定的事件名发布指定的事件逻辑。
+   *
+   * @param {string} type 字符串，事件名，必须的。
+   *
+   * @param {T_PublishFun} fn 函数，要执行的事件逻辑，可选的。
+   *
+   * @returns {Events4PublishSubscribe} Events4PublishSubscribe类的实例，方便链式调用。
+   */
+  on( type, fn = () => {
+  } ){
+    this.#init( type );
+
+    this.#events4Queue[ type ].push( fn );
+
+    return this;
+  }
+
+  /**
+   * 根据指定的事件名发布一个只执行一次的指定的事件逻辑。
+   *
+   * @param {string} type 字符串，事件名，必须的。
+   *
+   * @param {T_PublishFun} fn 函数，要执行的事件逻辑，可选的。
+   *
+   * @returns {Events4PublishSubscribe} Events4PublishSubscribe类的实例，方便链式调用。
+   */
+  once( type, fn = () => {
+  } ){
+    this.#init( type );
+
+    let _this = this;
+
+    this.#events4Queue[ type ].push( function once( ...args ){
+      fn( ...args );
+
+      _this.off( type, once );
+    } );
+
+    return this;
+  }
+
+  /**
+   * 根据指定的事件名订阅（也就是“执行”）其拥有的所有事件函数。
+   *
+   * @param {string} type 字符串，事件名，必须的。
+   *
+   * @param params rest参数列表，一个个参数都是传给即将被调用的事件函数，可选的。
+   *
+   * @returns {Events4PublishSubscribe} Events4PublishSubscribe类的实例，方便链式调用。
+   */
+  emit( type, ...params ){
+    this.#events4Queue[ type ] && ( this.#events4Queue[ type ].forEach( ( fn ) => {
+      fn( ...params );
+    } ) );
+
+    return this;
+  }
+
+  /**
+   * 根据指定的事件名注销其拥有的所有事件函数中指定的那个事件函数。
+   *
+   * @param {string} type 字符串，事件名，必须的。
+   *
+   * @param {T_PublishFun} fn 函数，就是当初发布事件时用的那个存着发布事件函数的那个函数变量名，必须的。
+   *
+   * @returns {Events4PublishSubscribe} Events4PublishSubscribe类的实例，方便链式调用。
+   */
+  off( type, fn ){
+    this.#events4Queue[ type ] && ( this.#events4Queue[ type ] = this.#events4Queue[ type ].filter( ( cb ) => fn !== cb ) );
+
+    return this;
+  }
+
+  /**
+   * 清除所有的事件队列。
+   *
+   * @returns {Events4PublishSubscribe} Events4PublishSubscribe类的实例，方便链式调用。
+   */
+  clearAllEventsQueue(){
+    this.#events4Queue = {};
+
+    return this;
+  }
+
+  /**
+   * 根据指定的事件名清除其拥有的所有事件函数，并且也会删除这个事件名。
+   *
+   * @param {string} type 字符串，事件名，必须的。
+   *
+   * @returns {Events4PublishSubscribe} Events4PublishSubscribe类的实例，方便链式调用。
+   */
+  delEventQueue4Type( type ){
+    this.#events4Queue[ type ] && ( delete this.#events4Queue[ type ] );
+
+    return this;
+  }
+
+  /**
+   * 获取所有的事件队列。
+   *
+   * @returns {Record<string, Array<T_PublishFun>>} 所有的事件队列。
+   */
+  getAllEventsQueue(){
+    return this.#events4Queue;
+  }
+
+  /**
+   * 根据指定的事件名获取其拥有的所有事件函数，若不存在指定的事件名，就会返回undefined。
+   *
+   * @param {string} type 字符串，事件名，必须的。
+   *
+   * @returns {Array<T_PublishFun> | undefined} 根据指定的事件名获取其拥有的所有事件函数，若不存在指定的事件名，就会返回undefined。
+   */
+  getEventQueue4Type( type ){
+    return this.#events4Queue[ type ];
+  }
+
+  /**
+   * 根据指定的事件名判断事件队列中是否已经存在了指定的事件名。
+   *
+   * @param {string} type 字符串，事件名，必须的。
+   *
+   * @returns {boolean} 若存在则返回true，反之，返回false。
+   */
+  hasEventQueue4Type( type ){
+    return Boolean( this.#events4Queue[ type ] );
+  }
+
+}
+
+// 事件的发布、订阅的工具类 End
+
+// Decorator修饰工具。Start
+
+/**
+ * 方法装饰器，用于确保类的非私有方法在调用时，其内部this指向永远都是类、类实例。<br />
+ * 例子：<br />
+ * ```ts
+ * class Person {
+ *
+ *   public name: string;
+ *
+ *   public constructor( name: string ){
+ *     this.name = name;
+ *   }
+ *
+ *   @Bound4ClassMethodDecorator
+ *   public greet(): void{
+ *     console.log(`Hello, my name is ${this.name}.`);
+ *   }
+ *
+ * }
+ *
+ * const g = new Person( '张三' ).greet;
+ *
+ * g(); // "Hello, my name is 张三."
+ * ```
+ *
+ * @param {Function} value 被修饰的类的非私有方法本身。
+ *
+ * @param {ClassMethodDecoratorContext} context 上下文对象。
+ */
+export function Bound4ClassMethodDecorator(
+  value,
+  context,
+){
+  if( context.kind === 'method' ){
+    const methodName = context.name;
+
+    if( context.private ){
+      throw new Error( `方法装饰器“Bound4ClassMethodDecorator”不能用于修饰类的私有方法：${ methodName }` );
+    }
+
+    context.addInitializer( function (){
+      this[ methodName ] = this[ methodName ].bind( this );
+    } );
+  }
+  else{
+    throw new Error( `方法装饰器“Bound4ClassMethodDecorator”只能用于修饰类的非私有方法！` );
+  }
+}
+
+/**
+ * 通用的装饰器，日志工具。<br />
+ * PS：<br />
+ * 1、该装饰器用于修饰类的方法、属性、getter、setter、accessor，其执行顺序有个注意事项：<br />
+ * 最优先执行：静态的属性（不分私有性，谁先定义谁先执行）<br />
+ * 然后是：实例属性（不分私有性，谁先定义谁先执行）<br />
+ * 最后是：按照实际调用类的各个功能，自行执行该装饰器。<br />
+ *
+ * @param {Partial<{ level: keyof Console; message: string; async: boolean; }>} config
+ *
+ * @param {keyof Console} config.level Console的某个方法名，默认值是"log"，可选。<br />
+ * 常用的有：<br />
+ * dir、log、warn、info、error、group、assert...<br />
+ * 更多的见：<br />
+ * https://developer.mozilla.org/docs/Web/API/console
+ *
+ * @param {string} config.message 日志信息，默认值是空字符串，可选。
+ *
+ * @param {boolean} config.async 所修饰的方法是否是异步方法，默认值是false，可选。
+ *
+ * @returns {(value: any, context: DecoratorContext) => any}
+ */
+export function Logger4Decorator( {
+  level = 'log',
+  message = '',
+  async = false,
+} ){
+  return function (
+    value,
+    context,
+  ){
+    if( context.kind === 'method' ){
+      if( async ){
+        return async function ( ...args ){
+          console[ level ]( `\n\n\n${ level }${ String( message ).length !== 0
+                                                ? `(${ message })`
+                                                : '' }: 异步的${ context.private
+                                                                 ? '私有的'
+                                                                 : '' }${ context.static
+                                                                          ? '静态的'
+                                                                          : '' }方法“${ String( context.name ) }”开始执行！` );
+
+          if( args.length !== 0 ){
+            console[ level ]( `\n传入参数有${ args.length }个: ` );
+
+            console.dir( args, {
+              colors: true,
+              depth: null,
+              showHidden: false,
+            } );
+          }
+
+          const result = await value.call( this, ...args );
+
+          console[ level ]( `\n返回值: ` );
+          console.dir( result, {
+            colors: true,
+            depth: null,
+            showHidden: false,
+          } );
+
+          console[ level ]( `\n${ level }${ String( message ).length !== 0
+                                            ? `(${ message })`
+                                            : '' }: 异步的${ context.private
+                                                             ? '私有的'
+                                                             : '' }${ context.static
+                                                                      ? '静态的'
+                                                                      : '' }方法“${ String( context.name ) }”执行结束！\n\n\n` );
+
+          return result;
+        };
+      }
+      else{
+        return function ( ...args ){
+          console[ level ]( `\n\n\n${ level }${ String( message ).length !== 0
+                                                ? `(${ message })`
+                                                : '' }: 同步的${ context.private
+                                                                 ? '私有的'
+                                                                 : '' }${ context.static
+                                                                          ? '静态的'
+                                                                          : '' }方法“${ String( context.name ) }”开始执行！` );
+
+          if( args.length !== 0 ){
+            console[ level ]( `\n传入参数有${ args.length }个: ` );
+
+            console.dir( args, {
+              colors: true,
+              depth: null,
+              showHidden: false,
+            } );
+          }
+
+          const result = value.apply( this, args );
+
+          console[ level ]( `\n返回值: ` );
+          console.dir( result, {
+            colors: true,
+            depth: null,
+            showHidden: false,
+          } );
+
+          console[ level ]( `\n${ level }${ String( message ).length !== 0
+                                            ? `(${ message })`
+                                            : '' }: 同步的${ context.private
+                                                             ? '私有的'
+                                                             : '' }${ context.static
+                                                                      ? '静态的'
+                                                                      : '' }方法“${ String( context.name ) }”执行结束！\n\n\n` );
+
+          return result;
+        };
+      }
+    }
+    else if( context.kind === 'field' ){
+      return function ( initialValue ){
+        console[ level ]( `\n\n\n${ level }${ String( message ).length !== 0
+                                              ? `(${ message })`
+                                              : '' }: ${ context.private
+                                                         ? '私有的'
+                                                         : '' }${ context.static
+                                                                  ? '静态的'
+                                                                  : '' }属性“${ String( context.name ) }”的初始值为：` );
+
+        console.dir( initialValue, {
+          colors: true,
+          depth: null,
+          showHidden: false,
+        } );
+
+        console.log( '\n\n\n' );
+
+        return initialValue;
+      };
+    }
+    else if( context.kind === 'getter' ){
+      if( async ){
+        return async function (){
+          const result = await value.call( this );
+
+          console[ level ]( `\n\n\n${ level }${ String( message ).length !== 0
+                                                ? `(${ message })`
+                                                : '' }: ${ context.private
+                                                           ? '私有的'
+                                                           : '' }${ context.static
+                                                                    ? '静态的'
+                                                                    : '' }异步的getter取值器“${ String( context.name ) }”本次要取的值为：` );
+
+          console.dir( result, {
+            colors: true,
+            depth: null,
+            showHidden: false,
+          } );
+
+          console.log( '\n\n\n' );
+
+          return result;
+        };
+      }
+      else{
+        return function (){
+          const result = value.call( this );
+
+          console[ level ]( `\n\n\n${ level }${ String( message ).length !== 0
+                                                ? `(${ message })`
+                                                : '' }: ${ context.private
+                                                           ? '私有的'
+                                                           : '' }${ context.static
+                                                                    ? '静态的'
+                                                                    : '' }同步的getter取值器“${ String( context.name ) }”本次要取的值为：` );
+
+          console.dir( result, {
+            colors: true,
+            depth: null,
+            showHidden: false,
+          } );
+
+          console.log( '\n\n\n' );
+
+          return result;
+        };
+      }
+    }
+    else if( context.kind === 'setter' ){
+      if( async ){
+        return async function ( arg ){
+          const result = await value.call( this, arg );
+
+          console[ level ]( `\n\n\n${ level }${ String( message ).length !== 0
+                                                ? `(${ message })`
+                                                : '' }: ${ context.private
+                                                           ? '私有的'
+                                                           : '' }${ context.static
+                                                                    ? '静态的'
+                                                                    : '' }异步的setter存值器“${ String( context.name ) }”本次要存的值为：` );
+
+          console.dir( arg, {
+            colors: true,
+            depth: null,
+            showHidden: false,
+          } );
+
+          console.log( '\n\n\n' );
+
+          return result;
+        };
+      }
+      else{
+        return function ( arg ){
+          const result = value.apply( this, [ arg ] );
+
+          console[ level ]( `\n\n\n${ level }${ String( message ).length !== 0
+                                                ? `(${ message })`
+                                                : '' }: ${ context.private
+                                                           ? '私有的'
+                                                           : '' }${ context.static
+                                                                    ? '静态的'
+                                                                    : '' }同步的setter存值器“${ String( context.name ) }”本次要存的值为：` );
+
+          console.dir( arg, {
+            colors: true,
+            depth: null,
+            showHidden: false,
+          } );
+
+          console.log( '\n\n\n' );
+
+          return result;
+        };
+      }
+    }
+    else if( context.kind === 'accessor' ){
+      let {
+        get,
+        set,
+      } = value;
+
+      return {
+        get(){
+          const result = get.call( this );
+
+          console[ level ]( `\n\n\n${ level }${ String( message ).length !== 0
+                                                ? `(${ message })`
+                                                : '' }: ${ context.private
+                                                           ? '私有的'
+                                                           : '' }${ context.static
+                                                                    ? '静态的'
+                                                                    : '' }accessor存取器“${ String( context.name ) }”本次要取的值为：` );
+
+          console.dir( result, {
+            colors: true,
+            depth: null,
+            showHidden: false,
+          } );
+
+          console.log( '\n\n\n' );
+
+          return result;
+        },
+        set( val ){
+          const result = set.apply( this, [ val ] );
+
+          console[ level ]( `\n\n\n${ level }${ String( message ).length !== 0
+                                                ? `(${ message })`
+                                                : '' }: ${ context.private
+                                                           ? '私有的'
+                                                           : '' }${ context.static
+                                                                    ? '静态的'
+                                                                    : '' }accessor存取器“${ String( context.name ) }”本次要存的值为：` );
+
+          console.dir( val, {
+            colors: true,
+            depth: null,
+            showHidden: false,
+          } );
+
+          console.log( '\n\n\n' );
+
+          return result;
+        },
+        init( initialValue ){
+          console[ level ]( `\n\n\n${ level }${ String( message ).length !== 0
+                                                ? `(${ message })`
+                                                : '' }: ${ context.private
+                                                           ? '私有的'
+                                                           : '' }${ context.static
+                                                                    ? '静态的'
+                                                                    : '' }accessor存取器“${ String( context.name ) }”的初始值为：` );
+
+          console.dir( initialValue, {
+            colors: true,
+            depth: null,
+            showHidden: false,
+          } );
+
+          console.log( '\n\n\n' );
+
+          return initialValue;
+        },
+      };
+    }
+    else{
+      throw new Error( `通用的装饰器“Logger4Decorator”只能用于修饰类的方法、属性、getter、setter、accessor！` );
+    }
+  };
+}
+
+// Decorator修饰工具。End
+
 /**
  * 默认导出，部署了该工具库所有的导出函数、类等等。
  */
@@ -1776,6 +2379,7 @@ export default {
 
   // 支持泛型参数的单例工厂。Start
   SingletonFactory,
+  SingletonFactoryByGlobal,
   // 支持泛型参数的单例工厂。End
 
   // 类型转换。Start
@@ -1805,4 +2409,13 @@ export default {
   // 数组之间的差集Difference、交集Intersection、对称差集SymmetricDifference、并集Union以及IsDisjointFrom（是否不相交）、IsSubsetOf（是否是子集）、IsSupersetOf（是否是超集）。End
 
   MyConsole,
+
+  // 事件的发布、订阅的工具类 Start
+  Events4PublishSubscribe,
+  // 事件的发布、订阅的工具类 End
+
+  // Decorator修饰工具。Start
+  Bound4ClassMethodDecorator,
+  Logger4Decorator,
+  // Decorator修饰工具。End
 };

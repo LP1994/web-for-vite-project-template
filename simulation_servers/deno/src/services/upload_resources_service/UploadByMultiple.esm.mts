@@ -71,26 +71,24 @@
 
 import {
   writableStreamFromWriter,
-
-  // @ts-ignore
-} from 'deno_streams/writable_stream_from_writer.ts';
+} from 'deno_std_streams/writable_stream_from_writer.ts';
 
 import {
-  httpHeaders,
+  HttpResponseHeadersFun,
   resMessageStatus,
 } from 'configures/GlobalParameters.esm.mts';
 
 import {
-  type TypeObj001,
+  type T_Obj001,
 
   UpdateFileSRI,
 } from './UpdateFileSRI.esm.mts';
 
-type TypeResultObj001 = {
+type T_ResultObj001 = {
   // 没有写入的文件信息，因为它们已经存在了，只是更新了这些文件的信息。
-  noWriteFile: Array<TypeObj001>;
+  noWriteFile: Array<T_Obj001>;
   // 成功写入的文件信息。
-  writeFile: Array<TypeObj001>;
+  writeFile: Array<T_Obj001>;
 };
 
 /**
@@ -100,11 +98,11 @@ type TypeResultObj001 = {
  *
  * @param {Array<File | Blob>} files 一个数组，里面的每一个成员都是一个文件对象，数据类型可以是File、Blob，无默认值，必须。
  *
- * @returns {Promise<Array<TypeObj001>>} 返回值类型为Promise<Array<TypeObj001>>。
+ * @returns {Promise<Array<T_Obj001>>} 返回值类型为Promise<Array<T_Obj001>>。
  */
-async function GetUpdateFileSRIHandle( request: Request, files: Array<File | Blob> ): Promise<Array<TypeObj001>>{
+async function GetUpdateFileSRIHandle( request: Request, files: Array<File | Blob> ): Promise<Array<T_Obj001>>{
   // @ts-expect-error
-  return await Array.fromAsync( files.map( ( file: File | Blob ): Promise<TypeObj001> => UpdateFileSRI( request, file, file._name ) ) );
+  return await Array.fromAsync( files.map( ( file: File | Blob ): Promise<T_Obj001> => UpdateFileSRI( request, file, file._name ) ) );
 }
 
 /**
@@ -114,23 +112,23 @@ async function GetUpdateFileSRIHandle( request: Request, files: Array<File | Blo
  *
  * @param {Array<File | Blob>} files 一个数组，里面的每一个成员都是一个文件对象，数据类型可以是File、Blob，无默认值，必须。
  *
- * @returns {Promise<TypeResultObj001>} 返回值类型为Promise<TypeResultObj001>。
+ * @returns {Promise<T_ResultObj001>} 返回值类型为Promise<T_ResultObj001>。
  */
-async function WriteFileHandle( request: Request, files: Array<File | Blob> ): Promise<TypeResultObj001>{
-  const updateFileSRI: Array<TypeObj001> = await GetUpdateFileSRIHandle( request, files );
+async function WriteFileHandle( request: Request, files: Array<File | Blob> ): Promise<T_ResultObj001>{
+  const updateFileSRI: Array<T_Obj001> = await GetUpdateFileSRIHandle( request, files );
 
-  const noWriteFile: Array<TypeObj001> = updateFileSRI.filter(
+  const noWriteFile: Array<T_Obj001> = updateFileSRI.filter(
       (
         {
           isWriteFile,
-        }: TypeObj001,
+        }: T_Obj001,
       ): boolean => !isWriteFile
     ),
-    writeFile: Array<TypeObj001> = updateFileSRI.filter(
+    writeFile: Array<T_Obj001> = updateFileSRI.filter(
       (
         {
           isWriteFile,
-        }: TypeObj001,
+        }: T_Obj001,
       ): boolean => isWriteFile
     );
 
@@ -140,21 +138,20 @@ async function WriteFileHandle( request: Request, files: Array<File | Blob> ): P
           fileInfo: {
             savePath,
           },
-        }: TypeObj001,
+        }: T_Obj001,
       ): Promise<Deno.FsFile> => Deno.open( new URL( savePath ), {
         write: true,
         create: true,
       } )
     ),
-    // @ts-ignore
     arr001: Array<Deno.FsFile> = await Array.fromAsync( fileOpen );
 
   arr001.map(
-      (
-        item: Deno.FsFile,
-        index: number,
-      ): Promise<void> => ( ( writeFile[ index ] as TypeObj001 ).file as File ).stream().pipeTo( writableStreamFromWriter( item ) )
-    );
+    (
+      item: Deno.FsFile,
+      index: number,
+    ): Promise<void> => ( ( writeFile[ index ] as T_Obj001 ).file as File ).stream().pipeTo( writableStreamFromWriter( item ) )
+  );
 
   return {
     noWriteFile,
@@ -222,7 +219,7 @@ async function UploadByMultiple( request: Request ): Promise<Response>{
     messageStatus: resMessageStatus[ 1000 ],
   } );
 
-  const contentType = ( _request.headers.get( 'content-type' ) ?? '' ).trim().toLowerCase();
+  const contentType: string = ( _request.headers.get( 'content-type' ) ?? '' ).trim().toLowerCase();
 
   if( _request.body && contentType.startsWith( 'multipart/form-data;' ) ){
     let formData: FormData;
@@ -231,14 +228,14 @@ async function UploadByMultiple( request: Request ): Promise<Response>{
       formData = await _request.formData();
 
       const quantity: number = ( formData.get( 'quantity' ) ?? 0 ) as number,
-        files001: Array<File | Blob | string | null> = [];
+        files001: Array<FormDataEntryValue | Blob | null> = [];
 
-      let file001: File | Blob | string | null,
+      let file001: FormDataEntryValue | Blob | null,
         fileName001: string = '',
         str001: string = '';
 
       for(
-        let i = 0;
+        let i: number = 0;
         i < quantity;
         ++i
       ){
@@ -263,31 +260,37 @@ async function UploadByMultiple( request: Request ): Promise<Response>{
       }
 
       const files: Array<File | Blob> = ( [
-        ...( (): Array<File | Blob | string | null> => {
+        ...( (): Array<FormDataEntryValue | Blob | null> => {
           return formData.getAll( 'files' )
-          .map( ( item: File | Blob | string | null, ): File | Blob | string | null => {
-            if( Object.prototype.toString.call( item ) === '[object File]' ){
-              // @ts-expect-error
-              item._name = ( item as File ).name;
-            }
-            else if( Object.prototype.toString.call( item ) === '[object Blob]' ){
-              // @ts-expect-error
-              item._name = `Blob_File`;
-            }
+            .map( ( item: FormDataEntryValue | Blob | null, ): FormDataEntryValue | Blob | null => {
+              if( Object.prototype.toString.call( item ) === '[object File]' ){
+                // @ts-expect-error
+                item._name = ( item as File ).name;
+              }
+              else if( Object.prototype.toString.call( item ) === '[object Blob]' ){
+                // @ts-expect-error
+                item._name = `Blob_File`;
+              }
 
-            return item;
-          } );
+              return item;
+            } );
         } )(),
         ...files001,
-      ].filter( ( item: File | Blob | string | null, ): boolean => Object.prototype.toString.call( item ) === '[object File]' || Object.prototype.toString.call( item ) === '[object Blob]' ) ) as Array<File | Blob>;
+      ].filter( ( item: FormDataEntryValue | Blob | null, ): boolean => Object.prototype.toString.call( item ) === '[object File]' || Object.prototype.toString.call( item ) === '[object Blob]' ) ) as Array<File | Blob>;
 
       const {
         noWriteFile,
         writeFile,
-      }: TypeResultObj001 = await WriteFileHandle( _request, files );
+      }: T_ResultObj001 = await WriteFileHandle( _request, files );
 
-      const noWriteFileInfo: Array<{ message: string; filePath: string; }> = [],
-        writeFileInfo: Array<{ message: string; filePath: string; }> = [];
+      const noWriteFileInfo: Array<{
+          message: string;
+          filePath: string;
+        }> = [],
+        writeFileInfo: Array<{
+          message: string;
+          filePath: string;
+        }> = [];
 
       noWriteFile.forEach(
         (
@@ -297,7 +300,7 @@ async function UploadByMultiple( request: Request ): Promise<Response>{
               fileType,
               fileName,
             },
-          }: TypeObj001,
+          }: T_Obj001,
         ): void => {
           noWriteFileInfo.push( {
             // 描述性说明。
@@ -316,7 +319,7 @@ async function UploadByMultiple( request: Request ): Promise<Response>{
               fileType,
               fileName,
             },
-          }: TypeObj001,
+          }: T_Obj001,
         ): void => {
           writeFileInfo.push( {
             // 描述性说明。
@@ -364,7 +367,7 @@ async function UploadByMultiple( request: Request ): Promise<Response>{
     status: 200,
     statusText: 'OK',
     headers: {
-      ...httpHeaders,
+      ...HttpResponseHeadersFun( request ),
       'content-type': 'application/json; charset=utf-8',
     },
   } );

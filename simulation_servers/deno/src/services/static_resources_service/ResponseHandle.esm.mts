@@ -21,6 +21,8 @@
  * 用于响应“static”文件夹下的静态文件获取（GET请求），如：
  * 获取“static”文件夹下的“json”文件夹下的“JSON001.json”文件
  * https://127.0.0.1:9200/simulation_servers_deno/static/json/JSON001.json
+ * 携带上查询参数“download”表示要下载该资源文件：
+ * https://127.0.0.1:9200/simulation_servers_deno/static/json/JSON001.json?download
  *
  * 更多的对应关系见“src/configures/route_map_config/RouteMapConfig.esm.mts”中的变量“methodByGetForRouteHandle”中的配置。
  */
@@ -31,20 +33,16 @@
 
 'use strict';
 
-/*
- import {
- parse,
-
- // @ts-ignore
- } from 'DenoStd/path/mod.ts';
- */
+import {
+  parse,
+} from 'deno_std_path';
 
 import {
-  type TypeResponse001,
+  type T_Response001,
 
   staticDir,
 
-  httpHeaders,
+  HttpResponseHeadersFun,
 } from 'configures/GlobalParameters.esm.mts';
 
 import {
@@ -62,14 +60,15 @@ import {
  *
  * @param {Request} request 请求对象，无默认值，必须。
  *
- * @returns {TypeResponse001} 返回值类型为Response、Promise<Response>。
+ * @returns {T_Response001} 返回值类型为Response、Promise<Response>。
  */
-function ResponseHandle( request: Request ): TypeResponse001{
+function ResponseHandle( request: Request ): T_Response001{
   const url: URL = new URL( request.url ),
     pathName: string = decodeURI( url.pathname ),
+    isDownload: boolean = url.searchParams.has( 'download' ),
     filePath: URL = new URL( `${ staticDir }/${ pathName.slice( myURLPathName.length ) }` );
 
-  let result: TypeResponse001;
+  let result: T_Response001;
 
   let fileState: Deno.FileInfo;
 
@@ -85,7 +84,7 @@ function ResponseHandle( request: Request ): TypeResponse001{
         status: 200,
         statusText: 'OK',
         headers: {
-          ...httpHeaders,
+          ...HttpResponseHeadersFun( request ),
           'Content-Type': `${ mime.getType( filePath.href ) }`,
           'Content-Length': `${ Number( fileState.size ) }`,
           // 该属性用于下载。
@@ -107,7 +106,13 @@ function ResponseHandle( request: Request ): TypeResponse001{
            * 'Content-Disposition': 'form-data; name=fieldName'、'Content-Disposition': 'form-data; name=fieldName; filename="filename.jpg"'
            * 8、警告。“filename”文件名后面的字符串应该总是放在引号里；但是，由于兼容性的原因，许多浏览器试图解析含有空格的无引号名称。
            */
-          // 'Content-Disposition': `attachment; filename="${ parse( filePath.href ).base }"`,
+          ...(
+            isDownload
+            ? {
+                'Content-Disposition': `attachment; filename="${ parse( filePath.href ).base }"`
+              }
+            : {}
+          ),
         },
       } );
     }

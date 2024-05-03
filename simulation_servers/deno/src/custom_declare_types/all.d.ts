@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference types="./vite/client.d.ts" />
 /// <reference types="./img.d.ts" />
 /// <reference types="./music.d.ts" />
 /// <reference types="./videos.d.ts" />
@@ -16,10 +16,3 @@
  * 自定义的TS类型描述。
  */
 
-declare module 'npm:mongodb' {
-  export * from 'mongodb';
-}
-
-declare module 'npm:mongoose' {
-  export * from 'mongoose';
-}

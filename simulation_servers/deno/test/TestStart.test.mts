@@ -1,3 +1,5 @@
+#!/usr/bin/env -S deno run -A --config=../deno.json --lock-write --check --v8-flags=--max-old-space-size=1024000 --reload --unstable-hmr
+
 /**
  * Project: web-for-vite-project-template
  * FileDirPath: simulation_servers/deno/test/TestStart.test.mts
@@ -16,8 +18,8 @@
 console.log( `\n\n\n` );
 
 /*
- if( false ){
- import('./xxx.mts').catch( ( error: unknown ): void => {
+ if( true ){
+ import('./mongodb_demo/npm_mongodb_for_deno.test.mts').catch( ( error: unknown ): void => {
  console.error( error );
  } ).finally( (): void => {
  console.log( `\n\n\n` );

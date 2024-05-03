@@ -2,30 +2,58 @@
   "projects": {
     "web-for-vite-project-template": {
       "name": "web-for-vite-project-template",
-      "schema": "./src/graphQL/GraphQL.Schema.json",
-      "documents": "./src/graphQL/doc/**/*.{graphql,graphqls,gql}",
+      "schema": [
+        "./src/graphQL/GraphQL.Schema.json"
+      ],
       "include": [
-        "./src/graphQL/api/**/*.{graphql,graphqls,gql}",
-        "./src/graphQL/test/**/*.{graphql,graphqls,gql}"
+        "./src/**/*.{graphql,graphqls,gql}",
+        "./webpack_location/**/*.{graphql,graphqls,gql}"
       ],
       "exclude": [
-        "./src/graphQL/doc/**/*.{graphql,graphqls,gql}"
+        "./src/graphQL/doc/**/*.{graphql,graphqls,gql}",
+        "./src/graphQL/GraphQL.Schema.json.graphql",
+        "./src/**/*.type.{graphql,graphqls,gql}"
       ],
       "extensions": {
         "endpoints": {
-          "例子001": {
-            "url": "http://127.0.0.1:9200/graphql",
-            "introspect": false,
+          "deno001:https://127.0.0.1:9200": {
+            "url": "https://127.0.0.1:9200/graphql",
+            "introspect": true,
             "headers": {
-              "Accept": "*/*",
-              "Accept-Encoding": "gzip",
+              "Accept": "application/json",
+              "Content-Type": "application/json; charset=utf-8",
               "Cache-Control": "no-cache",
-              "Connection": "keep-alive",
-              "Content-Type": "application/json",
-              "Pragma": "no-cache",
-              "user-agent": "web-for-vite-project-template JS GraphQL for 例子001",
-              "Access-Control-Request-Headers": "Authorization, Accept, Content-Type, Content-Language, Accept-Language",
-              "Access-Control-Request-Method": "GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH"
+              "Access-Control-Request-Headers": "Authorization, Accept, Content-Type, Content-Language, Accept-Language, Cache-Control",
+              "Access-Control-Request-Method": "GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH",
+              "user-agent": "GraphQL plugin from WebStorm."
+            }
+          }
+        }
+      }
+    },
+    "simulation_servers_deno": {
+      "name": "simulation_servers_deno",
+      "schema": [
+        "./src/graphQL/GraphQL.Schema.json"
+      ],
+      "include": [
+        "./simulation_servers/deno/src/**/*.test.{graphql,graphqls,gql}"
+      ],
+      "exclude": [
+        "./simulation_servers/deno/src/**/*.type.{graphql,graphqls,gql}"
+      ],
+      "extensions": {
+        "endpoints": {
+          "deno002:https://127.0.0.1:9200": {
+            "url": "https://127.0.0.1:9200/graphql",
+            "introspect": true,
+            "headers": {
+              "Accept": "application/json",
+              "Content-Type": "application/json; charset=utf-8",
+              "Cache-Control": "no-cache",
+              "Access-Control-Request-Headers": "Authorization, Accept, Content-Type, Content-Language, Accept-Language, Cache-Control",
+              "Access-Control-Request-Method": "GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH",
+              "user-agent": "GraphQL plugin from WebStorm."
             }
           }
         }

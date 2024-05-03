@@ -30,11 +30,11 @@
 'use strict';
 
 import {
-  type TypeResponse001,
+  type T_Response001,
 
   staticDir,
 
-  httpHeaders,
+  HttpResponseHeadersFun,
 } from 'configures/GlobalParameters.esm.mts';
 
 import {
@@ -46,50 +46,50 @@ import {
  *
  * @param {Request} request 请求对象，无默认值，必须。
  *
- * @returns {TypeResponse001} 返回值类型为Response、Promise<Response>。
+ * @returns {T_Response001} 返回值类型为Response、Promise<Response>。
  */
-function Handle( request: Request ): TypeResponse001{
+function Handle( request: Request ): T_Response001{
   const url: URL = new URL( request.url ),
     pathName: string = url.pathname;
 
   let filePath: URL;
 
   switch( pathName ){
-  case '/favicon.ico':
-    filePath = new URL( import.meta.resolve( `${ staticDir }/ico/favicon.ico` ) );
+    case '/favicon.ico':
+      filePath = new URL( import.meta.resolve( `${ staticDir }/ico/favicon.ico` ) );
 
-    break;
-  case '/favicon.png':
-    filePath = new URL( import.meta.resolve( `${ staticDir }/ico/uncompressed/ico_120_120.png` ) );
+      break;
+    case '/favicon.png':
+      filePath = new URL( import.meta.resolve( `${ staticDir }/ico/uncompressed/ico_120_120.png` ) );
 
-    break;
-  case '/apple-touch-icon.png':
-    filePath = new URL( import.meta.resolve( `${ staticDir }/ico/uncompressed/ico_120_120.png` ) );
+      break;
+    case '/apple-touch-icon.png':
+      filePath = new URL( import.meta.resolve( `${ staticDir }/ico/uncompressed/ico_120_120.png` ) );
 
-    break;
-  case '/apple-touch-icon-precomposed.png':
-    filePath = new URL( import.meta.resolve( `${ staticDir }/ico/uncompressed/ico_120_120.png` ) );
+      break;
+    case '/apple-touch-icon-precomposed.png':
+      filePath = new URL( import.meta.resolve( `${ staticDir }/ico/uncompressed/ico_120_120.png` ) );
 
-    break;
-  case '/apple-touch-icon-120x120.png':
-    filePath = new URL( import.meta.resolve( `${ staticDir }/ico/uncompressed/ico_120_120.png` ) );
+      break;
+    case '/apple-touch-icon-120x120.png':
+      filePath = new URL( import.meta.resolve( `${ staticDir }/ico/uncompressed/ico_120_120.png` ) );
 
-    break;
-  case '/apple-touch-icon-120x120-precomposed.png':
-    filePath = new URL( import.meta.resolve( `${ staticDir }/ico/uncompressed/ico_120_120.png` ) );
+      break;
+    case '/apple-touch-icon-120x120-precomposed.png':
+      filePath = new URL( import.meta.resolve( `${ staticDir }/ico/uncompressed/ico_120_120.png` ) );
 
-    break;
-  default:
-    filePath = new URL( import.meta.resolve( `${ staticDir }/ico/uncompressed/ico_120_120.png` ) );
+      break;
+    default:
+      filePath = new URL( import.meta.resolve( `${ staticDir }/ico/uncompressed/ico_120_120.png` ) );
 
-    break;
+      break;
   }
 
   return new Response( Deno.readFileSync( filePath ), {
     status: 200,
     statusText: 'OK',
     headers: {
-      ...httpHeaders,
+      ...HttpResponseHeadersFun( request ),
       'content-type': mime.getType( filePath.href ),
     },
   } );

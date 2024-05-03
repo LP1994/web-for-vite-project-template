@@ -2,6 +2,83 @@ Deno（读音：/ˈdiːnoʊ/）笔记
 
 
 
+Unstable Feature Flags：
+详细见：
+https://docs.deno.com/runtime/manual/tools/unstable_flags
+
+--unstable-bare-node-builtins
+通过该标记，您可以导入 Node.js 内置模块，而无需使用 node: 指定符，如下例所示。如果手动管理 Node.js 依赖关系，也可以使用此标记启用 npm 包，而无需 npm: 指定符（参见 byonm 标记）。
+不建议启用。
+
+--unstable-byonm
+不建议启用。
+启用--unstable-bare-node-builtins、--unstable-byonm会出现这类错误提示！
+Could not find a matching package for 'npm:graphql-http@1.22.0' in 'G:\WebStormWS\web-for-vite-project-template\simulation_servers\deno\package.json'.
+You must specify this as a package.json dependency when the node_modules folder is not managed by Deno.
+    at https://deno.land/x/gql@2.0.1/deps.ts:14:8
+
+--unstable-sloppy-imports
+该标记启用了从不具扩展名的导入中推断文件扩展名的行为。
+模糊导入。
+个人建议不启用为好，严格写明所有导入的文件扩展名。
+
+--unstable-unsafe-proto
+出于安全考虑，Deno 决定不支持 Object.prototype.__proto__。然而，仍有许多 npm 软件包需要依赖该属性才能正常工作。
+此标记可启用此属性。请注意，我们并不推荐使用此属性，但如果您确实需要使用依赖于此属性的软件包，那么现在您可以使用 "逃生舱门 "了。
+
+--unstable-webgpu
+像在浏览器中一样，在全局范围内启用 WebGPU API。
+
+--unstable-broadcast-channel
+启用此标记后，BroadcastChannel Web API 就可以在全局范围内使用，就像在浏览器中一样。
+
+--unstable-worker-options
+启用不稳定的 Web Worker API 选项。具体来说，它能让你指定 Worker 可用的权限：
+new Worker(`data:application/javascript;base64,${btoa(`postMessage("ok");`)}`, {
+  type: "module",
+  deno: {
+    permissions: {
+      read: true,
+    },
+  },
+}).onmessage = ({ data }) => {
+  console.log(data);
+};
+
+--unstable-cron
+启用此标记可在 Deno 命名空间中使用 Deno.cron API。
+
+--unstable-kv
+启用此标记可在 Deno 命名空间中使用 Deno KV API。
+
+--unstable-ffi
+启用不稳定的 FFI API，详细见：
+https://docs.deno.com/runtime/manual/runtime/ffi_api
+
+--unstable-fs
+在 Deno 命名空间中启用不稳定的文件系统 API。这些 API 包括：
+Deno.flock
+Deno.flockSync
+Deno.funlock
+Deno.funlockSync
+Deno.umask
+
+--unstable-net
+启用 Deno 命名空间中的不稳定 net API。这些 API 包括
+Deno.DatagramConn
+
+--unstable-http
+Enable unstable HTTP APIs
+
+--unstable-temporal
+Enable unstable Temporal API
+
+--unstable-hmr
+您可以在运行 deno 时使用 --unstable-hmr 标志来启用热模块替换模式。运行时将尝试就地更新程序，而不是重启程序。如果就地更新失败，程序仍将重启。
+--unstable-hmr不能跟--watch一起使用！且--unstable-hmr必须明确的写在启动命令行中，写在配置文件中是不生效的！
+
+
+
 当在deno.json配置文件中指定“imports”或“scopes”时，将忽略“importMap”设置。
 
 
@@ -156,6 +233,7 @@ console.log(Deno.args); // [ "a", "b" ]
 deno run --watch main.ts
 deno test --watch
 deno fmt --watch
+--unstable-hmr不能跟--watch一起使用！且--unstable-hmr必须明确的写在启动命令行中，写在配置文件中是不生效的！
 
 
 
@@ -205,7 +283,7 @@ deno run --check main.ts
 --no-check=https://deno.land/std@0.137.0/bytes/bytes_list.ts,https://deno.land/std@0.137.0/io/buffer.ts,https://deno.land/std@0.137.0/testing/_diff.ts
 但是--no-check=[,,,]不能跟--check=all一起使用。
 例子：
-deno run -A --watch --config=./deno.json --lock-write --unstable --prompt --check --v8-flags=--max-old-space-size=8192 --reload ./src/App.mts --color=16m
+deno run -A --config=./deno.json --lock-write --check --v8-flags=--max-old-space-size=1024000 --reload --unstable-hmr ./src/App.mts --color=16m
 这种写法，只会对自己编写的代码做类型检查，不会对第三方的代码做类型检查。
 
 
@@ -215,7 +293,7 @@ deno run -A --watch --config=./deno.json --lock-write --unstable --prompt --chec
 --inspect=<HOST:PORT>        在主机上激活检查器：端口 ...
 --inspect-brk=<HOST:PORT>    激活主机上的检查器：端口并在...中断
 --location <HREF>            某些 Web API 使用的“globalThis.location”的值
---prompt                     如果未通过所需的权限，则回退以提示。
+--prompt                     如果未通过所需的权限，则回退以提示。从deno v1.40.0开始该选项被删除了。
 --seed <NUMBER>              Seed Math.random()
 --v8-flags=<v8-flags>        Set V8 command line options. For help: ...
 
@@ -279,7 +357,7 @@ const proc = Deno.run({ cmd: ["whoami"] });
 
 
 运行时
-所有运行时函数（Web API + Deno 全局）的文档都可以在 doc.deno.land/deno/stable 上找到，其中不稳定的 API 是通过 doc.deno.land/deno/unstable 中的 --unstable 标志启用的。
+所有运行时函数（Web API + Deno 全局）的文档都可以在 doc.deno.land/deno/stable 上找到，其中不稳定的 API 是通过 doc.deno.land/deno/unstable 中的 --unstable 标志启用的（建议您使用粒度不稳定标志来代替此标志，该 --unstable标志现已弃用，并将在 Deno 2 中删除。）。
 Web Platform APIs（在某些情况下，稍微偏离规范是有意义的，因为 Deno 具有不同的安全模型。）：对于已经存在 Web 标准的 API，例如 HTTP 请求的 fetch，Deno 使用这些而不是发明新的专有 API。
 https://deno.land/manual@v1.27.0/runtime/web_platform_apis
 Deno global：所有非 Web 标准的 API 都包含在全局 Deno 命名空间中。它具有用于读取文件、打开 TCP 套接字、服务 HTTP 和执行子进程等的 API。

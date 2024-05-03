@@ -14,6 +14,12 @@
 'use strict';
 
 import {
+  type DocumentNode as T_DocumentNode,
+
+  parse,
+} from 'esm_sh_graphql';
+
+import {
   // Deno自己有一个名为media_types的API功能跟它一样。
   mimetypes,
 } from './ThirdPartyModules.esm.mts';
@@ -23,13 +29,13 @@ import {
 } from 'configures/GlobalParameters.esm.mts';
 
 import {
-  type TypeDateFormatForObject,
+  type T_DateFormatForObject,
 
   DateFormatForObject,
-} from 'tools/universal_tool_for_deno/UniversalToolForDeno.esm.mts';
+} from 'universal_tool_for_deno/UniversalToolForDeno.esm.mts';
 
 import {
-  type TypeMyCusDenoFsFile,
+  type T_MyCusDenoFsFile,
 
   CreateLogger,
 } from 'public/Logger.esm.mts';
@@ -57,20 +63,24 @@ mime.define( {
 }, true );
 
 /**
- * @type {TypeMyCusDenoFsFile} 一个logWriteStream单例变量，一般用于记录常规日志信息什么的。
+ * 一个logWriteStream单例变量，一般用于记录常规日志信息什么的。
+ *
+ * @type {T_MyCusDenoFsFile}
  */
-let logWriteStream: TypeMyCusDenoFsFile | null = null;
+let logWriteStream: T_MyCusDenoFsFile | null = null;
 /**
- * @type {TypeMyCusDenoFsFile} 一个errorWriteStream单例变量，一般用于记录错误信息什么的。
+ * 一个errorWriteStream单例变量，一般用于记录错误信息什么的。
+ *
+ * @type {T_MyCusDenoFsFile}
  */
-let errorWriteStream: TypeMyCusDenoFsFile | null = null;
+let errorWriteStream: T_MyCusDenoFsFile | null = null;
 
 /**
  * 获取一个logWriteStream单例变量，一般用于记录常规日志信息什么的。
  *
- * @returns {Promise<TypeMyCusDenoFsFile>}
+ * @returns {Promise<T_MyCusDenoFsFile>}
  */
-async function GetLogWriteStreamForSingleton(): Promise<TypeMyCusDenoFsFile>{
+async function GetLogWriteStreamForSingleton(): Promise<T_MyCusDenoFsFile>{
   const {
     year,
     month,
@@ -79,11 +89,11 @@ async function GetLogWriteStreamForSingleton(): Promise<TypeMyCusDenoFsFile>{
     minutes,
     seconds,
     day,
-  }: TypeDateFormatForObject = DateFormatForObject();
+  }: T_DateFormatForObject = DateFormatForObject();
 
   if( !logWriteStream ){
     logWriteStream = new Proxy( await CreateLogger( new URL( `${ logDir }/log_${ year }年${ month }月${ date }日${ hours }时${ minutes }分${ seconds }秒_周${ day }.log` ) ), {
-      get( target: TypeMyCusDenoFsFile, propKey: string | symbol, receiver: unknown ): any{
+      get( target: T_MyCusDenoFsFile, propKey: string | symbol, receiver: unknown ): any{
         if( propKey === 'close' ){
           logWriteStream = null;
         }
@@ -93,15 +103,15 @@ async function GetLogWriteStreamForSingleton(): Promise<TypeMyCusDenoFsFile>{
     } );
   }
 
-  return logWriteStream as TypeMyCusDenoFsFile;
+  return logWriteStream as T_MyCusDenoFsFile;
 }
 
 /**
  * 获取一个errorWriteStream单例变量，一般用于记录错误信息什么的。
  *
- * @returns {Promise<TypeMyCusDenoFsFile>}
+ * @returns {Promise<T_MyCusDenoFsFile>}
  */
-async function GetErrorWriteStreamForSingleton(): Promise<TypeMyCusDenoFsFile>{
+async function GetErrorWriteStreamForSingleton(): Promise<T_MyCusDenoFsFile>{
   const {
     year,
     month,
@@ -110,11 +120,11 @@ async function GetErrorWriteStreamForSingleton(): Promise<TypeMyCusDenoFsFile>{
     minutes,
     seconds,
     day,
-  }: TypeDateFormatForObject = DateFormatForObject();
+  }: T_DateFormatForObject = DateFormatForObject();
 
   if( !errorWriteStream ){
     errorWriteStream = new Proxy( await CreateLogger( new URL( `${ logDir }/error_${ year }年${ month }月${ date }日${ hours }时${ minutes }分${ seconds }秒_周${ day }.log` ) ), {
-      get( target: TypeMyCusDenoFsFile, propKey: string | symbol, receiver: unknown ): any{
+      get( target: T_MyCusDenoFsFile, propKey: string | symbol, receiver: unknown ): any{
         if( propKey === 'close' ){
           errorWriteStream = null;
         }
@@ -124,7 +134,7 @@ async function GetErrorWriteStreamForSingleton(): Promise<TypeMyCusDenoFsFile>{
     } );
   }
 
-  return errorWriteStream as TypeMyCusDenoFsFile;
+  return errorWriteStream as T_MyCusDenoFsFile;
 }
 
 /**
@@ -150,8 +160,30 @@ async function IterateToNestForPromise<T>( arg: T | Promise<T> ): Promise<T>{
   return result;
 }
 
+/**
+ * 根据一个内容是“GraphQL类型定义（即：GraphQL source）”的文件的路径，将其中的“GraphQL类型定义（即：GraphQL source）”解析为“DocumentNode”。
+ * PS：
+ * 1、如果解析过程遇到语法错误，则抛出GraphQLError。
+ * 2、在读取文件内容时，以UTF-8解码字符串的形式同步读取并返回文件的全部内容。读取目录时会出错。
+ * 例如：
+ * // Hello.type.graphql
+ * type Query {
+ *   hello: String,
+ * }
+ * // Hello.query.esm.mts
+ * GraphqlParseByFilePath( new URL( import.meta.resolve( `./Hello.type.graphql` ) ) );
+ *
+ * @param {string | URL} path 文件路径，无默认值，必须。
+ * 该值形如：new URL( import.meta.resolve( `./Hello.type.graphql` ) )。
+ *
+ * @returns {T_DocumentNode} 返回一个DocumentNode。
+ */
+function GraphqlParseByFilePath( path: string | URL ): T_DocumentNode{
+  return parse( Deno.readTextFileSync( path ) );
+}
+
 export {
-  type TypeMyCusDenoFsFile,
+  type T_MyCusDenoFsFile,
 
   GetLogWriteStreamForSingleton,
   GetErrorWriteStreamForSingleton,
@@ -163,6 +195,7 @@ export {
   mimelite,
 
   IterateToNestForPromise,
+  GraphqlParseByFilePath,
 };
 
 export default {
@@ -176,4 +209,5 @@ export default {
   mimelite,
 
   IterateToNestForPromise,
+  GraphqlParseByFilePath,
 };

@@ -31,9 +31,9 @@
 'use strict';
 
 import {
-  type TypeResponse001,
+  type T_Response001,
 
-  httpHeaders,
+  HttpResponseHeadersFun,
 } from 'configures/GlobalParameters.esm.mts';
 
 // @ts-expect-error
@@ -44,44 +44,44 @@ import ResponseError from 'public/ResponseError.esm.mts';
  *
  * @param {Request} request 请求对象，无默认值，必须。
  *
- * @returns {TypeResponse001} 返回值类型为Response、Promise<Response>。
+ * @returns {T_Response001} 返回值类型为Response、Promise<Response>。
  */
-function ResponseHandle( request: Request ): TypeResponse001{
+function ResponseHandle( request: Request ): T_Response001{
   const url: URL = new URL( request.url ),
     callBack: string = String( url.searchParams.get( 'callBack' ) );
 
   let result: string = '';
 
   switch( callBack ){
-  case 'JSONPCallBack':
-    const name: string = url.searchParams.get( 'name' ) as string,
-      age: string = url.searchParams.get( 'age' ) as string;
+    case 'JSONPCallBack':
+      const name: string = url.searchParams.get( 'name' ) as string,
+        age: string = url.searchParams.get( 'age' ) as string;
 
-    result = `${ callBack }(
+      result = `${ callBack }(
   '${ name }',
   ${ age },
   true,
   ${ JSON.stringify( {
-      name: String( name ),
-      age: Number( age ),
-      timer: Number( Date.now() ),
-    } ) },
+        name: String( name ),
+        age: Number( age ),
+        timer: Number( Date.now() ),
+      } ) },
   '姓名：${ name }，年龄：${ age }，座右铭：路漫漫其修远兮，吾将上下而求索。',
 );`;
 
-    break;
+      break;
 
-  default:
-    result = `console.error( '还未对“${ callBack }”这个函数做处理。' );`;
+    default:
+      result = `console.error( '还未对“${ callBack }”这个函数做处理。' );`;
 
-    break;
+      break;
   }
 
   return new Response( result, {
     status: 200,
     statusText: 'OK',
     headers: {
-      ...httpHeaders,
+      ...HttpResponseHeadersFun( request ),
       'Content-Type': `application/javascript; charset=utf-8`,
     },
   } );

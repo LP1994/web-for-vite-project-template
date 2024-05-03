@@ -1,3 +1,5 @@
+#!/usr/bin/env -S deno run -A --config=../deno.json --lock-write --check --v8-flags=--max-old-space-size=1024000 --reload --unstable-hmr
+
 /**
  * Project: web-for-vite-project-template
  * FileDirPath: simulation_servers/deno/src/App.mts
@@ -7,7 +9,7 @@
  * CreateDate: 2022-01-01 00:00:00 星期六
  */
 
-// deno run -A --watch --config=./deno.json --lock-write --unstable --prompt --check --v8-flags=--max-old-space-size=8192 --reload ./src/App.mts --color=16m
+// deno run -A --config=../deno.json --lock-write --check --v8-flags=--max-old-space-size=1024000 --reload --unstable-hmr ./src/App.mts --color=16m
 
 /**
  * 这是程序的启动入口。
@@ -25,27 +27,27 @@
 
 'use strict';
 
-import 'DenoX/corejs/index.js';
+import 'deno_x_corejs';
 
 import {
   MyConsole,
-} from 'tools/universal_tool_for_deno/UniversalToolForDeno.esm.mts';
+} from 'universal_tool_for_deno/UniversalToolForDeno.esm.mts';
 
 import {
-  type TypeMyCusDenoFsFile,
+  type T_MyCusDenoFsFile,
 
   GetLogWriteStreamForSingleton,
   GetErrorWriteStreamForSingleton,
 } from 'public/PublicTools.esm.mts';
 
-const logWriteStream: TypeMyCusDenoFsFile = await GetLogWriteStreamForSingleton();
-const errorWriteStream: TypeMyCusDenoFsFile = await GetErrorWriteStreamForSingleton();
+const logWriteStream: T_MyCusDenoFsFile = await GetLogWriteStreamForSingleton();
+const errorWriteStream: T_MyCusDenoFsFile = await GetErrorWriteStreamForSingleton();
 
 Promise.allSettled( [
   // 这两类服务不可同时启用，启用其中之一即可。Start
 
   // 同时提供“http:”和“ws:”协议的服务，端口都是9000，基于HTTP/1.1。
-  // import( 'servers/HTTPAndWebSocketByServerForPort9000.mts' ),
+  import( 'servers/HTTPAndWebSocketByServerForPort9000.mts' ),
   // 同时提供“https:”和“wss:”协议的服务，端口都是9000，基于HTTP/1.1。
   // import( 'servers/HTTPSAndWebSocketSByServerForPort9000.mts' ),
 
@@ -76,10 +78,10 @@ Promise.allSettled( [
 
   // 这两类服务不可同时启用，启用其中之一即可。End
 ] )
-.then(
-  ( resolve: Array<PromiseSettledResult<unknown>> ): void => {
-    // resolve ---> [ { status: "fulfilled", value: Module {} } ]
-    logWriteStream.write( `
+  .then(
+    ( resolve: Array<PromiseSettledResult<unknown>> ): void => {
+      // resolve ---> [ { status: "fulfilled", value: Module {} } ]
+      logWriteStream.write( `
 来自：simulation_servers/deno/src/App.mts
 resolve--->Start
 
@@ -87,18 +89,18 @@ ${ JSON.stringify( resolve ) }
 
 resolve--->End
 ` );
-  },
-  ( reject: Array<PromiseSettledResult<unknown>> ): void => {
-    MyConsole.Red( `
+    },
+    ( reject: Array<PromiseSettledResult<unknown>> ): void => {
+      MyConsole.Red( `
 来自：simulation_servers/deno/src/App.mts
 reject--->Start
 ` );
-    console.dir( reject );
-    MyConsole.Red( `
+      console.dir( reject );
+      MyConsole.Red( `
 reject--->End
 ` );
 
-    errorWriteStream.write( `
+      errorWriteStream.write( `
 来自：simulation_servers/deno/src/App.mts
 reject--->Start
 
@@ -106,10 +108,10 @@ ${ JSON.stringify( reject ) }
 
 reject--->End
 ` );
-  }
-)
-.catch( ( error: unknown ): void => {
-  MyConsole.Red( `
+    }
+  )
+  .catch( ( error: unknown ): void => {
+    MyConsole.Red( `
 来自：simulation_servers/deno/src/App.mts
 catch error--->Start
 
@@ -118,7 +120,7 @@ ${ ( error as Error ).message }
 catch error--->End
 ` );
 
-  errorWriteStream.write( `
+    errorWriteStream.write( `
 来自：simulation_servers/deno/src/App.mts
 catch error--->Start
 
@@ -126,4 +128,4 @@ ${ ( error as Error ).message }
 
 catch error--->End
 ` );
-} );
+  } );

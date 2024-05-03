@@ -14,23 +14,15 @@
 'use strict';
 
 import {
-  type ConnInfo,
-
-  serve,
-
-  // @ts-ignore
-} from 'http_server';
-
-import {
-  type TypeResponse001,
+  type T_Response001,
 } from 'configures/GlobalParameters.esm.mts';
 
 import {
   MyConsole,
-} from 'tools/universal_tool_for_deno/UniversalToolForDeno.esm.mts';
+} from 'universal_tool_for_deno/UniversalToolForDeno.esm.mts';
 
 import {
-  type TypeMyCusDenoFsFile,
+  type T_MyCusDenoFsFile,
 
   GetLogWriteStreamForSingleton,
   GetErrorWriteStreamForSingleton,
@@ -42,53 +34,10 @@ import {
   Routers,
 } from 'routers/Routers.esm.mts';
 
-const logWriteStream: TypeMyCusDenoFsFile = await GetLogWriteStreamForSingleton();
-const errorWriteStream: TypeMyCusDenoFsFile = await GetErrorWriteStreamForSingleton();
+const logWriteStream: T_MyCusDenoFsFile = await GetLogWriteStreamForSingleton();
+const errorWriteStream: T_MyCusDenoFsFile = await GetErrorWriteStreamForSingleton();
 
-serve(
-  (
-    request: Request,
-    connInfo: ConnInfo,
-  ): TypeResponse001 => {
-    logWriteStream.write( `
-来自：simulation_servers/deno/src/servers/HTTPServerForPort9100.mts
-HTTP Server request--->Start
-
-${ JSON.stringify( {
-      method: request.method,
-      url: request.url,
-      redirect: request.redirect,
-      bodyUsed: request.bodyUsed,
-      headers: ( () => {
-        const result: { [ keyName: string ]: string; } = {};
-
-        request.headers.forEach( (
-          value: string,
-          key: string,
-          // @ts-expect-error
-          parent: Headers
-        ): void => {
-          result[ key ] = value;
-        } );
-
-        return result;
-      } )(),
-    }, null, ' ' ) }
-
-HTTP Server request--->End
-` );
-
-    logWriteStream.write( `
-来自：simulation_servers/deno/src/servers/HTTPServerForPort9100.mts
-HTTP Server connInfo--->Start
-
-${ JSON.stringify( connInfo, null, ' ' ) }
-
-HTTP Server connInfo--->End
-` );
-
-    return Routers( request );
-  },
+Deno.serve(
   {
     port: 9100,
     /**
@@ -134,7 +83,7 @@ HTTP Server已启动（Windows系统上无法直接访问“0.0.0.0”，请改�
 HTTP Server已启动（Windows系统上无法直接访问“0.0.0.0”，请改用本地、局域网IP等等，支持IPV4、IPV6）：http://${ hostname }:${ port }/。
 ` );
     },
-    onError: ( error: unknown ): TypeResponse001 => {
+    onError: ( error: unknown ): T_Response001 => {
       MyConsole.Red( `
 来自：simulation_servers/deno/src/servers/HTTPServerForPort9100.mts
 HTTP Server onError--->Start
@@ -160,5 +109,50 @@ HTTP Server onError--->End
 ${ ( error as Error ).message }`,
       } );
     },
-  }
+  },
+  (
+    request: Request,
+    info: Deno.ServeHandlerInfo,
+  ): T_Response001 => {
+    logWriteStream.write( `
+来自：simulation_servers/deno/src/servers/HTTPServerForPort9100.mts
+HTTP Server request--->Start
+
+${ JSON.stringify( {
+      method: request.method,
+      url: request.url,
+      redirect: request.redirect,
+      bodyUsed: request.bodyUsed,
+      headers: ( () => {
+        const result: {
+          [ keyName: string ]: string;
+        } = {};
+
+        request.headers.forEach( (
+          value: string,
+          key: string,
+          // @ts-expect-error
+          parent: Headers
+        ): void => {
+          result[ key ] = value;
+        } );
+
+        return result;
+      } )(),
+    }, null, ' ' ) }
+
+HTTP Server request--->End
+` );
+
+    logWriteStream.write( `
+来自：simulation_servers/deno/src/servers/HTTPServerForPort9100.mts
+HTTP Server info--->Start
+
+${ JSON.stringify( info, null, ' ' ) }
+
+HTTP Server info--->End
+` );
+
+    return Routers( request );
+  },
 );

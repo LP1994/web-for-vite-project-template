@@ -28,7 +28,7 @@
  * 当客户端发起的请求URL上带有查询参数“isForcedWrite”且值设置为true时，表示无论文件是不是已经存在，都强制写入文件并更新文件的所有信息。
  * 例子：https://127.0.0.1:9200/simulation_servers_deno/upload?uploadType=single&isForcedWrite=true
  *
- * 允许在请求头中携带自定义的请求头标识“X-Custom-Header-File-SRI”，其值为使用“SHA3-512”计算的文件SRI值，来提前校验上传的文件是否已经存在。
+ * 允许在请求头中携带自定义的请求头标识“Deno-Custom-File-SRI”，其值为使用“SHA-512”计算的文件SRI值，来提前校验上传的文件是否已经存在。
  *
  * 1、客户端上传的body必须是用FormData包装。
  * 2、要求客户端发起的请求url上必须要有查询参数“uploadType=single”。
@@ -43,22 +43,20 @@
 
 import {
   writableStreamFromWriter,
-
-  // @ts-ignore
-} from 'deno_streams/writable_stream_from_writer.ts';
+} from 'deno_std_streams/writable_stream_from_writer.ts';
 
 import {
-  httpHeaders,
+  HttpResponseHeadersFun,
   resMessageStatus,
 } from 'configures/GlobalParameters.esm.mts';
 
 import {
   DeleteOne,
-} from 'mongo/db/simulation_servers_deno/collections/upload_file_sri.esm.mts';
+} from 'mongo/simulation_servers_deno/upload_file_sri/UploadFileSRI.esm.mts';
 
 import {
-  type TypeObj001,
-  type FileSRICollectionSchema,
+  type T_Obj001,
+  type I_UploadFileSRISchema,
 
   UpdateFileSRI,
 } from './UpdateFileSRI.esm.mts';
@@ -70,7 +68,7 @@ import {
  * 当客户端发起的请求URL上带有查询参数“isForcedWrite”且值设置为true时，表示无论文件是不是已经存在，都强制写入文件并更新文件的所有信息。<br />
  * 例子：https://127.0.0.1:9200/simulation_servers_deno/upload?uploadType=single&isForcedWrite=true<br />
  *
- * 允许在请求头中携带自定义的请求头标识“X-Custom-Header-File-SRI”，其值为使用“SHA3-512”计算的文件SRI值，来提前校验上传的文件是否已经存在。<br />
+ * 允许在请求头中携带自定义的请求头标识“Deno-Custom-File-SRI”，其值为使用“SHA-512”计算的文件SRI值，来提前校验上传的文件是否已经存在。<br />
  *
  * 1、客户端上传的body必须是用FormData包装。<br />
  * 2、要求客户端发起的请求url上必须要有查询参数“uploadType=single”。<br />
@@ -95,7 +93,7 @@ async function UploadBySingle( request: Request ): Promise<Response>{
     messageStatus: resMessageStatus[ 1000 ],
   } );
 
-  const contentType = ( _request.headers.get( 'content-type' ) ?? '' ).trim().toLowerCase();
+  const contentType: string = ( _request.headers.get( 'content-type' ) ?? '' ).trim().toLowerCase();
 
   if( _request.body && contentType.startsWith( 'multipart/form-data;' ) ){
     let formData: FormData;
@@ -103,7 +101,7 @@ async function UploadBySingle( request: Request ): Promise<Response>{
     try{
       formData = await _request.formData();
 
-      let file: File | Blob | string | null = formData.get( 'file' ),
+      let file: FormDataEntryValue | Blob | null = formData.get( 'file' ),
         fileName: string = ( ( formData.get( 'fileName' ) ?? '' ) as string ).trim();
 
       const str001: string = Object.prototype.toString.call( file );
@@ -119,7 +117,7 @@ async function UploadBySingle( request: Request ): Promise<Response>{
         const {
           isWriteFile,
           fileInfo,
-        }: TypeObj001 = await UpdateFileSRI( _request, file as ( File | Blob ), fileName );
+        }: T_Obj001 = await UpdateFileSRI( _request, file as ( File | Blob ), fileName );
 
         const {
           savePath,
@@ -127,7 +125,7 @@ async function UploadBySingle( request: Request ): Promise<Response>{
           fileType,
           sri,
           fileName: fileName001,
-        }: FileSRICollectionSchema = fileInfo;
+        }: I_UploadFileSRISchema = fileInfo;
 
         if( !isWriteFile ){
           result001 = JSON.stringify( {
@@ -210,7 +208,7 @@ async function UploadBySingle( request: Request ): Promise<Response>{
     status: 200,
     statusText: 'OK',
     headers: {
-      ...httpHeaders,
+      ...HttpResponseHeadersFun( request ),
       'content-type': 'application/json; charset=utf-8',
     },
   } );

@@ -1,20 +1,24 @@
 {
   "imports": {
-    "/": "G:\\WebStormWS\\web-for-vite-project-template\\simulation_servers\\deno\\",
+    "deno_std/": "https://deno.land/std/",
+    "deno_std_encoding/": "https://deno.land/std/encoding/",
+    "deno_std_streams/": "https://deno.land/std/streams/",
+    "deno_std_media_types": "https://deno.land/std/media_types/mod.ts",
+    "deno_std_path": "https://deno.land/std/path/mod.ts",
 
-    "deno_ejs": "https://deno.land/x/dejs/mod.ts",
-    "deno_mongo": "https://deno.land/x/mongo/mod.ts",
-    "http_server": "https://deno.land/std/http/server.ts",
-    "media_types": "https://deno.land/std/media_types/mod.ts",
-    "deno_crypto": "https://deno.land/std/crypto/mod.ts",
-    "deno_streams/": "https://deno.land/std/streams/",
+    "deno_x/": "https://deno.land/x/",
+    "deno_x_corejs": "https://deno.land/x/corejs/index.js",
+    "deno_x_ejs": "https://deno.land/x/dejs/mod.ts",
+    "deno_x_mongo": "https://deno.land/x/mongo/mod.ts",
 
-    "DenoStd/": "https://deno.land/std/",
-    "DenoX/": "https://deno.land/x/",
-    "esmSH/": "https://esm.sh/",
-    "preact/jsx-runtime": "https://cdn.skypack.dev/preact/jsx-runtime?dts",
-    "preact/jsx-dev-runtime": "https://cdn.skypack.dev/preact/jsx-dev-runtime?dts",
-    "DenoSrc/": "G:\\WebStormWS\\web-for-vite-project-template\\simulation_servers\\deno\\src\\",
+    "esm_sh/": "https://esm.sh/",
+    "esm_sh_graphql": "https://esm.sh/graphql",
+
+    "preact/": "https://cdn.skypack.dev/preact/",
+    "preact_jsx-runtime": "https://cdn.skypack.dev/preact/jsx-runtime?dts",
+    "preact_jsx-dev-runtime": "https://cdn.skypack.dev/preact/jsx-dev-runtime?dts",
+
+    "deno_src/": "G:\\WebStormWS\\web-for-vite-project-template\\simulation_servers\\deno\\src\\",
     "configures/": "G:\\WebStormWS\\web-for-vite-project-template\\simulation_servers\\deno\\src\\configures\\",
     "route_map_config/": "G:\\WebStormWS\\web-for-vite-project-template\\simulation_servers\\deno\\src\\configures\\route_map_config\\",
     "database/": "G:\\WebStormWS\\web-for-vite-project-template\\simulation_servers\\deno\\src\\database\\",
@@ -44,6 +48,8 @@
     "static/": "G:\\WebStormWS\\web-for-vite-project-template\\simulation_servers\\deno\\static\\",
     "test/": "G:\\WebStormWS\\web-for-vite-project-template\\simulation_servers\\deno\\test\\",
     "upload/": "G:\\WebStormWS\\web-for-vite-project-template\\simulation_servers\\deno\\upload\\",
-    "web/": "G:\\WebStormWS\\web-for-vite-project-template\\simulation_servers\\deno\\web\\"
+    "web/": "G:\\WebStormWS\\web-for-vite-project-template\\simulation_servers\\deno\\web\\",
+
+    "GSD2TSTD": "G:\\WebStormWS\\web-for-vite-project-template\\simulation_servers\\deno\\src\\graphql_schema_definition_to_ts_type_definition\\GSD2TSTD.esm.mts"
   }
 }

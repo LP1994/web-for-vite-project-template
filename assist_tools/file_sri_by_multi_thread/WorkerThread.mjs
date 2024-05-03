@@ -52,9 +52,11 @@ let startTimer001 = 0,
     },
   },
   /**
-   * @type {number} 1、1 * 1024 * 1024 * 1024 = 1GB
+   * 1、1 * 1024 * 1024 * 1024 = 1GB
    * 2、要是设置了buffer.constants.MAX_LENGTH，不报错、也不执行，直接结束了，奇怪：
    * buffer.constants.MAX_LENGTH = 2GB
+   *
+   * @type {number}
    */
   bufferSize = 1 * 1024 * 1024 * 1024,
   resultObj = null,
@@ -100,10 +102,10 @@ ${ filePath }
     readStream.on( 'readable', () => {
       while( null !== ( chunk = readStream.read( bufferSize ) ) ){
         hashArr.flat( Infinity )
-        .forEach( c => {
-          // createHash( 'sha256' ).update(chunk)
-          c[ 'update' ]( chunk );
-        } );
+          .forEach( c => {
+            // createHash( 'sha256' ).update(chunk)
+            c[ 'update' ]( chunk );
+          } );
 
         chunkBuf = chunk.length / 1024 / 1024;
 
@@ -127,14 +129,14 @@ ${ filePath }
     readStream.on( 'close', () => {
       // [ { hex: '', base64: '' }, { hex: '', base64: '' }, { hex: '', base64: '' } ]
       Object.values( obj001 )
-      .forEach( ( c, i, ) => {
-        // [ 'hex', 'base64' ]
-        Object.keys( c )
-        .forEach( ( c1, i1, ) => {
-          // createHash( 'sha256' ).digest( 'hex' )
-          obj001[ hash2Digest4Keys[ i ] ][ c1 ] = `${ hash2Digest4Keys[ i ] }-${ hashArr[ i ][ i1 ].digest( c1 ) }`;
+        .forEach( ( c, i, ) => {
+          // [ 'hex', 'base64' ]
+          Object.keys( c )
+            .forEach( ( c1, i1, ) => {
+              // createHash( 'sha256' ).digest( 'hex' )
+              obj001[ hash2Digest4Keys[ i ] ][ c1 ] = `${ hash2Digest4Keys[ i ] }-${ hashArr[ i ][ i1 ].digest( c1 ) }`;
+            } );
         } );
-      } );
 
       resolve( obj001 );
 

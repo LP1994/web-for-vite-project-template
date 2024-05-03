@@ -28,7 +28,7 @@
  * 当客户端发起的请求URL上带有查询参数“isForcedWrite”且值设置为true时，表示无论文件是不是已经存在，都强制写入文件并更新文件的所有信息。
  * 例子：https://127.0.0.1:9200/simulation_servers_deno/upload?uploadType=binary&fileName=001.png&isForcedWrite=true
  *
- * 允许在请求头中携带自定义的请求头标识“X-Custom-Header-File-SRI”，其值为使用“SHA3-512”计算的文件SRI值，来提前校验上传的文件是否已经存在。
+ * 允许在请求头中携带自定义的请求头标识“Deno-Custom-File-SRI”，其值为使用“SHA-512”计算的文件SRI值，来提前校验上传的文件是否已经存在。
  *
  * 1、客户端上传的body不使用FormData包装，直接就是一个File、Blob、二进制流等类型。
  * 2、要求客户端发起的请求url上必须要有查询参数“uploadType=binary”。
@@ -38,22 +38,20 @@
 
 import {
   writableStreamFromWriter,
-
-  // @ts-ignore
-} from 'deno_streams/writable_stream_from_writer.ts';
+} from 'deno_std_streams/writable_stream_from_writer.ts';
 
 import {
-  httpHeaders,
+  HttpResponseHeadersFun,
   resMessageStatus,
 } from 'configures/GlobalParameters.esm.mts';
 
 import {
   DeleteOne,
-} from 'mongo/db/simulation_servers_deno/collections/upload_file_sri.esm.mts';
+} from 'mongo/simulation_servers_deno/upload_file_sri/UploadFileSRI.esm.mts';
 
 import {
-  type TypeObj001,
-  type FileSRICollectionSchema,
+  type T_Obj001,
+  type I_UploadFileSRISchema,
 
   UpdateFileSRI,
 } from './UpdateFileSRI.esm.mts';
@@ -65,7 +63,7 @@ import {
  * 当客户端发起的请求URL上带有查询参数“isForcedWrite”且值设置为true时，表示无论文件是不是已经存在，都强制写入文件并更新文件的所有信息。<br />
  * 例子：https://127.0.0.1:9200/simulation_servers_deno/upload?uploadType=binary&fileName=001.png&isForcedWrite=true<br />
  *
- * 允许在请求头中携带自定义的请求头标识“X-Custom-Header-File-SRI”，其值为使用“SHA3-512”计算的文件SRI值，来提前校验上传的文件是否已经存在。<br />
+ * 允许在请求头中携带自定义的请求头标识“Deno-Custom-File-SRI”，其值为使用“SHA-512”计算的文件SRI值，来提前校验上传的文件是否已经存在。<br />
  *
  * 1、客户端上传的body不使用FormData包装，直接就是一个File、Blob、二进制流等类型。<br />
  * 2、要求客户端发起的请求url上必须要有查询参数“uploadType=binary”。<br />
@@ -99,9 +97,14 @@ async function UploadByBinary( request: Request ): Promise<Response>{
       const {
         isWriteFile,
         fileInfo,
-      }: TypeObj001 = await UpdateFileSRI( _request, {
+      }: T_Obj001 = await UpdateFileSRI( _request, {
         [ Symbol.toStringTag ]: 'Blob',
         stream: (): ReadableStream => request.clone().body as ReadableStream,
+        arrayBuffer: (): Promise<ArrayBuffer> => request.clone().arrayBuffer(),
+        blob: (): Promise<Blob> => request.clone().blob(),
+        formData: (): Promise<FormData> => request.clone().formData(),
+        json: (): Promise<any> => request.clone().json(),
+        text: (): Promise<string> => request.clone().text(),
         lastModified: String( Date.now() ),
         type: String( contentType ),
         size: String( contentLength ),
@@ -114,7 +117,7 @@ async function UploadByBinary( request: Request ): Promise<Response>{
         fileType,
         sri,
         fileName: fileName001,
-      }: FileSRICollectionSchema = fileInfo;
+      }: I_UploadFileSRISchema = fileInfo;
 
       if( !isWriteFile ){
         result001 = JSON.stringify( {
@@ -187,7 +190,7 @@ async function UploadByBinary( request: Request ): Promise<Response>{
     status: 200,
     statusText: 'OK',
     headers: {
-      ...httpHeaders,
+      ...HttpResponseHeadersFun( request ),
       'content-type': 'application/json; charset=utf-8',
     },
   } );

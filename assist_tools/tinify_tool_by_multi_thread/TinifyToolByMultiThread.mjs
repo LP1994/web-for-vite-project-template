@@ -1,3 +1,5 @@
+#!/usr/bin/env -S node --experimental-import-meta-resolve --experimental-network-imports --experimental-shadow-realm --experimental-vm-modules --experimental-wasm-modules --experimental-websocket --max-http-header-size=1024000 --no-warnings --no-deprecation
+
 /**
  * Project: web-for-vite-project-template
  * FileDirPath: tinify_tool_by_multi_thread/TinifyToolByMultiThread.mjs
@@ -272,7 +274,7 @@ const photoQuantity = photoPathArr.length;
 MyConsole.Cyan( `
 需要压缩的图片有${ photoQuantity }张。
 可压缩次数有${ Object.values( Object.fromEntries( TinifyKeys ) )
-.reduce( ( accumulator, currentValue ) => accumulator + currentValue, 0 ) }次。
+  .reduce( ( accumulator, currentValue ) => accumulator + currentValue, 0 ) }次。
 ` );
 
 let startTimer = 0,

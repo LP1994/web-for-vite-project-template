@@ -30,11 +30,11 @@
 'use strict';
 
 import {
-  type TypeResponse001,
+  type T_Response001,
 
   staticDir,
 
-  httpHeaders,
+  HttpResponseHeadersFun,
 } from 'configures/GlobalParameters.esm.mts';
 
 import {
@@ -46,19 +46,18 @@ import {
  *
  * @param {Request} request 请求对象，无默认值，必须。
  *
- * @returns {TypeResponse001} 返回值类型为Response、Promise<Response>。
+ * @returns {T_Response001} 返回值类型为Response、Promise<Response>。
  */
 function Handle(
-  // @ts-expect-error
   request: Request
-): TypeResponse001{
+): T_Response001{
   let filePath: URL = new URL( import.meta.resolve( `${ staticDir }/html/Index.html` ) );
 
   return new Response( Deno.readTextFileSync( filePath ), {
     status: 200,
     statusText: 'OK',
     headers: {
-      ...httpHeaders,
+      ...HttpResponseHeadersFun( request ),
       'content-type': `${ mime.getType( filePath.href ) }; charset=utf-8`,
     },
   } );
