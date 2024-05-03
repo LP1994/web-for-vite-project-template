@@ -10,6 +10,7 @@
 /**
  * 苹果移动设备上，将网址添加到主屏幕后，从主屏幕启动该网址时，在获取到成功的响应前，用于临时展示的过渡图片。
  * 只要先前成功启动过，这类图片就会被缓存起来，以后，就算断网了，这个展示用的图片也能正常地作为过渡临时图片继续展示。
+ * 最后更新时间：2024年03月07日。
  */
 
 'use strict';
@@ -25,7 +26,7 @@
  */
 
 /**
- * @type {[{href: string, type: string, crossorigin: string, sizes: string, media: string}]} 苹果启动图片（一般是用于iPhone、iPad）的资源数组，成员是一个对象，必须。<br />
+ * 苹果启动图片（一般是用于iPhone、iPad）的资源数组，成员是一个对象，必须。<br />
  * 成员格式：<br />
  * {<br />
  * href：字符串，图片链接地址，可以是编译完后输出到输出目录中的图片路径，一般是相对于“pages”文件夹的相对路径，也可以是第三方图片链接地址，必须。<br />
@@ -34,11 +35,13 @@
  * sizes：字符串，图片大小，值如：'640x1136'，必须。<br />
  * media：字符串，媒体查询，用于让设备只加载符合自己屏幕尺寸的图片，一般包括竖屏、横屏两张图片，必须。<br />
  * }<br />
+ *
+ * @type {[{href: string, type: string, crossorigin: string, sizes: string, media: string}]}
  */
 const StartupImgForApple = [
   // iPhone Start
 
-  // 640 x 1136(dpr: 2): iPhone 5S、iPhone SE(第一代)
+  // 640 x 1136(dpr: 2): iPhone 5、iPhone 5C（最后一款支持32位操作系统）、iPhone 5S（第1个配备64位处理器的）、iPhone SE(第一代)
   {
     href: './static/img/apple_startup/iPhone_640_1136.png',
     type: 'image/png',
@@ -49,7 +52,7 @@ const StartupImgForApple = [
       'only screen and (device-width: 320px) and (device-height: 568px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 2), ' +
       'only screen and (device-width: 320px) and (device-height: 568px) and (orientation: portrait) and (device-pixel-ratio: 2)',
   },
-  // 1136 x 640(dpr: 2): iPhone 5S、iPhone SE(第一代)
+  // 1136 x 640(dpr: 2): iPhone 5、iPhone 5C（最后一款支持32位操作系统）、iPhone 5S（第1个配备64位处理器的）、iPhone SE(第一代)
   {
     href: './static/img/apple_startup/iPhone_1136_640.png',
     type: 'image/png',
@@ -253,7 +256,7 @@ const StartupImgForApple = [
       'only screen and (device-width: 428px) and (device-height: 926px) and (orientation: landscape) and (device-pixel-ratio: 3)',
   },
 
-  // 1179 x 2556(dpr: 3): iPhone 14 Pro
+  // 1179 x 2556(dpr: 3): iPhone 14 Pro、iPhone 15、iPhone 15 Pro
   {
     href: './static/img/apple_startup/iPhone_1179_2556.png',
     type: 'image/png',
@@ -264,7 +267,7 @@ const StartupImgForApple = [
       'only screen and (device-width: 393px) and (device-height: 852px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 3), ' +
       'only screen and (device-width: 393px) and (device-height: 852px) and (orientation: portrait) and (device-pixel-ratio: 3)',
   },
-  // 2556 x 1179(dpr: 3): iPhone 14 Pro
+  // 2556 x 1179(dpr: 3): iPhone 14 Pro、iPhone 15、iPhone 15 Pro
   {
     href: './static/img/apple_startup/iPhone_2556_1179.png',
     type: 'image/png',
@@ -276,7 +279,7 @@ const StartupImgForApple = [
       'only screen and (device-width: 393px) and (device-height: 852px) and (orientation: landscape) and (device-pixel-ratio: 3)',
   },
 
-  // 1290 x 2796(dpr: 3): iPhone 14 Pro Max
+  // 1290 x 2796(dpr: 3): iPhone 14 Pro Max、iPhone 15 Plus、iPhone 15 Pro Max
   {
     href: './static/img/apple_startup/iPhone_1290_2796.png',
     type: 'image/png',
@@ -287,7 +290,7 @@ const StartupImgForApple = [
       'only screen and (device-width: 430px) and (device-height: 932px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 3), ' +
       'only screen and (device-width: 430px) and (device-height: 932px) and (orientation: portrait) and (device-pixel-ratio: 3)',
   },
-  // 2796 x 1290(dpr: 3): iPhone 14 Pro Max
+  // 2796 x 1290(dpr: 3): iPhone 14 Pro Max、iPhone 15 Plus、iPhone 15 Pro Max
   {
     href: './static/img/apple_startup/iPhone_2796_1290.png',
     type: 'image/png',
@@ -303,7 +306,7 @@ const StartupImgForApple = [
 
   // iPad Start
 
-  // 1536 x 2048(dpr: 2): iPad mini(第二代)、iPad mini(第三代)、iPad mini(第四代)、iPad(第五代)、iPad(第六代)、iPad Air(第一代)、iPad Air(第二代)、9.7英寸iPad Pro、iPad mini(第五代)
+  // 1536 x 2048(dpr: 2): 7.9英寸iPad mini(第二代)、7.9英寸iPad mini(第三代)、7.9英寸iPad mini(第四代)、9.7英寸iPad(第五代)、9.7英寸iPad(第六代)、9.7英寸iPad Air(第一代)、9.7英寸iPad Air(第二代)、9.7英寸iPad Pro、7.9英寸iPad mini(第五代)
   {
     href: './static/img/apple_startup/iPad_1536_2048.png',
     type: 'image/png',
@@ -314,7 +317,7 @@ const StartupImgForApple = [
       'only screen and (device-width: 768px) and (device-height: 1024px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 2), ' +
       'only screen and (device-width: 768px) and (device-height: 1024px) and (orientation: portrait) and (device-pixel-ratio: 2)',
   },
-  // 2048 x 1536(dpr: 2): iPad mini(第二代)、iPad mini(第三代)、iPad mini(第四代)、iPad(第五代)、iPad(第六代)、iPad Air(第一代)、iPad Air(第二代)、9.7英寸iPad Pro、iPad mini(第五代)
+  // 2048 x 1536(dpr: 2): 7.9英寸iPad mini(第二代)、7.9英寸iPad mini(第三代)、7.9英寸iPad mini(第四代)、9.7英寸iPad(第五代)、9.7英寸iPad(第六代)、9.7英寸iPad Air(第一代)、9.7英寸iPad Air(第二代)、9.7英寸iPad Pro、7.9英寸iPad mini(第五代)
   {
     href: './static/img/apple_startup/iPad_2048_1536.png',
     type: 'image/png',

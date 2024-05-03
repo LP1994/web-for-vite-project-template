@@ -64,28 +64,48 @@ function Get__filename( import_meta_url = import.meta.url ){
 }
 
 /**
- * @type {string} 表示项目文件夹根目录，不是磁盘根目录。<br />
+ * 表示项目文件夹根目录，不是磁盘根目录。<br />
+ *
+ * @type {string}
  */
 const __dirname = Get__dirname( import.meta.url );
 
 /**
- * @type {object} 为vite-plugin-html插件的inject.data、injectOptions.data选项中的顶级变量、公共变量设置默认值，尤其是顶级变量，如果顶级变量未定义会报出编译错误。
+ * URL开头的共同部分。<br />
+ * 例子1：<br />
+ * https://192.168.2.10:8100/dev_server
+ * 例子2：<br />
+ * ..
+ *
+ * 注意：<br />
+ * HTML的标签<meta>的值可以是相对路径，也可以是绝对路径。<br />
+ * <meta http-equiv="refresh" content="5;url=another.html">
+ * <meta http-equiv="refresh" content="5;url=https://www.runoob.com/html/html-meta.html">
+ *
+ * @type {string}
+ */
+const URLHead = '.';
+
+/**
+ * 为vite-plugin-html插件的inject.data、injectOptions.data选项中的顶级变量、公共变量设置默认值，尤其是顶级变量，如果顶级变量未定义会报出编译错误。
  * 顶级变量就算不需要也要保证它们被设置为null。
  * 各个属性具体表示什么，值是什么，可参见“src/template/ejs/head_meta”、“src/template/ejs/tool”中的描述。
+ *
+ * @type {object}
  */
 const defaultData = {
   contentSecurityPolicy: null,
-  expires: 0,
+  expires: `${ new Date( Date.now() + ( 2 * 60 * 60 * 1000 ) ).toUTCString() }`,
   setCookieExpires: null,
   pageEnter: 'revealTrans(duration=5,transtion=8)',
   pageExit: 'revealTrans(duration=5,transtion=9)',
   refresh: null,
   color: '#0000ff',
   keywords: 'WEB,Vite,SPA',
-  description: 'This is a SPA.',
+  description: 'This is a page for Index.',
   subject: '这是一个副标题。',
   generator: 'WebStorm',
-  appName: 'SPA',
+  appName: 'Index',
   author: '1227839175@qq.com',
   publisher: '12278',
   creators: [
@@ -93,21 +113,21 @@ const defaultData = {
   ],
   itemprop: {
     type: 'website',
-    url: 'https://192.168.2.7:8500/dev_server/SPA.html',
-    name: 'SPA',
-    description: 'This is a SPA.',
-    image: 'https://192.168.2.7:8500/dev_server/static/ico/uncompressed/ico_512_512.png',
+    url: URLHead + '/Index.html',
+    name: 'Index',
+    description: 'This is a page for Index.',
+    image: URLHead + '/static/ico/uncompressed/ico_512_512.png',
   },
   appLinks: {
     web: {
-      url: 'https://192.168.2.7:8500/dev_server/SPA.html',
+      url: URLHead + '/Index.html',
     },
     share: {
       type: 'website',
-      url: 'https://192.168.2.7:8500/dev_server/SPA.html',
-      title: 'SPA',
-      description: 'This is a SPA.',
-      image: 'https://192.168.2.7:8500/dev_server/static/ico/uncompressed/ico_512_512.png',
+      url: URLHead + '/Index.html',
+      title: 'Index',
+      description: 'This is a page for Index.',
+      image: URLHead + '/static/ico/uncompressed/ico_512_512.png',
     },
   },
   shortcutIcons: ShortcutIcons,
@@ -116,14 +136,14 @@ const defaultData = {
   appleTouchIconPrecomposed: AppleTouchIconPrecomposed,
   og: {
     og: 'website',
-    title: 'SPA',
-    url: 'https://192.168.2.7:8500/dev_server/SPA.html',
-    siteName: 'SPA',
-    description: 'This is SPA.',
+    title: 'Index',
+    url: URLHead + '/Index.html',
+    siteName: 'Index',
+    description: 'This is a page for Index.',
     locale: 'zh_CN',
     image: {
-      url: 'https://192.168.2.7:8500/dev_server/static/ico/uncompressed/ico_512_512.png',
-      secureURL: 'https://192.168.2.7:8500/dev_server/static/ico/uncompressed/ico_512_512.png',
+      url: URLHead + '/static/ico/uncompressed/ico_512_512.png',
+      secureURL: URLHead + '/static/ico/uncompressed/ico_512_512.png',
       type: 'image/png',
       width: '512',
       height: '512',
@@ -134,12 +154,12 @@ const defaultData = {
   twitter: {
     type: 'website',
     creator: '1227839175@qq.com',
-    site: 'https://192.168.2.7:8500/dev_server/SPA.html',
-    url: 'https://192.168.2.7:8500/dev_server/SPA.html',
-    title: 'SPA',
-    description: 'This is a SPA.',
+    site: URLHead + '/Index.html',
+    url: URLHead + '/Index.html',
+    title: 'Index',
+    description: 'This is a page for Index.',
     card: 'summary_large_image',
-    image: 'https://192.168.2.7:8500/dev_server/static/ico/uncompressed/ico_512_512.png',
+    image: URLHead + '/static/ico/uncompressed/ico_512_512.png',
   },
   facebook: null,
   publisherByGooglePlus: null,
@@ -244,16 +264,16 @@ function VitePluginHTMLConfig( {
    * @param {string} config.filename 最后生成的HTML文件名，带不带“.html”这个后缀名都行，因为最后生成的HTML文件名都会带上“.html”。<br />
    * 1、该选项不仅影响生产模式下生成的HTML文件名，也影响开发模式下，浏览器打开的URL的路径名。<br />
    * 如：<br />
-   * filename: 'HelloWorld'
-   * 那么开发模式下，浏览器打开的URL的路径名为：https://localhost:8500/dev_server/HelloWorld
-   * 注意，这时，能成功访问到的URL为：https://localhost:8500/dev_server/HelloWorld
-   * 而不是：https://localhost:8500/dev_server/HelloWorld.html
+   * filename: 'Index'
+   * 那么开发模式下，浏览器打开的URL的路径名为：https://localhost:8500/dev_server/Index
+   * 注意，这时，能成功访问到的URL为：https://localhost:8500/dev_server/Index
+   * 而不是：https://localhost:8500/dev_server/Index.html
    * 此时，带不带“.html”就有区别了！
    *
-   * filename: 'HelloWorld.html'
-   * 那么开发模式下，浏览器打开的URL的路径名为：https://localhost:8500/dev_server/HelloWorld.html
-   * 注意，这时，能成功访问到的URL为：https://localhost:8500/dev_server/HelloWorld.html
-   * 而不是：https://localhost:8500/dev_server/HelloWorld
+   * filename: 'Index.html'
+   * 那么开发模式下，浏览器打开的URL的路径名为：https://localhost:8500/dev_server/Index.html
+   * 注意，这时，能成功访问到的URL为：https://localhost:8500/dev_server/Index.html
+   * 而不是：https://localhost:8500/dev_server/Index
    * 此时，带不带“.html”就有区别了！
    *
    * @param {object} config.data 传给模板的自定义数据，一般将自定义的数据放在VitePluginHTMLData下即可，这样就能在模板文件中通过VitePluginHTMLData.xxx来访问自定义数据了。<br />
@@ -322,16 +342,16 @@ function VitePluginHTMLConfig( {
    * @param {string} filename 最后生成的HTML文件名，带不带“.html”这个后缀名都行，因为最后生成的HTML文件名都会带上“.html”。<br />
    * 1、该选项不仅影响生产模式下生成的HTML文件名，也影响开发模式下，浏览器打开的URL的路径名。<br />
    * 如：<br />
-   * filename: 'HelloWorld'
-   * 那么开发模式下，浏览器打开的URL的路径名为：https://localhost:8500/dev_server/HelloWorld
-   * 注意，这时，能成功访问到的URL为：https://localhost:8500/dev_server/HelloWorld
-   * 而不是：https://localhost:8500/dev_server/HelloWorld.html
+   * filename: 'Index'
+   * 那么开发模式下，浏览器打开的URL的路径名为：https://localhost:8500/dev_server/Index
+   * 注意，这时，能成功访问到的URL为：https://localhost:8500/dev_server/Index
+   * 而不是：https://localhost:8500/dev_server/Index.html
    * 此时，带不带“.html”就有区别了！
    *
-   * filename: 'HelloWorld.html'
-   * 那么开发模式下，浏览器打开的URL的路径名为：https://localhost:8500/dev_server/HelloWorld.html
-   * 注意，这时，能成功访问到的URL为：https://localhost:8500/dev_server/HelloWorld.html
-   * 而不是：https://localhost:8500/dev_server/HelloWorld
+   * filename: 'Index.html'
+   * 那么开发模式下，浏览器打开的URL的路径名为：https://localhost:8500/dev_server/Index.html
+   * 注意，这时，能成功访问到的URL为：https://localhost:8500/dev_server/Index.html
+   * 而不是：https://localhost:8500/dev_server/Index
    * 此时，带不带“.html”就有区别了！
    *
    * @param {object} data 传给模板的自定义数据，一般将自定义的数据放在VitePluginHTMLData下即可，这样就能在模板文件中通过VitePluginHTMLData.xxx来访问自定义数据了。<br />
@@ -376,13 +396,13 @@ function VitePluginHTMLConfig( {
      2、由于返回的值是给项目根目录下的vite.config.mjs使用的，所以设置的文件路径也是相对于项目根目录的。
      */
          ? GenerateSPAConfig( {
-      entry: 'src/pages/spa/SPA.mts',
-      template: 'src/pages/spa/SPA.ejs',
-      filename: 'SPA.html',
+      entry: 'src/pages/index/Index.mts',
+      template: 'src/pages/index/Index.ejs',
+      filename: 'Index.html',
       data: {
         VitePluginHTMLData: {
           ...defaultData,
-          title: 'SPA',
+          title: 'Index',
         },
       },
     } )

@@ -12,7 +12,7 @@
  * 1、这些文件都有引入这个代理配置文件：vite.config.mjs。
  *
  * 当设置为'0.0.0.0'时的注意事项：<br />
- * 1、关于浏览器通过node服务代理请求本deno服务时，node的代理设置（target选项）得指向'0.0.0.0'，否者node会报错误：<br />
+ * 1、关于浏览器通过node服务代理请求本deno服务时，node的代理设置（target、router选项）得指向'0.0.0.0'，否者node会报错误：<br />
  * ECONNREFUSED (Connection refused): No connection could be made because the target machine actively refused it. This usually results from trying to connect to a service that is inactive on the foreign host.<br />
  * 2、如上类比，当任何非浏览器端访问、代理到本deno服务时，都得保证其目标指向'0.0.0.0'，否则，大概率会报错。<br />
  * 3、Windows系统上，浏览器不支持对0.0.0.0的直接访问，例如无法访问：https://0.0.0.0:9000。<br />
@@ -43,6 +43,9 @@
  '/m3u8/': {
  target: 'http://sjjx.qqplayerjx.com',
  changeOrigin: true,
+ router: {
+ 'localhost:8082': 'http://sjjx.qqplayerjx.com'
+ },
  }
  */
 
@@ -66,7 +69,8 @@ import {
 import Mime from 'mime';
 
 import {
-  httpHeaders,
+  httpRequestHeaders,
+  HttpResponseHeadersFun,
 } from './GlobalParameters.esm.mjs';
 
 import {
@@ -126,7 +130,9 @@ function DateHandle( nowDate = new Date( Date.now() ) ){
 }
 
 /**
- * @type {string} 表示项目文件夹根目录，不是磁盘根目录。<br />
+ * 表示项目文件夹根目录，不是磁盘根目录。<br />
+ *
+ * @type {string}
  */
 const __dirname = Get__dirname( import.meta.url ),
   changeOrigin = true,
@@ -237,7 +243,7 @@ const __dirname = Get__dirname( import.meta.url ),
  * node_modules/vite/dist/node/index.d.ts:922
  *
  * 当设置为'0.0.0.0'时的注意事项：<br />
- * 1、关于浏览器通过node服务代理请求本deno服务时，node的代理设置（target选项）得指向'0.0.0.0'，否者node会报错误：<br />
+ * 1、关于浏览器通过node服务代理请求本deno服务时，node的代理设置（target、router选项）得指向'0.0.0.0'，否者node会报错误：<br />
  * ECONNREFUSED (Connection refused): No connection could be made because the target machine actively refused it. This usually results from trying to connect to a service that is inactive on the foreign host.<br />
  * 2、如上类比，当任何非浏览器端访问、代理到本deno服务时，都得保证其目标指向'0.0.0.0'，否则，大概率会报错。<br />
  * 3、Windows系统上，浏览器不支持对0.0.0.0的直接访问，例如无法访问：https://0.0.0.0:9000。<br />
@@ -283,7 +289,7 @@ ${ JSON.stringify( req.headers, null, ' ' ) }
       res.setHeader( 'x-from', 'vite.server.proxy' );
       res.setHeader( 'x-dev-type', `${ env_platform }` );
 
-      Object.entries( httpHeaders ).forEach( ( [ keyName, keyValue ], ) => {
+      Object.entries( HttpResponseHeadersFun( req ) ).forEach( ( [ keyName, keyValue ], ) => {
         res.setHeader( keyName, keyValue );
       } );
 
@@ -305,7 +311,7 @@ ${ JSON.stringify( req.headers, null, ' ' ) }
       response.setHeader( 'x-from', 'vite.server.proxy' );
       response.setHeader( 'x-dev-type', `${ env_platform }` );
 
-      Object.entries( httpHeaders ).forEach( ( [ keyName, keyValue ], ) => {
+      Object.entries( HttpResponseHeadersFun( req ) ).forEach( ( [ keyName, keyValue ], ) => {
         response.setHeader( keyName, keyValue );
       } );
 
@@ -340,7 +346,7 @@ ${ JSON.stringify( req.headers, null, ' ' ) }
    * node_modules/vite/dist/node/index.d.ts:922
    *
    * 当设置为'0.0.0.0'时的注意事项：<br />
-   * 1、关于浏览器通过node服务代理请求本deno服务时，node的代理设置（target选项）得指向'0.0.0.0'，否者node会报错误：<br />
+   * 1、关于浏览器通过node服务代理请求本deno服务时，node的代理设置（target、router选项）得指向'0.0.0.0'，否者node会报错误：<br />
    * ECONNREFUSED (Connection refused): No connection could be made because the target machine actively refused it. This usually results from trying to connect to a service that is inactive on the foreign host.<br />
    * 2、如上类比，当任何非浏览器端访问、代理到本deno服务时，都得保证其目标指向'0.0.0.0'，否则，大概率会报错。<br />
    * 3、Windows系统上，浏览器不支持对0.0.0.0的直接访问，例如无法访问：https://0.0.0.0:9000。<br />
@@ -355,7 +361,7 @@ ${ JSON.stringify( req.headers, null, ' ' ) }
     /**
      * 这是一个标准Demo写法，不要删除！以供参考！假定后端提供一个HTTP服务API为：https://127.0.0.1:9200/simulation_servers_deno/GetJSON。<br />
      */
-    '/devURL001/simulation_servers_deno/': {
+    '/https4deno/': {
       /**
        * 有时您不想代理所有内容。可以根据函数的返回值绕过代理。在该函数中，您可以访问请求、响应和代理选项。<br />
        *
@@ -380,7 +386,7 @@ ${ JSON.stringify( req.headers, null, ' ' ) }
        * @returns {string} 新路径。
        */
       rewrite( path ){
-        return path.replace( /^\/devURL001/, '' );
+        return path.replace( /^\/https4deno/, '' );
       },
 
       // http-proxy options Start
@@ -405,7 +411,7 @@ ${ JSON.stringify( req.headers, null, ' ' ) }
        * }<br />
        *
        * 当设置为'0.0.0.0'时的注意事项：<br />
-       * 1、关于浏览器通过node服务代理请求本deno服务时，node的代理设置（target选项）得指向'0.0.0.0'，否者node会报错误：<br />
+       * 1、关于浏览器通过node服务代理请求本deno服务时，node的代理设置（target、router选项）得指向'0.0.0.0'，否者node会报错误：<br />
        * ECONNREFUSED (Connection refused): No connection could be made because the target machine actively refused it. This usually results from trying to connect to a service that is inactive on the foreign host.<br />
        * 2、如上类比，当任何非浏览器端访问、代理到本deno服务时，都得保证其目标指向'0.0.0.0'，否则，大概率会报错。<br />
        * 3、Windows系统上，浏览器不支持对0.0.0.0的直接访问，例如无法访问：https://0.0.0.0:9000。<br />
@@ -549,10 +555,10 @@ ${ JSON.stringify( req.headers, null, ' ' ) }
       // cookiePathRewrite,
 
       /**
-       * 带有要添加到目标请求的额外标头的对象。<br />
+       * 带有要添加到目标请求的额外标头的对象，也就是该选项用来设置请求头的。<br />
        * 1、有效值类型：object（{ [ header: string ]: string }）、undefined。<br />
        */
-      headers: httpHeaders,
+      headers: httpRequestHeaders,
 
       /**
        * 传出代理请求的超时（以毫秒为单位），默认值为120000（等同2分钟）。<br />
@@ -585,12 +591,12 @@ ${ JSON.stringify( req.headers, null, ' ' ) }
        * const proxy = new HttpProxy();
        *
        * module.exports = (req, res, next) => {
-       * 
+       *
        *   proxy.web(req, res, {
        *     target: 'http://localhost:4003/',
        *     buffer: streamify(req.rawBody)
        *   }, next);
-       * 
+       *
        * };
        */
       // buffer,
@@ -707,7 +713,7 @@ HTTP代理--->${ req.originalUrl }<---End
     /**
      * 这是一个标准Demo写法，不要删除！以供参考！假定后端提供一个WebSocket服务API为：wss://127.0.0.1:9200/simulation_servers_deno/subscriptions。<br />
      */
-    '/ws4DevURL001/simulation_servers_deno/': {
+    '/wss4deno/': {
       /**
        * 有时您不想代理所有内容。可以根据函数的返回值绕过代理。在该函数中，您可以访问请求、响应和代理选项。<br />
        *
@@ -732,7 +738,7 @@ HTTP代理--->${ req.originalUrl }<---End
        * @returns {string} 新路径。
        */
       rewrite( path ){
-        return path.replace( /^\/ws4DevURL001/, '' );
+        return path.replace( /^\/wss4deno/, '' );
       },
 
       // http-proxy options Start
@@ -757,7 +763,7 @@ HTTP代理--->${ req.originalUrl }<---End
        * }<br />
        *
        * 当设置为'0.0.0.0'时的注意事项：<br />
-       * 1、关于浏览器通过node服务代理请求本deno服务时，node的代理设置（target选项）得指向'0.0.0.0'，否者node会报错误：<br />
+       * 1、关于浏览器通过node服务代理请求本deno服务时，node的代理设置（target、router选项）得指向'0.0.0.0'，否者node会报错误：<br />
        * ECONNREFUSED (Connection refused): No connection could be made because the target machine actively refused it. This usually results from trying to connect to a service that is inactive on the foreign host.<br />
        * 2、如上类比，当任何非浏览器端访问、代理到本deno服务时，都得保证其目标指向'0.0.0.0'，否则，大概率会报错。<br />
        * 3、Windows系统上，浏览器不支持对0.0.0.0的直接访问，例如无法访问：https://0.0.0.0:9000。<br />
@@ -901,10 +907,10 @@ HTTP代理--->${ req.originalUrl }<---End
       // cookiePathRewrite,
 
       /**
-       * 带有要添加到目标请求的额外标头的对象。<br />
+       * 带有要添加到目标请求的额外标头的对象，也就是该选项用来设置请求头的。<br />
        * 1、有效值类型：object（{ [ header: string ]: string }）、undefined。<br />
        */
-      headers: httpHeaders,
+      headers: httpRequestHeaders,
 
       /**
        * 传出代理请求的超时（以毫秒为单位），默认值为120000（等同2分钟）。<br />
@@ -937,12 +943,12 @@ HTTP代理--->${ req.originalUrl }<---End
        * const proxy = new HttpProxy();
        *
        * module.exports = (req, res, next) => {
-       * 
+       *
        *   proxy.web(req, res, {
        *     target: 'http://localhost:4003/',
        *     buffer: streamify(req.rawBody)
        *   }, next);
-       * 
+       *
        * };
        */
       // buffer,
@@ -1062,7 +1068,7 @@ WebSocket代理--->${ options.context }<---End
       ssl,
       ws: false,
       changeOrigin,
-      headers: httpHeaders,
+      headers: httpRequestHeaders,
       proxyTimeout: 120000,
       timeout: 120000,
       configure( proxy, options ){
@@ -1077,7 +1083,7 @@ WebSocket代理--->${ options.context }<---End
       ssl,
       ws: false,
       changeOrigin,
-      headers: httpHeaders,
+      headers: httpRequestHeaders,
       proxyTimeout: 120000,
       timeout: 120000,
       configure( proxy, options ){
@@ -1092,7 +1098,7 @@ WebSocket代理--->${ options.context }<---End
       ssl,
       ws: false,
       changeOrigin,
-      headers: httpHeaders,
+      headers: httpRequestHeaders,
       proxyTimeout: 120000,
       timeout: 120000,
       configure( proxy, options ){
@@ -1107,7 +1113,7 @@ WebSocket代理--->${ options.context }<---End
       ssl,
       ws: false,
       changeOrigin,
-      headers: httpHeaders,
+      headers: httpRequestHeaders,
       proxyTimeout: 120000,
       timeout: 120000,
       configure( proxy, options ){
@@ -1122,7 +1128,7 @@ WebSocket代理--->${ options.context }<---End
       ssl,
       ws: false,
       changeOrigin,
-      headers: httpHeaders,
+      headers: httpRequestHeaders,
       proxyTimeout: 120000,
       timeout: 120000,
       configure( proxy, options ){
@@ -1137,7 +1143,7 @@ WebSocket代理--->${ options.context }<---End
       ssl,
       ws: false,
       changeOrigin,
-      headers: httpHeaders,
+      headers: httpRequestHeaders,
       proxyTimeout: 120000,
       timeout: 120000,
       configure( proxy, options ){
@@ -1152,7 +1158,7 @@ WebSocket代理--->${ options.context }<---End
       ssl,
       ws: false,
       changeOrigin,
-      headers: httpHeaders,
+      headers: httpRequestHeaders,
       proxyTimeout: 120000,
       timeout: 120000,
       configure( proxy, options ){

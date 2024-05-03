@@ -46,7 +46,9 @@ function Get__filename( import_meta_url = import.meta.url ){
 }
 
 /**
- * @type {string} 表示项目文件夹根目录，不是磁盘根目录。<br />
+ * 表示项目文件夹根目录，不是磁盘根目录。<br />
+ *
+ * @type {string}
  */
 const __dirname = Get__dirname( import.meta.url );
 
@@ -92,7 +94,7 @@ function EntryConfig( {
      1、当appType为'spa'时，也就是单页应用时，只需要设置1个“入口脚本”即可，且设置成一个字符串类型的值。
      2、由于返回的值是给项目根目录下的vite.config.mjs使用的，所以设置的文件路径也是相对于项目根目录的。
      */
-         ? 'src/pages/spa/SPA.mts'
+         ? 'src/pages/index/Index.mts'
     /*
      1、当appType为'mpa'时，也就是多页应用时，保持为一个空对象的值即可。
      2、因为实际的设置是依赖“configures/VitePluginHTMLConfig.esm.mjs”这个配置文件的，Vite内部会自动生成相应的“entry points”配置。
