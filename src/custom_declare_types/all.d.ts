@@ -1,11 +1,11 @@
 /// <reference types="vite/client" />
 /// <reference types="./define.d.ts" />
 /// <reference types="./env.d.ts" />
-/// <reference types="./inject.d.ts" />
-/// <reference types="./vue.d.ts" />
 /// <reference types="./img.d.ts" />
+/// <reference types="./inject.d.ts" />
 /// <reference types="./music.d.ts" />
 /// <reference types="./videos.d.ts" />
+/// <reference types="./vue.d.ts" />
 
 /**
  * Project: web-for-vite-project-template
@@ -21,20 +21,20 @@
  */
 
 // CSS modules
-type CSSModuleClasses = {
+type T_CSSModuleClasses = {
   readonly [ key: string ]: string;
 };
 
-interface WASMObject {
+interface I_WASMObject {
   readonly [ key: string ]: any;
 }
 
-interface Object001 {
+interface I_Object001 {
   readonly [ key: string ]: any;
 }
 
 declare module '*.module.postcss' {
-  const classes: CSSModuleClasses;
+  const classes: T_CSSModuleClasses;
 
   export default classes;
 }
@@ -49,37 +49,29 @@ declare module '*.postcss' {
 }
 
 declare module '*.cson' {
-  const module: Object001;
-
-  export = module;
+  const module: I_Object001;
 
   export default module;
 }
 
 declare module '*.csv' {
-  const module: Object001;
-
-  export = module;
+  const module: I_Object001;
 
   export default module;
 }
 
 declare module '*.tsv' {
-  const module: Object001;
-
-  export = module;
+  const module: I_Object001;
 
   export default module;
 }
 
 declare module '*.ejs' {
   import {
-    type TemplateFunction,
+    type TemplateFunction as T_TemplateFunction,
   } from '@types/ejs';
 
-  const module: TemplateFunction;
-
-  export = module;
+  const module: T_TemplateFunction;
 
   export default module;
 }
@@ -134,52 +126,42 @@ declare module '*.woff2' {
 
 declare module '*.graphql' {
   import {
-    type DocumentNode,
+    type DocumentNode as T_DocumentNode,
   } from 'graphql';
 
-  const module: DocumentNode;
-
-  export = module;
+  const module: T_DocumentNode;
 
   export default module;
 }
 
 declare module '*.graphqls' {
   import {
-    type DocumentNode,
+    type DocumentNode as T_DocumentNode,
   } from 'graphql';
 
-  const module: DocumentNode;
-
-  export = module;
+  const module: T_DocumentNode;
 
   export default module;
 }
 
 declare module '*.gql' {
   import {
-    type DocumentNode,
+    type DocumentNode as T_DocumentNode,
   } from 'graphql';
 
-  const module: DocumentNode;
-
-  export = module;
+  const module: T_DocumentNode;
 
   export default module;
 }
 
 declare module '*.handlebars' {
-  const module: ( data: Object001 ) => string;
-
-  export = module;
+  const module: ( data: I_Object001 ) => string;
 
   export default module;
 }
 
 declare module '*.hbs' {
-  const module: ( data: Object001 ) => string;
-
-  export = module;
+  const module: ( data: I_Object001 ) => string;
 
   export default module;
 }
@@ -203,17 +185,13 @@ declare module '*.xhtml' {
 }
 
 declare module '*.json5' {
-  const module: Object001;
-
-  export = module;
+  const module: I_Object001;
 
   export default module;
 }
 
 declare module '*.toml' {
-  const module: Object001;
-
-  export = module;
+  const module: I_Object001;
 
   export default module;
 }
@@ -249,63 +227,49 @@ declare module '*.md' {
 }
 
 declare module '*.mustache' {
-  const module: ( data: Object001 ) => string;
-
-  export = module;
+  const module: ( data: I_Object001 ) => string;
 
   export default module;
 }
 
 declare module '*.pug' {
-  const module: ( data: Object001 ) => string;
-
-  export = module;
+  const module: ( data: I_Object001 ) => string;
 
   export default module;
 }
 
 declare module '*.jade' {
-  const module: ( data: Object001 ) => string;
-
-  export = module;
+  const module: ( data: I_Object001 ) => string;
 
   export default module;
 }
 
 declare module '*.wasm' {
-  const module: WASMObject;
-
-  export = module;
+  const module: I_WASMObject;
 
   export default module;
 }
 
 declare module '*.xml' {
-  const module: Object001;
-
-  export = module;
+  const module: I_Object001;
 
   export default module;
 }
 
 declare module '*.yaml' {
-  const module: Object001;
-
-  export = module;
+  const module: I_Object001;
 
   export default module;
 }
 
 declare module '*.yml' {
-  const module: Object001;
-
-  export = module;
+  const module: I_Object001;
 
   export default module;
 }
 
 declare module '*?worker' {
-  interface IOptions {
+  interface I_Options {
     type?: 'classic' | 'module';
 
     credentials?: 'omit' | 'same-origin' | 'include';
@@ -314,14 +278,14 @@ declare module '*?worker' {
   }
 
   const workerConstructor: {
-    new( options?: IOptions ): Worker
-  }
+    new( options?: I_Options ): Worker
+  };
 
-  export default workerConstructor
+  export default workerConstructor;
 }
 
 declare module '*?worker&inline' {
-  interface IOptions {
+  interface I_Options {
     type?: 'classic' | 'module';
 
     credentials?: 'omit' | 'same-origin' | 'include';
@@ -330,14 +294,14 @@ declare module '*?worker&inline' {
   }
 
   const workerConstructor: {
-    new( options?: IOptions ): Worker
-  }
+    new( options?: I_Options ): Worker
+  };
 
-  export default workerConstructor
+  export default workerConstructor;
 }
 
 declare module '*?sharedworker' {
-  interface IOptions {
+  interface I_Options {
     type?: 'classic' | 'module';
 
     credentials?: 'omit' | 'same-origin' | 'include';
@@ -346,14 +310,14 @@ declare module '*?sharedworker' {
   }
 
   const sharedWorkerConstructor: {
-    new( options?: IOptions | string ): SharedWorker
-  }
+    new( options?: I_Options | string ): SharedWorker
+  };
 
-  export default sharedWorkerConstructor
+  export default sharedWorkerConstructor;
 }
 
 declare module '*?sharedworker&inline' {
-  interface IOptions {
+  interface I_Options {
     type?: 'classic' | 'module';
 
     credentials?: 'omit' | 'same-origin' | 'include';
@@ -362,8 +326,8 @@ declare module '*?sharedworker&inline' {
   }
 
   const sharedWorkerConstructor: {
-    new( options?: IOptions | string ): SharedWorker
-  }
+    new( options?: I_Options | string ): SharedWorker
+  };
 
-  export default sharedWorkerConstructor
+  export default sharedWorkerConstructor;
 }

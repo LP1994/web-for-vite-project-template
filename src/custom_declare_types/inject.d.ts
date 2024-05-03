@@ -1,5 +1,3 @@
-/// <reference types="./jquery.d.ts" />
-
 /**
  * Project: web-for-vite-project-template
  * FileDirPath: src/custom_declare_types/inject.d.ts
