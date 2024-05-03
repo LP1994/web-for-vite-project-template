@@ -1,3 +1,5 @@
+#!/usr/bin/env -S node --experimental-import-meta-resolve --experimental-network-imports --experimental-shadow-realm --experimental-vm-modules --experimental-wasm-modules --experimental-websocket --max-http-header-size=1024000 --no-warnings --no-deprecation
+
 /**
  * Project: web-for-vite-project-template
  * FileDirPath: configures/update_tsconfig_lib/UpdateTSConfigLib.mjs
@@ -28,7 +30,7 @@ import {
   fileURLToPath,
 } from 'node:url';
 
-import tsConfig from '../../tsconfig.json' assert { type: 'json', };
+import tsConfig from '../../tsconfig.json' with { type: 'json', };
 
 function Get__dirname( import_meta_url = import.meta.url ){
   return dirname( Get__filename( import_meta_url ) );
@@ -40,9 +42,9 @@ function Get__filename( import_meta_url = import.meta.url ){
 
 const __dirname = Get__dirname( import.meta.url ),
   libs = readdirSync( join( __dirname, '../../node_modules/typescript/lib' ) )
-  .filter( c => !statSync( join( __dirname, `../../node_modules/typescript/lib/${ c }` ) ).isDirectory() )
-  .filter( c => c.startsWith( 'lib.' ) && c.endsWith( '.d.ts' ) && c !== 'lib.d.ts' && !c.includes( '.full' ) )
-  .map( c => c.slice( 4, -5 ).toLowerCase() );
+    .filter( c => !statSync( join( __dirname, `../../node_modules/typescript/lib/${ c }` ) ).isDirectory() )
+    .filter( c => c.startsWith( 'lib.' ) && c.endsWith( '.d.ts' ) && c !== 'lib.d.ts' && !c.includes( '.full' ) )
+    .map( c => c.slice( 4, -5 ).toLowerCase() );
 
 tsConfig[ 'compilerOptions' ][ 'lib' ] = Array.from( new Set( libs ) ).sort();
 

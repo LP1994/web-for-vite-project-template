@@ -10,7 +10,7 @@ CreateDate: 2022-01-01 00:00:00 星期六
 {
   "display": "tsconfig.bases.json5",
   "_version": "1.0.0",
-  "_typescript_version": "5.3.2",
+  "_typescript_version": "5.4.5",
   "_description": "这是基本通用（基于Vite的配置）的tsconfig.json。",
   "$schema": "https://json.schemastore.org/tsconfig",
   "docs": "https://www.typescriptlang.org/tsconfig",
@@ -329,7 +329,7 @@ CreateDate: 2022-01-01 00:00:00 星期六
     另一方面，如果你正在编写一个要在npm上发布的库，使用“bundler”选项值可以隐藏可能出现的兼容性问题，因为你的用户并没有使用捆绑器。
     所以在这些情况下，使用node、node16或nodenext解析选项可能是一个更好的途径。
     */
-    "moduleResolution": "node",
+    "moduleResolution": "NodeNext",
     /*
     默认情况下（noResolve的默认值是false），TypeScript将检查“import”和“<reference”指令的初始文件集，并将这些已解析的文件添加到您的程序中。
     1、如果设置了noResolve，则不会发生此过程。但是，仍会检查import语句以查看它们是否解析为有效的模块，因此您需要确保通过其他方式满足此要求。
@@ -660,13 +660,19 @@ CreateDate: 2022-01-01 00:00:00 星期六
     /*
     启用对与模块反射元数据一起使用的装饰器发射类型元数据的实验性支持。
     1、为源文件中的修饰声明发出设计类型元数据。
+    2、截至2024年04月19日，Decorators提案已经处于第3阶段（详细见：https://github.com/tc39/proposal-decorators），且不同于早期旧版的Decorators提案！
+    3、鉴于旧版的提案会被废弃不用，而且最新的提案规范会成为正式语法，所以将该选项设置为false，会让TS直接按最新的语法提案进行工作。
+    4、如果想让TS按照旧版的语法提案进行工作，可以将该选项设置为true。
     */
-    "emitDecoratorMetadata": true,
+    "emitDecoratorMetadata": false,
     /*
-    在TC39标准化流程的第二阶段，为装饰器启用实验支持。
+    在TC39标准化流程的第2阶段，为装饰器启用实验支持。
     1、装饰器是一种语言功能，尚未完全批准到JavaScript规范中。这意味着TypeScript中的实现版本可能与TC39决定的JavaScript中的实现版本有所不同。
+    2、截至2024年04月19日，Decorators提案已经处于第3阶段（详细见：https://github.com/tc39/proposal-decorators），且不同于早期旧版的Decorators提案！
+    3、鉴于旧版的提案会被废弃不用，而且最新的提案规范会成为正式语法，所以将该选项设置为false，会让TS直接按最新的语法提案进行工作。
+    4、如果想让TS按照旧版的语法提案进行工作，可以将该选项设置为true。
     */
-    "experimentalDecorators": true,
+    "experimentalDecorators": false,
     /*
     控制如何在JavaScript文件中发出JSX构造。这仅影响以.tsx为扩展名的文件的JS文件的输出。
     1、有效值如下：
@@ -804,7 +810,7 @@ CreateDate: 2022-01-01 00:00:00 星期六
     ],
     /*
     三个值：
-    1、auto（默认值）：TypeScript不仅会查找import和export语句，还会检查package.json中的“type”字段是否设置为“module”，当使用module: nodeext或node16运行时，并在jsx下运行时检查当前文件是否为JSX文件：react-jsx。
+    1、auto（默认值）：TypeScript不仅会查找import和export语句，还会检查package.json中的“type”字段是否设置为“module”，当使用module: nodenext或node16运行时，并在jsx下运行时检查当前文件是否为JSX文件：react-jsx。
     2、legacy：与4.6及之前版本相同的行为，使用import和export语句来确定文件是否为模块。
     3、force：确保每个非声明文件都被视为一个模块。
     */
@@ -821,13 +827,13 @@ CreateDate: 2022-01-01 00:00:00 星期六
     // "reactNamespace": "React",
     /*
     为发出的JavaScript设置JavaScript语言版本，并包含兼容的库声明。
-    1、有效值：es3（在TypeScript 5.0中已经将该选项作为默认值了）、es5、es6/es2015、es2016、es2017、es2018、es2019、es2020、es2021、es2022、esnext。
+    1、有效值：es3（在TypeScript 5.0中已经放弃该选项值）、es5、es6/es2015、es2016、es2017、es2018、es2019、es2020、es2021、es2022、esnext。
     2、更改目标也会更改lib的默认值。您可以根据需要“混合和匹配”目标和库设置，但为了方便起见，您可以设置目标。
     3、对于像Node这样的开发者平台，有目标的基线，具体取决于平台的类型及其版本。
     4、您可以在@tsconfig/bases找到一组社区组织的TSConfig，其中包含常见平台及其版本的配置。
     5、特殊的ESNext值是指您的TypeScript版本支持的最高版本。应该谨慎使用此设置，因为它在不同的TypeScript版本之间并不意味着相同的事情，并且会使升级变得难以预测。
     */
-    "target": "es2022",
+    "target": "esnext",
     /*
     发出符合ECMAScript标准的类字段。
     1、如果“target”选项值是es2022或更高版本，包括esnext，则该选项值默认为true，否则为false。
