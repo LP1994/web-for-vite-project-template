@@ -169,12 +169,9 @@ main {
   lang = 'ts'>
 'use strict';
 
-import JS_SHA3 from 'jsDir/third_party_modules/sha3.min.js';
-
-const {
-  // @ts-ignore
+import {
   sha3_512,
-} = JS_SHA3;
+} from 'js-sha3';
 
 import {
   reactive,
