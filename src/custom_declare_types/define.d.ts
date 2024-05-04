@@ -26,6 +26,13 @@ declare const env_platform: string;
 declare const isProduction: boolean;
 
 /**
+ * 这个是给请求头用的，不是给响应头用的。<br />
+ *
+ * @type {Record<string, string>}
+ */
+declare const httpRequestHeaders: Record<string, string | number>;
+
+/**
  * 生产模式用'classic'，开发用'module'。<br />
  * 1、在Vite中，对于Worker、SharedWorker的第2个参数中的option.type的处理是这样的：<br />
  * 开发模式下，被Vite强制设置成'module'，所以，如果在编码时需要设置option.type的值，也要遵循这个规定，也就是开发时设置成'module'。<br />
