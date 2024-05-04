@@ -130,7 +130,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Object"
 								},
 								"name": "Object",
@@ -226,7 +226,7 @@
 					"type": {
 						"type": "reference",
 						"target": {
-							"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.dom.d.ts",
+							"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.dom.d.ts",
 							"qualifiedName": "EventSource"
 						},
 						"name": "EventSource",
@@ -2098,7 +2098,7 @@
 											"type": {
 												"type": "reference",
 												"target": {
-													"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.dom.d.ts",
+													"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.dom.d.ts",
 													"qualifiedName": "FormData"
 												},
 												"name": "FormData",
@@ -2442,7 +2442,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.dom.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.dom.d.ts",
 									"qualifiedName": "FormData"
 								},
 								"name": "FormData",
@@ -2627,7 +2627,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.dom.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.dom.d.ts",
 									"qualifiedName": "FormData"
 								},
 								"name": "FormData",
@@ -2709,7 +2709,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.dom.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.dom.d.ts",
 									"qualifiedName": "FormData"
 								},
 								"name": "FormData",
@@ -3051,7 +3051,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
 									"qualifiedName": "ProxyConstructor"
 								},
 								"name": "ProxyConstructor",
@@ -3132,7 +3132,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
 									"qualifiedName": "ProxyConstructor"
 								},
 								"name": "ProxyConstructor",
@@ -3213,7 +3213,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
 									"qualifiedName": "ProxyConstructor"
 								},
 								"name": "ProxyConstructor",
@@ -3294,7 +3294,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
 									"qualifiedName": "ProxyConstructor"
 								},
 								"name": "ProxyConstructor",
@@ -3375,7 +3375,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
 									"qualifiedName": "ProxyConstructor"
 								},
 								"name": "ProxyConstructor",
@@ -3456,7 +3456,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
 									"qualifiedName": "ProxyConstructor"
 								},
 								"name": "ProxyConstructor",
@@ -3578,7 +3578,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
 									"qualifiedName": "ProxyConstructor"
 								},
 								"name": "ProxyConstructor",
@@ -3700,7 +3700,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
 									"qualifiedName": "ProxyConstructor"
 								},
 								"name": "ProxyConstructor",
@@ -3822,7 +3822,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
 									"qualifiedName": "ProxyConstructor"
 								},
 								"name": "ProxyConstructor",
@@ -3944,7 +3944,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
 									"qualifiedName": "ProxyConstructor"
 								},
 								"name": "ProxyConstructor",
@@ -4034,7 +4034,7 @@
 					"type": {
 						"type": "reference",
 						"target": {
-							"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.dom.d.ts",
+							"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.dom.d.ts",
 							"qualifiedName": "WebSocket"
 						},
 						"name": "WebSocket",
@@ -7004,7 +7004,7 @@
 															"type": {
 																"type": "reference",
 																"target": {
-																	"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+																	"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 																	"qualifiedName": "Function"
 																},
 																"name": "Function",
@@ -7864,7 +7864,7 @@
 															"type": {
 																"type": "reference",
 																"target": {
-																	"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+																	"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 																	"qualifiedName": "Function"
 																},
 																"name": "Function",
@@ -8096,7 +8096,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Object"
 								},
 								"name": "Object",
@@ -8383,7 +8383,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.dom.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.dom.d.ts",
 									"qualifiedName": "Blob"
 								},
 								"name": "Blob",
@@ -8917,7 +8917,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.dom.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.dom.d.ts",
 									"qualifiedName": "Blob"
 								},
 								"name": "Blob",
@@ -8998,7 +8998,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.dom.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.dom.d.ts",
 									"qualifiedName": "HTMLImageElement"
 								},
 								"name": "HTMLImageElement",
@@ -10081,7 +10081,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Promise"
 								},
 								"typeArguments": [
@@ -10188,7 +10188,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Promise"
 								},
 								"typeArguments": [
@@ -10296,7 +10296,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Promise"
 								},
 								"typeArguments": [
@@ -10403,7 +10403,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Promise"
 								},
 								"typeArguments": [
@@ -11119,7 +11119,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.dom.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.dom.d.ts",
 									"qualifiedName": "HTMLElement"
 								},
 								"name": "HTMLElement",
@@ -11200,7 +11200,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.dom.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.dom.d.ts",
 									"qualifiedName": "HTMLElement"
 								},
 								"name": "HTMLElement",
@@ -11310,7 +11310,7 @@
 									{
 										"type": "reference",
 										"target": {
-											"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.dom.d.ts",
+											"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.dom.d.ts",
 											"qualifiedName": "HTMLCollection"
 										},
 										"name": "HTMLCollection",
@@ -11403,7 +11403,7 @@
 									{
 										"type": "reference",
 										"target": {
-											"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.dom.d.ts",
+											"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.dom.d.ts",
 											"qualifiedName": "Element"
 										},
 										"name": "Element",
@@ -11496,7 +11496,7 @@
 									{
 										"type": "reference",
 										"target": {
-											"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.dom.d.ts",
+											"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.dom.d.ts",
 											"qualifiedName": "HTMLCollection"
 										},
 										"name": "HTMLCollection",
@@ -11505,7 +11505,7 @@
 									{
 										"type": "reference",
 										"target": {
-											"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.dom.d.ts",
+											"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.dom.d.ts",
 											"qualifiedName": "NodeList"
 										},
 										"name": "NodeList",
@@ -11617,7 +11617,7 @@
 									{
 										"type": "reference",
 										"target": {
-											"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.dom.d.ts",
+											"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.dom.d.ts",
 											"qualifiedName": "Element"
 										},
 										"name": "Element",
@@ -11729,7 +11729,7 @@
 									{
 										"type": "reference",
 										"target": {
-											"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.dom.d.ts",
+											"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.dom.d.ts",
 											"qualifiedName": "NodeList"
 										},
 										"name": "NodeList",
@@ -11841,7 +11841,7 @@
 									{
 										"type": "reference",
 										"target": {
-											"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.dom.d.ts",
+											"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.dom.d.ts",
 											"qualifiedName": "HTMLCollection"
 										},
 										"name": "HTMLCollection",
@@ -12098,7 +12098,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Function"
 								},
 								"name": "Function",
@@ -12179,7 +12179,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Function"
 								},
 								"name": "Function",
@@ -12336,7 +12336,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Function"
 								},
 								"name": "Function",
@@ -12574,7 +12574,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Function"
 								},
 								"name": "Function",
@@ -12731,7 +12731,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Promise"
 								},
 								"typeArguments": [
@@ -12979,7 +12979,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Function"
 								},
 								"name": "Function",
@@ -18732,7 +18732,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Promise"
 								},
 								"typeArguments": [
@@ -18819,7 +18819,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Object"
 								},
 								"name": "Object",
@@ -19018,7 +19018,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.dom.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.dom.d.ts",
 									"qualifiedName": "Document"
 								},
 								"name": "Document",
@@ -20306,7 +20306,7 @@
 									{
 										"type": "reference",
 										"target": {
-											"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.dom.d.ts",
+											"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.dom.d.ts",
 											"qualifiedName": "Element"
 										},
 										"name": "Element",
@@ -25615,7 +25615,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Function"
 								},
 								"name": "Function",
@@ -25715,7 +25715,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.dom.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.dom.d.ts",
 									"qualifiedName": "Element"
 								},
 								"name": "Element",
@@ -27306,7 +27306,7 @@
 									{
 										"type": "reference",
 										"target": {
-											"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+											"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 											"qualifiedName": "Object"
 										},
 										"name": "Object",
@@ -27403,7 +27403,7 @@
 									{
 										"type": "reference",
 										"target": {
-											"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+											"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 											"qualifiedName": "Object"
 										},
 										"name": "Object",
@@ -27486,7 +27486,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Object"
 								},
 								"name": "Object",
@@ -27567,7 +27567,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Object"
 								},
 								"name": "Object",
@@ -27648,7 +27648,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Object"
 								},
 								"name": "Object",
@@ -28238,7 +28238,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
 									"qualifiedName": "ProxyConstructor"
 								},
 								"name": "ProxyConstructor",
@@ -28451,7 +28451,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Promise"
 								},
 								"typeArguments": [
@@ -31543,7 +31543,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Promise"
 								},
 								"typeArguments": [
@@ -31672,7 +31672,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Object"
 								},
 								"name": "Object",
@@ -32367,7 +32367,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Function"
 								},
 								"name": "Function",
@@ -32705,7 +32705,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Function"
 								},
 								"name": "Function",
@@ -32806,7 +32806,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "../../../../../../web-project-template/node_modules/typescript/lib/lib.es5.d.ts",
+									"sourceFileName": "../../../../../../web-for-vite-project-template/node_modules/typescript/lib/lib.es5.d.ts",
 									"qualifiedName": "Object"
 								},
 								"name": "Object",
