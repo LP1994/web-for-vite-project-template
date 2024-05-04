@@ -151,7 +151,7 @@ import {
   ProxyConfig,
 } from './configures/ProxyConfig.esm.mjs';
 
-import tsconfig_vite_json from './tsconfig.vite.json' assert { type: 'json', };
+import tsconfig_vite_json from './tsconfig.vite.json' with { type: 'json', };
 
 import {
   VitePluginHTMLConfig,
