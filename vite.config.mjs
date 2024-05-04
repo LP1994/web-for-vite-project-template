@@ -185,7 +185,9 @@ function Get__filename( import_meta_url = import.meta.url ){
 const __dirname = Get__dirname( import.meta.url );
 
 /**
- * @type {string[]} 目标浏览器版本。<br />
+ * 目标浏览器版本。<br />
+ *
+ * @type {string[]}
  */
 const browserslist = [
     // PC端完全支持ES 5的主流浏览器 Start
@@ -207,27 +209,29 @@ const browserslist = [
     // 'Opera >= 55',
     // PC端完全支持ES 6（ECMAScript 2015）的主流浏览器 End
 
-    // PC端各主流浏览器的最新版本，至20231206。Start
-    'Chrome >= 120',
+    // PC端各主流浏览器的最新版本，至20240417。Start
+    'Chrome >= 124',
     // 这里的Edge是指新版的微软Edge，其基于Chromium，带有Blink和V8引擎，后来其最新的版本号，也基本跟Chrome版本号保持一致了。
-    'Edge >= 119',
-    'Firefox >= 120',
+    'Edge >= 124',
+    'Firefox >= 125',
     'Safari >= 17',
-    'Opera >= 105',
-    // PC端各主流浏览器的最新版本，至20231206。End
+    'Opera >= 109',
+    // PC端各主流浏览器的最新版本，至20240417。End
 
-    // 移动端各主流浏览器的最新版本，至20231206。Start
-    'ChromeAndroid >= 120',
+    // 移动端各主流浏览器的最新版本，至20240417。Start
+    'ChromeAndroid >= 124',
     // 从Android 4.4后Android WebView直接跟Chrome同步。
-    'Android >= 120',
-    'FirefoxAndroid >= 120',
+    'Android >= 124',
+    'FirefoxAndroid >= 125',
     'iOS >= 17',
-    // 移动端各主流浏览器的最新版本，至20231206。End
+    // 移动端各主流浏览器的最新版本，至20240417。End
   ],
   /**
-   * @type {string[]} 每个目标环境都是一个环境名称，后跟一个版本号。当前支持以下环境名称：<br />
+   * 每个目标环境都是一个环境名称，后跟一个版本号。当前支持以下环境名称：<br />
    * 1、chrome、edge、firefox、hermes、ie、ios、node、deno、opera、rhino、safari。<br />
    * 2、还可以是这样的：es2020、esnext、node12、node12.19.0、es5、es6、deno1.0。<br />
+   *
+   * @type {string[]}
    */
   esbuildMinify_target = [
     // PC端完全支持ES 5的主流浏览器 Start
@@ -252,20 +256,20 @@ const browserslist = [
     // 截至2023年11月21日，发现esbuild目前还没有“es2023”的标识，而且用“es2023”会报错！所以用“esnext”来代表最新的语法。
     'esnext',
 
-    // PC端各主流浏览器的最新版本，至20231206。Start
-    'chrome120',
-    'edge119',
-    'firefox120',
+    // PC端各主流浏览器的最新版本，至20240417。Start
+    'chrome124',
+    'edge124',
+    'firefox125',
     'safari17',
-    'opera105',
-    // PC端各主流浏览器的最新版本，至20231206。End
+    'opera109',
+    // PC端各主流浏览器的最新版本，至20240417。End
 
-    // 移动端各主流浏览器的最新版本，至20231206。Start
+    // 移动端各主流浏览器的最新版本，至20240417。Start
     'ios17',
-    // 移动端各主流浏览器的最新版本，至20231206。End
+    // 移动端各主流浏览器的最新版本，至20240417。End
   ],
   /**
-   * @type {object} 目标浏览器版本。<br />
+   * 目标浏览器版本。<br />
    * 1、支持的标识符有：<br />
    * android、chrome、deno（支持的最低版本为'1.0'）、edge、electron、firefox、ie、ios、node、opera、rhino、safari、samsung，其他的会报错。<br />
    * 具体见：node_modules/@babel/helper-compilation-targets/lib/options.js。<br />
@@ -273,6 +277,8 @@ const browserslist = [
    * and_chr（对应：chrome）、and_ff（对应：firefox）、ios_saf（对应：ios）、ie_mob（对应：ie）、op_mob（对应：opera）。<br />
    * 其他的别名会报错。<br />
    * 具体见：node_modules/@babel/core/lib/config/validation/option-assertions.js。<br />
+   *
+   * @type {object}
    */
   vite_plugin_legacy_target = {
     // PC端完全支持ES 5的主流浏览器 Start
@@ -294,19 +300,19 @@ const browserslist = [
     // opera: 55,
     // PC端完全支持ES 6（ECMAScript 2015）的主流浏览器 End
 
-    // PC端各主流浏览器的最新版本，至20231206。Start
-    chrome: 120,
-    edge: 119,
-    firefox: 120,
+    // PC端各主流浏览器的最新版本，至20240417。Start
+    chrome: 124,
+    edge: 124,
+    firefox: 125,
     safari: 17,
-    opera: 105,
-    // PC端各主流浏览器的最新版本，至20231206。End
+    opera: 109,
+    // PC端各主流浏览器的最新版本，至20240417。End
 
-    // 移动端各主流浏览器的最新版本，至20231206。Start
+    // 移动端各主流浏览器的最新版本，至20240417。Start
     /*从Android 4.4后Android WebView直接跟Chrome同步。*/
-    android: 120,
+    android: 124,
     ios: 17,
-    // 移动端各主流浏览器的最新版本，至20231206。End
+    // 移动端各主流浏览器的最新版本，至20240417。End
   };
 
 // autoprefixer共有三种类型的控制注释：
