@@ -170,13 +170,14 @@ main {
 'use strict';
 
 import {
-  sha3_512,
-} from 'js-sha3';
+  sha512,
+} from 'js-sha512';
+
+import Mime from 'mime';
 
 import {
   reactive,
   onMounted,
-  // useCssModule,
 } from 'vue';
 
 import {
@@ -190,13 +191,17 @@ import {
 // const router: Router = useRouter();
 const route: RouteLocationNormalizedLoaded = useRoute();
 
-type TState = {
+type T_State = {
   titleText: string;
   [ key: string | number ]: any;
 };
 
 function FileSRI( data: string | number[] | ArrayBuffer | Uint8Array ): string{
-  return sha3_512.create().update( data ).hex();
+  return sha512.create().update( data ).hex();
+}
+
+function GetFileMIME( file: File ): string{
+  return Mime.getType( file.name ) ?? 'application/octet-stream';
 }
 
 // @ts-expect-error
@@ -209,17 +214,18 @@ async function UploadForBinary( event: Event ): Promise<void>{
 
     console.dir( file );
 
-    fetch( `${ devURL001 }/simulation_servers_deno/upload?uploadType=binary&fileName=${ file.name }&isForcedWrite=false`, {
-      body: file,
-      cache: 'no-store',
-      credentials: 'omit',
+    fetch( `${ https4deno }/simulation_servers_deno/upload?uploadType=binary&fileName=${ file.name }&isForcedWrite=true`, {
+      body: file.slice(),
+      cache: 'no-cache',
       headers: {
-        'X-Custom-Header-File-SRI': `${ FileSRI( await file.arrayBuffer() ) }`,
-        'Access-Control-Request-Method': 'GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH',
-        'Access-Control-Request-Headers': 'X-Custom-Header-File-SRI, Authorization, Accept, Content-Type, Content-Language, Accept-Language',
+        Accept: 'application/json',
+        'content-type': GetFileMIME( file ),
+        'deno-custom-file-sri': `${ FileSRI( new Uint8Array( await file.arrayBuffer() ) ) }`,
+        ...httpRequestHeaders,
       },
       method: 'POST',
-      mode: 'cors',
+      credentials: 'same-origin',
+      mode: 'same-origin',
     } ).then(
       async ( res: Response ): Promise<Response> => {
         console.dir( await res.clone().json() );
@@ -251,17 +257,17 @@ async function UploadForSingle( event: Event ): Promise<void>{
     formData.append( 'file', file, file.name );
     formData.append( 'fileName', `${ file.name }` );
 
-    fetch( `${ devURL001 }/simulation_servers_deno/upload?uploadType=single&isForcedWrite=false`, {
+    fetch( `${ https4deno }/simulation_servers_deno/upload?uploadType=single&isForcedWrite=false`, {
       body: formData,
-      cache: 'no-store',
-      credentials: 'omit',
+      cache: 'no-cache',
       headers: {
-        'X-Custom-Header-File-SRI': `${ FileSRI( await file.arrayBuffer() ) }`,
-        'Access-Control-Request-Method': 'GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH',
-        'Access-Control-Request-Headers': 'X-Custom-Header-File-SRI, Authorization, Accept, Content-Type, Content-Language, Accept-Language',
+        Accept: 'application/json',
+        'deno-custom-file-sri': `${ FileSRI( new Uint8Array( await file.arrayBuffer() ) ) }`,
+        ...httpRequestHeaders,
       },
       method: 'POST',
-      mode: 'cors',
+      credentials: 'same-origin',
+      mode: 'same-origin',
     } ).then(
       async ( res: Response ): Promise<Response> => {
         console.dir( await res.clone().json() );
@@ -293,16 +299,16 @@ function UploadForMultiple( event: Event ): void{
       formData.append( 'files', file, file.name );
     } );
 
-    fetch( `${ devURL001 }/simulation_servers_deno/upload?uploadType=multiple&isForcedWrite=false`, {
+    fetch( `${ https4deno }/simulation_servers_deno/upload?uploadType=multiple&isForcedWrite=false`, {
       body: formData,
-      cache: 'no-store',
-      credentials: 'omit',
+      cache: 'no-cache',
       headers: {
-        'Access-Control-Request-Method': 'GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH',
-        'Access-Control-Request-Headers': 'X-Custom-Header-File-SRI, Authorization, Accept, Content-Type, Content-Language, Accept-Language',
+        Accept: 'application/json',
+        ...httpRequestHeaders,
       },
       method: 'POST',
-      mode: 'cors',
+      credentials: 'same-origin',
+      mode: 'same-origin',
     } ).then(
       async ( res: Response ): Promise<Response> => {
         console.dir( await res.clone().json() );
@@ -318,7 +324,7 @@ function UploadForMultiple( event: Event ): void{
   }
 }
 
-const state: TState = reactive( {
+const state: T_State = reactive( {
   titleText: `测试DIY的Deno服务器的文件上传`,
 } );
 
