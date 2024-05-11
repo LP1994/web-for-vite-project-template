@@ -397,7 +397,7 @@ function VitePluginHTMLConfig( {
      */
          ? GenerateSPAConfig( {
       entry: 'src/pages/index/Index.mts',
-      template: 'src/pages/index/Index.ejs',
+      template: 'src/template/ejs/Index.ejs',
       filename: 'Index.html',
       data: {
         VitePluginHTMLData: {

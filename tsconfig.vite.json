@@ -68,7 +68,6 @@
     "rootDir": ".",
     "declarationDir": "./ts_compiled/",
     "outDir": "./ts_compiled/",
-    "tsBuildInfoFile": "./ts_compiled/TSBuildInfo.tsbuildinfo.json5",
     "types": [],
     "typeRoots": [
       "./node_modules/@types",
