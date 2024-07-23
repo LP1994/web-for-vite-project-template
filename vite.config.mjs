@@ -2097,13 +2097,13 @@ export default defineConfig( async ( {
              * 1、值类型：string，默认值：space，有效值：'space'、'tab'。<br />
              * 2、sass-embedded实现不支持该选项，但是Dart Sass实现还是支持的。<br />
              */
-            indentType: 'space',
+            // indentType: 'space',
             /**
              * 每个应使用多少空格或制表符（二者到底哪个取决于indentType选项）生成的CSS中的缩进级别。它必须介于0和10之间（包括0和10）。<br />
              * 1、值类型：number，默认值：2。<br />
              * 2、sass-embedded实现不支持该选项，但是Dart Sass实现还是支持的。<br />
              */
-            indentWidth: 4,
+            // indentWidth: 4,
             /**
              * 在生成的CSS中每个行的末尾使用哪个字符序列，它可以具有以下值：<br />
              * 1、'lf'使用U+000A换行。<br />
@@ -2113,7 +2113,7 @@ export default defineConfig( async ( {
              * 5、值类型：string，默认值：'lf'，有效值有：'lf'、'lfcr'、'cr'、'crlf'。<br />
              * 6、sass-embedded实现不支持该选项，但是Dart Sass实现还是支持的。<br />
              */
-            linefeed: 'lf',
+            // linefeed: 'lf',
             /**
              * 已编译CSS的输出样式。有4种可能的输出样式：<br />
              * 1、'expanded'：Dart Sass的默认值，写入每个选择器并声明自己的路线。<br />
@@ -2190,13 +2190,13 @@ export default defineConfig( async ( {
              * 1、值类型：string，默认值：space，有效值：'space'、'tab'。<br />
              * 2、sass-embedded实现不支持该选项，但是Dart Sass实现还是支持的。<br />
              */
-            indentType: 'space',
+            // indentType: 'space',
             /**
              * 每个应使用多少空格或制表符（二者到底哪个取决于indentType选项）生成的CSS中的缩进级别。它必须介于0和10之间（包括0和10）。<br />
              * 1、值类型：number，默认值：2。<br />
              * 2、sass-embedded实现不支持该选项，但是Dart Sass实现还是支持的。<br />
              */
-            indentWidth: 2,
+            // indentWidth: 2,
             /**
              * 在生成的CSS中每个行的末尾使用哪个字符序列，它可以具有以下值：<br />
              * 1、'lf'使用U+000A换行。<br />
@@ -2206,7 +2206,7 @@ export default defineConfig( async ( {
              * 5、值类型：string，默认值：'lf'，有效值有：'lf'、'lfcr'、'cr'、'crlf'。<br />
              * 6、sass-embedded实现不支持该选项，但是Dart Sass实现还是支持的。<br />
              */
-            linefeed: 'lf',
+            // linefeed: 'lf',
             /**
              * 已编译CSS的输出样式。有4种可能的输出样式：<br />
              * 1、'expanded'：Dart Sass的默认值，写入每个选择器并声明自己的路线。<br />
