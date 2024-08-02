@@ -1,6 +1,6 @@
 /**
  * Project: web-for-vite-project-template
- * FileDirPath: vite.config.mjs
+ * FileDirPath: vite.base.esm.mjs
  * Author: 12278
  * Email: 1227839175@qq.com
  * IDE: WebStorm
@@ -523,9 +523,14 @@ const watch_ignored = [
  * node_modules/vite/dist/node/index.d.ts:2407
  */
 export default defineConfig( async ( {
+  /**
+   * 'serve': during dev (`vite` command)
+   * 'build': when building for production (`vite build` command)
+   */
   command,
   mode,
-  ssrBuild,
+  isSsrBuild,
+  isPreview,
 } ) => {
   /**
    * @type {string|undefined} env_platform的值是字符串，有4个值：'dev_server'、'local_server'、'test'、'production'，来源是CLI参数中的“--mode”参数值，必需。<br />
@@ -3909,7 +3914,7 @@ export default defineConfig( async ( {
          * 当地址不一致时，Vite会打印出来。<br />
          * 你可以设置dns.setDefaultResultOrder('verbatim')来禁用这个重新排序的行为。Vite会将地址打印为localhost。<br />
          * 例如：<br />
-         * // vite.config.js
+         * // vite.base.esm.mjs
          * import { defineConfig, } from 'vite';
          * import dns from 'dns';
          *
@@ -4188,6 +4193,6 @@ export default defineConfig( async ( {
     return viteConfig;
   }
   else{
-    throw new Error( `\n\n\n当前本Vite配置（vite.config.mjs）的“command”支持的命令有：“serve”、“build”，还不支持本次输入的：“${ command }”，可能需要更新本Vite配置（vite.config.mjs）以便支持该命令。\n\n\n` );
+    throw new Error( `\n\n\n当前本Vite配置（vite.base.esm.mjs）的“command”支持的命令有：“serve”、“build”，还不支持本次输入的：“${ command }”，可能需要更新本Vite配置（vite.base.esm.mjs）以便支持该命令。\n\n\n` );
   }
 } );
