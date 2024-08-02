@@ -529,6 +529,10 @@ export default defineConfig( async ( {
    */
   command,
   mode,
+  /**
+   * 1、isSsrBuild和isPreview是附加的可选标志，用于分别区分构建和服务命令的类型。
+   * 2、某些加载 Vite 配置的工具可能不支持这些标志，而是会传递 undefined。因此，建议对 true 和 false 使用显式比较。
+   */
   isSsrBuild,
   isPreview,
 } ) => {
