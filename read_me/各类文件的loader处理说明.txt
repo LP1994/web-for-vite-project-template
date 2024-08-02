@@ -1,4 +1,4 @@
 配置都在如下中：
-vite.config.mjs。
+vite.base.esm.mjs。
 具体可以去详细看看。
 这里就不做细说了。

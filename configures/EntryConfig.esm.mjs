@@ -92,7 +92,7 @@ function EntryConfig( {
   return isSPA
     /*
      1、当appType为'spa'时，也就是单页应用时，只需要设置1个“入口脚本”即可，且设置成一个字符串类型的值。
-     2、由于返回的值是给项目根目录下的vite.config.mjs使用的，所以设置的文件路径也是相对于项目根目录的。
+     2、由于返回的值是给项目根目录下的vite.base.esm.mjs使用的，所以设置的文件路径也是相对于项目根目录的。
      */
          ? 'src/pages/index/Index.mts'
     /*

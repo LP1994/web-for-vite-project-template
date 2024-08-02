@@ -425,9 +425,9 @@ CreateDate: 2022-01-01 00:00:00 星期六
     之所以会有这么个设置，是因为当配合Vite以及vite-plugin-checker（基于并依赖了vue-tsc）、vue-tsc时，要想使用类型检查，就必须是“noEmit”为true，表示开启该选项（true代表不在构建时发出任何文件，诸如：编译后的.js、类型描述文件等等），并且“emitDeclarationOnly”为false，表示关闭该选项（false代表不在构建时发出描述文件）。
     3、当配合Vite以及vite-plugin-checker（基于并依赖了vue-tsc）、vue-tsc时，该选项交由CIL命令行中设置，不用在配置文件中设置，直接注释掉即可，如：
     开发模式的构建：
-    vue-tsc --noEmit && vite serve --force --mode dev_server --config ./vite.config.mjs
+    vue-tsc --noEmit && vite serve --force --mode dev_server --config ./vite.base.esm.mjs
     生产模式的构建：
-    vue-tsc --noEmit && vite build --force --mode production --config ./vite.config.mjs
+    vue-tsc --noEmit && vite build --force --mode production --config ./vite.base.esm.mjs
     只希望进行生成类型描述文件：
     vue-tsc --declaration --emitDeclarationOnly
     */
@@ -482,9 +482,9 @@ CreateDate: 2022-01-01 00:00:00 星期六
     之所以会有这么个设置，是因为当配合Vite以及vite-plugin-checker（基于并依赖了vue-tsc）、vue-tsc时，要想使用类型检查，就必须是“noEmit”为true，表示开启该选项（true代表不在构建时发出任何文件，诸如：编译后的.js、类型描述文件等等），并且“emitDeclarationOnly”为false，表示关闭该选项（false代表不在构建时发出描述文件）。
     5、当配合Vite以及vite-plugin-checker（基于并依赖了vue-tsc）、vue-tsc时，该选项交由CIL命令行中设置，不用在配置文件中设置，直接注释掉即可，如：
     开发模式的构建：
-    vue-tsc --noEmit && vite serve --force --mode dev_server --config ./vite.config.mjs
+    vue-tsc --noEmit && vite serve --force --mode dev_server --config ./vite.base.esm.mjs
     生产模式的构建：
-    vue-tsc --noEmit && vite build --force --mode production --config ./vite.config.mjs
+    vue-tsc --noEmit && vite build --force --mode production --config ./vite.base.esm.mjs
     只希望进行生成类型描述文件：
     vue-tsc --declaration --emitDeclarationOnly
     */

@@ -9,7 +9,7 @@
 
 /**
  * Vite的server.proxy的配置。
- * 1、这些文件都有引入这个代理配置文件：vite.config.mjs。
+ * 1、这些文件都有引入这个代理配置文件：vite.base.esm.mjs。
  *
  * 当设置为'0.0.0.0'时的注意事项：<br />
  * 1、关于浏览器通过node服务代理请求本deno服务时，node的代理设置（target、router选项）得指向'0.0.0.0'，否者node会报错误：<br />
@@ -232,7 +232,7 @@ const __dirname = Get__dirname( import.meta.url ),
 
 /**
  * Vite的server.proxy的配置。<br />
- * 1、这些文件都有引入这个代理配置文件：vite.config.mjs。<br />
+ * 1、这些文件都有引入这个代理配置文件：vite.base.esm.mjs。<br />
  * 2、期望接收一个{ key: ProxyOptions }对象。<br />
  * 3、任何请求路径以key值开头的请求将被代理到对应的目标。<br />
  * 4、如果key值以“^”开头，将被识别为RegExp。ProxyOptions.configure选项可用于访问proxy实例。<br />
@@ -334,7 +334,7 @@ ${ JSON.stringify( req.headers, null, ' ' ) }
 
   /**
    * Vite的server.proxy的配置。<br />
-   * 1、这些文件都有引入这个代理配置文件：vite.config.mjs。<br />
+   * 1、这些文件都有引入这个代理配置文件：vite.base.esm.mjs。<br />
    * 2、有效值类型：Record<string, string | ProxyOptions>。<br />
    * 3、期望接收一个{ key: ProxyOptions }对象。<br />
    * 4、任何请求路径以key值开头的请求将被代理到对应的目标。<br />
