@@ -27,9 +27,8 @@ import {
 } from 'node:url';
 
 import {
-  weinreLocalPort,
-  weinrePublicNetworkHost,
-  weinrePublicNetworkPort,
+  Chii4RemoteLikeWeinreLocalPort,
+  Chii4RemoteLikeWeinreRemoteAddr,
 } from './GlobalParameters.esm.mjs';
 
 import {
@@ -178,11 +177,10 @@ const defaultData = {
   startupImgForApple: StartupImgForApple,
   dynamicREM: true,
   viteAssetsManifest: 'vite_assets_manifest.json',
-  weinreTool: {
-    isEnable: false,
-    weinreLocalPort,
-    id: '',
-    custom: null,
+  chii4RemoteLikeWeinreTool: {
+    isEnable: true,
+    Chii4RemoteLikeWeinreLocalPort,
+    Chii4RemoteLikeWeinreRemoteAddr,
   },
   // 以上的顶级变量，就算不需要也要保证它们被设置为null，否则会出现顶级变量未定义的编译错误。
 
