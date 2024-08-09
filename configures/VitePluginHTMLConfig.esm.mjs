@@ -178,7 +178,7 @@ const defaultData = {
   dynamicREM: true,
   viteAssetsManifest: 'vite_assets_manifest.json',
   chii4RemoteLikeWeinreTool: {
-    isEnable: true,
+    isEnable: false,
     Chii4RemoteLikeWeinreLocalPort,
     Chii4RemoteLikeWeinreRemoteAddr,
   },
