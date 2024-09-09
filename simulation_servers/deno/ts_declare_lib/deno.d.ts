@@ -6515,14 +6515,14 @@ declare namespace Deno {
   /** Serves HTTP requests with the given option bag and handler.
    *
    * You can specify an object with a port and hostname option, which is the
-   * address to listen on. The default is port `8000` on hostname `"127.0.0.1"`.
+   * address to listen on. The default is port `8000` on hostname `"0.0.0.0"`.
    *
    * You can change the address to listen on using the `hostname` and `port`
-   * options. The below example serves on port `3000` and hostname `"0.0.0.0"`.
+   * options. The below example serves on port `3000` and hostname `"127.0.0.1"`.
    *
    * ```ts
    * Deno.serve(
-   *   { port: 3000, hostname: "0.0.0.0" },
+   *   { port: 3000, hostname: "127.0.0.1" },
    *   (_req) => new Response("Hello, world")
    * );
    * ```
@@ -6664,14 +6664,14 @@ declare namespace Deno {
   /** Serves HTTP requests with the given option bag.
    *
    * You can specify an object with a port and hostname option, which is the
-   * address to listen on. The default is port `8000` on hostname `"127.0.0.1"`.
+   * address to listen on. The default is port `8000` on hostname `"0.0.0.0"`.
    *
    * ```ts
    * const ac = new AbortController();
    *
    * const server = Deno.serve({
    *   port: 3000,
-   *   hostname: "0.0.0.0",
+   *   hostname: "127.0.0.1",
    *   handler: (_req) => new Response("Hello, world"),
    *   signal: ac.signal,
    *   onListen({ port, hostname }) {
@@ -8812,7 +8812,6 @@ declare type BodyInit =
   | FormData
   | URLSearchParams
   | ReadableStream<Uint8Array>
-  | AsyncIterable<Uint8Array>
   | string;
 /** @category Fetch */
 declare type RequestDestination =
@@ -11508,7 +11507,7 @@ declare var CryptoKeyPair: {
 
 /** This Web Crypto API interface provides a number of low-level cryptographic
  * functions. It is accessed via the Crypto.subtle properties available in a
- * window context (via Window.crypto).
+ * window context (via globalThis.crypto).
  *
  * @category Crypto
  */
@@ -15585,7 +15584,10 @@ declare namespace Deno {
      * @category Jupyter
      * @experimental
      */
-    export function display(obj: unknown, options?: DisplayOptions): void;
+    export function display(
+      obj: unknown,
+      options?: DisplayOptions,
+    ): Promise<void>;
 
     /**
      * Show Markdown in Jupyter frontends with a tagged template function.
@@ -15658,12 +15660,12 @@ declare namespace Deno {
      * Format an object for displaying in Deno
      *
      * @param obj - The object to be displayed
-     * @returns MediaBundle
+     * @returns Promise<MediaBundle>
      *
      * @category Jupyter
      * @experimental
      */
-    export function format(obj: unknown): MediaBundle;
+    export function format(obj: unknown): Promise<MediaBundle>;
 
     /**
      * Broadcast a message on IO pub channel.
