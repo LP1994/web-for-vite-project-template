@@ -1,5 +1,5 @@
 /*
-Project: web-project-template
+Project: web-for-vite-project-template
 FileDirPath: src/wasm/source_codes/c++/math_tool/MathTool.cpp
 Author: 12278
 Email: 1227839175@qq.com
