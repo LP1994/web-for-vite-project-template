@@ -281,7 +281,7 @@ async function ProxyConfig( {
   const ResFaviconIco = ( req, res, url = resolve( __dirname, '../favicon.ico' ) ) => {
       logWriteStream.write( `--->${ req.url }<---Start
 请求头：
-${ JSON.stringify( req.headers, null, ' ' ) }
+${ JSON.stringify( req.headers, null, 4 ) }
 --->${ req.url }<---End
 \n` );
 
@@ -303,7 +303,7 @@ ${ JSON.stringify( req.headers, null, ' ' ) }
     ResRoot = ( req, response ) => {
       logWriteStream.write( `--->${ req.originalUrl }<---Start
 请求头：
-${ JSON.stringify( req.headers, null, ' ' ) }
+${ JSON.stringify( req.headers, null, 4 ) }
 --->${ req.originalUrl }<---End
 \n` );
 
@@ -631,14 +631,14 @@ ${ JSON.stringify( req.headers, null, ' ' ) }
           logWriteStream.write( `HTTP代理--->${ req.originalUrl }<---Start
 原请求方法：${ req.method }
 原请求头：
-${ JSON.stringify( req.headers, null, ' ' ) }
+${ JSON.stringify( req.headers, null, 4 ) }
 
 代理请求方法：${ proxyReq.method }
 代理请求的protocol：${ proxyReq.protocol }
 代理请求的host：${ proxyReq.host }
 代理请求的path：${ proxyReq.path }
 代理的请求头：
-${ JSON.stringify( Object.fromEntries( Object.values( proxyReq[ arr001[ arr001.findIndex( item => item.toString() === 'Symbol(kOutHeaders)' ) ] ] ) ), null, ' ' ) }
+${ JSON.stringify( Object.fromEntries( Object.values( proxyReq[ arr001[ arr001.findIndex( item => item.toString() === 'Symbol(kOutHeaders)' ) ] ] ) ), null, 4 ) }
 HTTP代理--->${ req.originalUrl }<---End
 \n\n` );
         } );
@@ -997,14 +997,14 @@ HTTP代理--->${ req.originalUrl }<---End
           logWriteStream.write( `WebSocket代理--->${ options.context }<---Start
 原请求方法：${ req.method }
 原请求头：
-${ JSON.stringify( req.headers, null, ' ' ) }
+${ JSON.stringify( req.headers, null, 4 ) }
 
 代理请求方法：${ proxyReq.method }
 代理请求的protocol：${ proxyReq.protocol }
 代理请求的host：${ proxyReq.host }
 代理请求的path：${ proxyReq.path }
 代理的请求头：
-${ JSON.stringify( Object.fromEntries( Object.values( proxyReq[ arr001[ arr001.findIndex( item => item.toString() === 'Symbol(kOutHeaders)' ) ] ] ) ), null, ' ' ) }
+${ JSON.stringify( Object.fromEntries( Object.values( proxyReq[ arr001[ arr001.findIndex( item => item.toString() === 'Symbol(kOutHeaders)' ) ] ] ) ), null, 4 ) }
 WebSocket代理--->${ options.context }<---End
 \n\n` );
         } );
