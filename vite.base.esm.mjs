@@ -209,22 +209,22 @@ const browserslist = [
     // 'Opera >= 55',
     // PC端完全支持ES 6（ECMAScript 2015）的主流浏览器 End
 
-    // PC端各主流浏览器的最新版本，至20240727。Start
-    'Chrome >= 127',
+    // PC端各主流浏览器的最新版本，至20241128。Start
+    'Chrome >= 131',
     // 这里的Edge是指新版的微软Edge，其基于Chromium，带有Blink和V8引擎，后来其最新的版本号，也基本跟Chrome版本号保持一致了。
-    'Edge >= 127',
-    'Firefox >= 128',
-    'Safari >= 17',
-    'Opera >= 112',
-    // PC端各主流浏览器的最新版本，至20240727。End
+    'Edge >= 131',
+    'Firefox >= 133',
+    'Safari >= 18',
+    'Opera >= 115',
+    // PC端各主流浏览器的最新版本，至20241128。End
 
-    // 移动端各主流浏览器的最新版本，至20240727。Start
-    'ChromeAndroid >= 127',
+    // 移动端各主流浏览器的最新版本，至20241128。Start
+    'ChromeAndroid >= 131',
     // 从Android 4.4后Android WebView直接跟Chrome同步。
-    'Android >= 127',
-    'FirefoxAndroid >= 128',
-    'iOS >= 17',
-    // 移动端各主流浏览器的最新版本，至20240727。End
+    'Android >= 131',
+    'FirefoxAndroid >= 133',
+    'iOS >= 18',
+    // 移动端各主流浏览器的最新版本，至20241128。End
   ],
   /**
    * 每个目标环境都是一个环境名称，后跟一个版本号。当前支持以下环境名称：<br />
@@ -255,17 +255,17 @@ const browserslist = [
 
     'es2024',
 
-    // PC端各主流浏览器的最新版本，至20240727。Start
-    'chrome127',
-    'edge127',
-    'firefox128',
-    'safari17',
-    'opera112',
-    // PC端各主流浏览器的最新版本，至20240727。End
+    // PC端各主流浏览器的最新版本，至20241128。Start
+    'chrome131',
+    'edge131',
+    'firefox133',
+    'safari18',
+    'opera115',
+    // PC端各主流浏览器的最新版本，至20241128。End
 
-    // 移动端各主流浏览器的最新版本，至20240727。Start
-    'ios17',
-    // 移动端各主流浏览器的最新版本，至20240727。End
+    // 移动端各主流浏览器的最新版本，至20241128。Start
+    'ios18',
+    // 移动端各主流浏览器的最新版本，至20241128。End
   ],
   /**
    * 目标浏览器版本。<br />
@@ -299,19 +299,19 @@ const browserslist = [
     // opera: 55,
     // PC端完全支持ES 6（ECMAScript 2015）的主流浏览器 End
 
-    // PC端各主流浏览器的最新版本，至20240727。Start
-    chrome: 127,
-    edge: 127,
-    firefox: 128,
-    safari: 17,
-    opera: 112,
-    // PC端各主流浏览器的最新版本，至20240727。End
+    // PC端各主流浏览器的最新版本，至20241128。Start
+    chrome: 131,
+    edge: 131,
+    firefox: 133,
+    safari: 18,
+    opera: 115,
+    // PC端各主流浏览器的最新版本，至20241128。End
 
-    // 移动端各主流浏览器的最新版本，至20240727。Start
+    // 移动端各主流浏览器的最新版本，至20241128。Start
     /*从Android 4.4后Android WebView直接跟Chrome同步。*/
-    android: 127,
-    ios: 17,
-    // 移动端各主流浏览器的最新版本，至20240727。End
+    android: 131,
+    ios: 18,
+    // 移动端各主流浏览器的最新版本，至20241128。End
   };
 
 // autoprefixer共有三种类型的控制注释：
