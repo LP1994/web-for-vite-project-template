@@ -176,7 +176,7 @@ const defaultData = {
   search: null,
   startupImgForApple: StartupImgForApple,
   dynamicREM: true,
-  viteAssetsManifest: 'vite_assets_manifest.json',
+  viteAssetsManifest: URLHead + './vite_assets_manifest.json',
   chii4RemoteLikeWeinreTool: {
     isEnable: false,
     Chii4RemoteLikeWeinreLocalPort,
@@ -331,13 +331,13 @@ function VitePluginHTMLConfig( {
    *
    * @param {Array<{entry, template, filename, data}>} configs 数组参数。
    *
-   * @param {string} entry 1个对应的“入口脚本”。<br />
+   * @param {string} configs.entry 1个对应的“入口脚本”。<br />
    * 1、由于返回的值是给项目根目录下的vite.base.esm.mjs使用的，所以设置的文件路径也是相对于项目根目录的。
    *
-   * @param {string} template HTML模板文件，一般是ejs文件。<br />
+   * @param {string} configs.template HTML模板文件，一般是ejs文件。<br />
    * 1、由于返回的值是给项目根目录下的vite.base.esm.mjs使用的，所以设置的文件路径也是相对于项目根目录的。
    *
-   * @param {string} filename 最后生成的HTML文件名，带不带“.html”这个后缀名都行，因为最后生成的HTML文件名都会带上“.html”。<br />
+   * @param {string} configs.filename 最后生成的HTML文件名，带不带“.html”这个后缀名都行，因为最后生成的HTML文件名都会带上“.html”。<br />
    * 1、该选项不仅影响生产模式下生成的HTML文件名，也影响开发模式下，浏览器打开的URL的路径名。<br />
    * 如：<br />
    * filename: 'Index'
@@ -352,7 +352,7 @@ function VitePluginHTMLConfig( {
    * 而不是：https://localhost:8500/dev_server/Index
    * 此时，带不带“.html”就有区别了！
    *
-   * @param {object} data 传给模板的自定义数据，一般将自定义的数据放在VitePluginHTMLData下即可，这样就能在模板文件中通过VitePluginHTMLData.xxx来访问自定义数据了。<br />
+   * @param {object} configs.data 传给模板的自定义数据，一般将自定义的数据放在VitePluginHTMLData下即可，这样就能在模板文件中通过VitePluginHTMLData.xxx来访问自定义数据了。<br />
    * 如：<br />
    * {
    *   VitePluginHTMLData: {
@@ -388,12 +388,8 @@ function VitePluginHTMLConfig( {
     };
   }
 
-  return isSPA
-    /*
-     1、当项目为单页应用时，调用函数GenerateSPAConfig即可。
-     2、由于返回的值是给项目根目录下的vite.base.esm.mjs使用的，所以设置的文件路径也是相对于项目根目录的。
-     */
-         ? GenerateSPAConfig( {
+  const pagesConfigArr = [
+    {
       entry: 'src/pages/index/Index.mts',
       template: 'src/template/ejs/Index.ejs',
       filename: 'Index.html',
@@ -403,12 +399,20 @@ function VitePluginHTMLConfig( {
           title: 'Index',
         },
       },
-    } )
+    },
+  ];
+
+  return isSPA
+    /*
+     1、当项目为单页应用时，调用函数GenerateSPAConfig即可。
+     2、由于返回的值是给项目根目录下的vite.base.esm.mjs使用的，所以设置的文件路径也是相对于项目根目录的。
+     */
+         ? GenerateSPAConfig( pagesConfigArr[ 0 ] )
     /*
      1、当项目为多页应用时，调用函数GenerateMPAConfig即可。
      2、由于返回的值是给项目根目录下的vite.base.esm.mjs使用的，所以设置的文件路径也是相对于项目根目录的。
      */
-         : GenerateMPAConfig( [] );
+         : GenerateMPAConfig( pagesConfigArr );
 }
 
 export {
