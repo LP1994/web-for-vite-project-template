@@ -176,7 +176,7 @@ const defaultData = {
   search: null,
   startupImgForApple: StartupImgForApple,
   dynamicREM: true,
-  viteAssetsManifest: URLHead + './vite_assets_manifest.json',
+  viteAssetsManifest: URLHead + '/vite_assets_manifest.json',
   chii4RemoteLikeWeinreTool: {
     isEnable: false,
     Chii4RemoteLikeWeinreLocalPort,
