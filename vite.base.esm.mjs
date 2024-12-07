@@ -78,6 +78,11 @@ import {
 
 import chalk from 'chalk';
 
+import {
+  // 该函数的函数参数详细见：node_modules/dotenv/lib/main.d.ts:21
+  config as DotenvConfig,
+} from 'dotenv';
+
 import JSON5 from 'json5';
 
 import PostcssSCSS from 'postcss-scss';
@@ -559,6 +564,47 @@ export default defineConfig( async ( {
      * @type {boolean} isProduction的值为true时表示生产环境，反之开发环境。<br />
      */
     isProduction = command === 'build';
+
+  switch( env_platform ){
+    case 'dev_server':
+      /**
+       * @type {import('node_modules/dotenv/lib/main.d.ts').config} config
+       */
+      DotenvConfig( {
+        path: `./.env.dev`,
+      } );
+
+      break;
+    case 'local_server':
+      /**
+       * @type {import('node_modules/dotenv/lib/main.d.ts').config} config
+       */
+      DotenvConfig( {
+        path: `./.env.local`,
+      } );
+
+      break;
+    case 'test':
+      /**
+       * @type {import('node_modules/dotenv/lib/main.d.ts').config} config
+       */
+      DotenvConfig( {
+        path: `./.env.test`,
+      } );
+
+      break;
+    case 'production':
+      /**
+       * @type {import('node_modules/dotenv/lib/main.d.ts').config} config
+       */
+      DotenvConfig( {
+        path: `./.env.production`,
+      } );
+
+      break;
+    default:
+      throw new Error( `CLI参数中必须有这么一个“--mode”参数设置，这4个之中的其中一个即可：--mode dev_server、--mode local_server、--mode test、--mode production。` );
+  }
 
   /**
    * @type {string} 'development'代表开发模式，'production'代表生产模式。
