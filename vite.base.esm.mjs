@@ -3528,6 +3528,9 @@ export default defineConfig( async ( {
         workersToolsDir: resolve( __dirname, './src/workers/tools/' ),
         webWorkersDir: resolve( __dirname, './src/workers/web_workers/' ),
         // workers文件夹 End
+
+        'GSD2TSTD$': resolve( __dirname, './src/graphql_schema_definition_to_ts_type_definition/GSD2TSTD.esm.mts' ),
+        'MF_v2_RuntimeAPI$': resolve( __dirname, './src/ModuleFederation_v2_RuntimeAPI.esm.mts' ),
       },
       /**
        * @type {string[]} 导入时想要省略的扩展名列表。注意，不建议忽略自定义导入类型的扩展名（例如：.vue），因为它会影响IDE和类型支持。<br />

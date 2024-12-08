@@ -197,6 +197,7 @@ export default {
       'web/': resolve( __dirname, './simulation_servers/deno/web/' ),
 
       'GSD2TSTD$': resolve( __dirname, './simulation_servers/deno/src/graphql_schema_definition_to_ts_type_definition/GSD2TSTD.esm.mts' ),
+      'MF_v2_RuntimeAPI$': resolve( __dirname, './src/ModuleFederation_v2_RuntimeAPI.esm.mts' ),
     },
     /**
      * 如果为true，则将不允许无扩展名的文件。设置成false就行。<br />
