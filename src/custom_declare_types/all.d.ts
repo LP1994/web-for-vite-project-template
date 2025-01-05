@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 /// <reference types="./define.d.ts" />
 /// <reference types="./env.d.ts" />
+/// <reference types="./global.d.ts" />
 /// <reference types="./img.d.ts" />
 /// <reference types="./inject.d.ts" />
 /// <reference types="./music.d.ts" />
