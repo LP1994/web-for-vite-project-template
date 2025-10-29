@@ -1,0 +1,50 @@
+webpack、
+deno(https://docs.deno.com/runtime/fundamentals/modules/#import-attributes)、
+支持的：
+type: "json"
+type: "text"（返回：string）
+type: "bytes"（返回：Uint8Array）
+
+webpack、deno不支持的：
+type: "css"
+type: "url"（导入为 URL 字符串）
+type: "wasm"、type: "webassembly"
+
+注意：
+1、在webpack中，对于上述支持的3个type属性值，无需再在“module.rules”里写对应的loader规则了！！！
+2、如果想让webpack能处理自定义的“with { type: 'XXX' }”，那可以在这里配置：
+Rule.with（https://webpack.js.org/configuration/module/#rulewith）
+例子：
+module.exports = {
+  // ...
+  module: {
+    rules: [
+      {
+        // Handles imports with the condition "with { type: 'json' }"
+        with: { type: 'json' },
+        // 配置想要自己处理的loader。
+        loader: require.resolve('./loader-assert.js'),
+      },
+    ],
+  },
+};
+
+
+
+HTML规范支持：
+type: "json"
+type: "css"（该类型导入一个“CSSStyleSheet”对象）
+
+
+
+node(https://nodejs.org/docs/latest/api/esm.html#import-attributes)支持的：
+type: "json"
+注意：
+1、在node中，必须明确写出“with { type: 'json' }”才能成功导入json模块，否则会报错！！！
+
+
+
+esbuild支持的：
+type: "json"
+type: "text"（返回：string）更新日志没明确给出，待测试
+type: "bytes"（返回：Uint8Array）更新日志明确给出支持
