@@ -214,22 +214,22 @@ const browserslist = [
     // 'Opera >= 55',
     // PC端完全支持ES 6（ECMAScript 2015）的主流浏览器 End
 
-    // PC端各主流浏览器的最新版本，至20251029。Start
+    // PC端各主流浏览器的最新版本，至20251115。Start
     'Chrome >= 142',
     // 这里的Edge是指新版的微软Edge，其基于Chromium，带有Blink和V8引擎，后来其最新的版本号，也基本跟Chrome版本号保持一致了。
     'Edge >= 142',
-    'Firefox >= 144',
+    'Firefox >= 145',
     'Safari >= 26',
-    'Opera >= 123',
-    // PC端各主流浏览器的最新版本，至20251029。End
+    'Opera >= 124',
+    // PC端各主流浏览器的最新版本，至20251115。Start
 
-    // 移动端各主流浏览器的最新版本，至20251029。Start
+    // PC端各主流浏览器的最新版本，至20251115。Start
     'ChromeAndroid >= 142',
     // 从Android 4.4后Android WebView直接跟Chrome同步。
     'Android >= 142',
-    'FirefoxAndroid >= 144',
+    'FirefoxAndroid >= 145',
     'iOS >= 26',
-    // 移动端各主流浏览器的最新版本，至20251029。End
+    // PC端各主流浏览器的最新版本，至20251115。Start
   ],
   /**
    * 每个目标环境都是一个环境名称，后跟一个版本号。当前支持以下环境名称：<br />
@@ -260,17 +260,17 @@ const browserslist = [
 
     'es2024',
 
-    // PC端各主流浏览器的最新版本，至20251029。Start
+    // PC端各主流浏览器的最新版本，至20251115。Start
     'chrome142',
     'edge142',
-    'firefox144',
+    'firefox145',
     'safari26',
-    'opera123',
-    // PC端各主流浏览器的最新版本，至20251029。End
+    'opera124',
+    // PC端各主流浏览器的最新版本，至20251115。Start
 
-    // 移动端各主流浏览器的最新版本，至20251029。Start
+    // PC端各主流浏览器的最新版本，至20251115。Start
     'ios26',
-    // 移动端各主流浏览器的最新版本，至20251029。End
+    // PC端各主流浏览器的最新版本，至20251115。Start
   ],
   /**
    * 目标浏览器版本。<br />
@@ -304,19 +304,19 @@ const browserslist = [
     // opera: 55,
     // PC端完全支持ES 6（ECMAScript 2015）的主流浏览器 End
 
-    // PC端各主流浏览器的最新版本，至20251029。Start
+    // PC端各主流浏览器的最新版本，至20251115。Start
     chrome: 142,
     edge: 142,
-    firefox: 144,
+    firefox: 145,
     safari: 26,
-    opera: 123,
-    // PC端各主流浏览器的最新版本，至20251029。End
+    opera: 124,
+    // PC端各主流浏览器的最新版本，至20251115。Start
 
-    // 移动端各主流浏览器的最新版本，至20251029。Start
+    // PC端各主流浏览器的最新版本，至20251115。Start
     /*从Android 4.4后Android WebView直接跟Chrome同步。*/
     android: 142,
     ios: 26,
-    // 移动端各主流浏览器的最新版本，至20251029。End
+    // PC端各主流浏览器的最新版本，至20251115。Start
   };
 
 // autoprefixer共有三种类型的控制注释：
