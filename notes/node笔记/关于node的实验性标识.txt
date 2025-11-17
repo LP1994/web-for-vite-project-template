@@ -16,6 +16,3 @@ enable transformation of TypeScript-onlysyntax into JavaScript code
 
 --experimental-vm-modules
 experimental ES Module support in vm module
-
---experimental-webstorage
-Web Storage API
