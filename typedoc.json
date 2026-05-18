@@ -1,0 +1,61 @@
+{
+  "name": "使用typedoc生成的API文档",
+  "entryPointStrategy": "resolve",
+  "exclude": [
+    "**/node_modules/**"
+  ],
+  "externalPattern": [
+    "**/node_modules/**"
+  ],
+  "excludeExternals": false,
+  "excludeNotDocumented": false,
+  "excludeInternal": false,
+  "excludePrivate": false,
+  "excludePrivateClassFields": false,
+  "excludeProtected": false,
+  "maxTypeConversionDepth": 2025,
+  "includeVersion": true,
+  "disableSources": false,
+  "readme": "none",
+  "pretty": true,
+  "emit": "docs",
+  "theme": "default",
+  "lightHighlightTheme": "light-plus",
+  "darkHighlightTheme": "dark-plus",
+  "lang": "zh",
+  "hideGenerator": false,
+  "cleanOutputDir": true,
+  "visibilityFilters": {
+    "protected": true,
+    "private": true,
+    "inherited": true,
+    "external": true,
+    "@alpha": true,
+    "@beta": true,
+    "@experimental": true,
+    "@deprecated": true,
+    "@enum": true,
+    "@hidden": true,
+    "@internal": true
+  },
+  "commentStyle": "jsdoc",
+  "categorizeByGroup": true,
+  "defaultCategory": "Other",
+  "sort": [
+    "source-order"
+  ],
+  "validation": {
+    "notExported": true,
+    "invalidLink": true,
+    "rewrittenLink": true,
+    "notDocumented": true,
+    "unusedMergeModuleWith": true
+  },
+  "treatWarningsAsErrors": false,
+  "treatValidationWarningsAsErrors": false,
+  "watch": false,
+  "preserveWatchOutput": true,
+  "showConfig": false,
+  "logLevel": 1,
+  "skipErrorChecking": false
+}

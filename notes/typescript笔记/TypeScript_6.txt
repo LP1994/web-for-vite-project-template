@@ -1,0 +1,224 @@
+--stableTypeOrdering
+请注意，此标志仅用于帮助诊断 6.0 与 7.0 之间的差异——它并非作为长期功能而设计
+
+--------------------------------------------------------------
+
+dom 库现已包含 dom.iterable 和 dom.asynciterable
+
+TypeScript 的 lib 选项允许您指定目标运行时包含哪些全局声明。其中一个选项是 `dom`，用于表示 Web 环境（即实现了 DOM API 的浏览器）。此前，DOM API 曾部分拆分为 `dom.iterable` 和 `dom.asynciterable`，以适配不支持 `Iterables` 和 `AsyncIterables` 的环境。这意味着，若要在 NodeList 或 HTMLCollection 等 DOM 集合上使用迭代方法，您必须显式添加 `dom.iterable`。
+
+在 TypeScript 6.0 中，lib.dom.iterable.d.ts 和 lib.dom.asynciterable.d.ts 的内容已完全合并到 lib.dom.d.ts 中。您仍可在配置文件的 "lib" 数组中引用 dom.iterable 和 dom.asynciterable，但它们现在只是空文件。
+
+------------------------------------------------------------------
+
+TypeScript 6.0 中的破坏性变更与弃用功能
+
+TypeScript 6.0 是一个重要的过渡版本，旨在帮助开发者为即将推出的 TypeScript 7.0（即 TypeScript 编译器的原生移植版）做好准备。虽然 TypeScript 6.0 完全兼容您现有的 TypeScript 知识，并且在 API 层面仍与 TypeScript 5.9 兼容，但此版本引入了多项破坏性变更和弃用功能，这些变更既反映了不断演进的 JavaScript 生态系统，也为 TypeScript 7.0 的到来奠定了基础。
+
+------------------------------------------------------------------
+
+自 TypeScript 5.0 发布以来的两年间，我们目睹了开发者编写和发布 JavaScript 的方式正持续发生变化：
+
+如今，几乎所有的运行时环境都已实现“常青”模式。真正的旧版环境（ES5）已变得极为罕见。
+打包工具和 ESM 已成为新项目中最常见的模块目标，尽管 CommonJS 仍是主要目标之一。AMD 及其他浏览器用户空间模块系统已远不如 2012 年常见。
+几乎所有包都能通过某种模块系统进行调用。UMD 包依然存在，但几乎不再有新代码仅以全局变量的形式提供。
+tsconfig.json 作为配置机制已近乎普及。
+对“更严格”类型系统的需求持续增长。
+TypeScript 的构建性能是首要关注点。尽管 TypeScript 7 已取得进步，但性能必须始终是关键目标，那些无法以高效方式支持的选项需要更充分的理由。
+因此，TypeScript 6.0 和 7.0 的设计充分考虑了这些现实情况。对于 TypeScript 6.0，您可以在 tsconfig 中设置 "ignoreDeprecations": "6.0" 来忽略这些弃用项；但请注意，TypeScript 7.0 将不再支持任何这些已弃用的选项。
+
+部分必要的调整可通过 codemod 或工具自动完成。例如，实验性的 ts5to6 工具可自动调整代码库中的 baseUrl 和 rootDir。
+
+------------------------------------------------------------------
+
+前期调整
+下文将介绍具体的调整方案，但需要说明的是，某些已弃用的功能和行为变更未必会显示直接指向根本问题的错误信息。因此，我们在此提前说明：许多项目至少需要执行以下操作之一：
+
+在 tsconfig 中设置 "types" 数组，通常设为 "types": ["node"]。
+
+"types": ["*"] 可以恢复 5.9 版本的行为，但我们建议使用显式的数组来提升构建性能和可预测性。
+
+如果您看到大量与缺失标识符或未解析的内置模块相关的类型错误，通常可以判断这是该问题。
+
+如果您之前依赖于该路径的自动推断，请将 "rootDir" 设置为 "./src"
+
+如果您发现文件被写入 ./dist/src/index.js 而不是 ./dist/index.js，通常可以判断这是该问题。
+
+------------------------------------------------------------------
+
+简单的默认值变更
+若干编译器选项的默认值现已更新，以更好地契合现代开发实践。
+
+strict 默认值现设为true
+
+对更严格类型检查的需求持续增长，我们发现大多数新项目都希望启用严格模式。如果您此前已使用 "strict": true，则无需进行任何更改。如果您此前依赖于旧版默认值 false，则需要在 tsconfig.json 中显式设置 "strict": false。
+
+------------------------------------------------------------------
+
+module 默认值为 esnext
+
+同样地，新的默认模块格式为 esnext，这反映了 ESM 现已成为主流模块格式的事实。
+
+------------------------------------------------------------------
+
+target 默认值为当年最新的 ECMAScript 版本：新的默认目标是当前支持的最新 ECMAScript 规范版本（实际上是一个动态目标）。
+目前，该目标版本为 es2025。
+这反映了当前大多数开发者都在向常青运行时发布代码，无需编译为旧版 ECMAScript 的现实情况。
+
+------------------------------------------------------------------
+
+noUncheckedSideEffectImports 默认值现为 true，这有助于发现仅产生副作用的导入语句中的拼写错误。
+
+------------------------------------------------------------------
+
+libReplacement 默认值现设为 false
+
+此前该标志会导致每次运行时产生大量模块解析失败，进而增加了在 --watch 和编辑器场景下需要监视的位置数量。
+
+在新项目中，除非有其他显式配置，否则 libReplacement 不会执行任何操作，因此默认禁用该功能以提升性能是合理的。
+
+如果这些新默认值导致您的项目出现问题，您可以在 tsconfig.json 中显式指定之前的值。
+
+------------------------------------------------------------------
+
+rootDir 现在默认值为 .
+
+rootDir 控制输出文件相对于输出目录的目录结构。此前，如果未指定 rootDir，系统会根据所有非声明类输入文件的公共目录来推断该值。但这往往意味着，如果不尝试加载并解析该项目，就无法确定某个文件是否属于该项目。这也意味着 TypeScript 必须花费更多时间来分析程序中的每个文件路径，从而推断出该公共源目录。
+
+在 TypeScript 6.0 中，默认的 rootDir 将始终是包含 tsconfig.json 文件的目录。仅当在命令行中使用 tsc 且未提供 tsconfig.json 文件时，才会推断 rootDir。
+
+------------------------------------------------------------------
+
+types 现在默认值为 []
+
+在 tsconfig.json 中，compilerOptions 下的 types 字段指定了一组要在编译时包含到全局作用域中的包名。通常，node_modules 中的包会通过源代码中的导入语句自动包含进来；但为了方便起见，TypeScript 默认也会包含 node_modules/@types 中的所有包，这样你就可以直接使用 @types/node 中的 process 或 "fs" 模块，以及 @types/jest 中的 describe 和 it，而无需直接导入它们。
+
+从某种意义上说，之前的 types 默认值相当于“枚举 node_modules/@types 中的所有内容”。这可能非常耗费资源，因为如今典型的仓库配置可能会通过传递依赖拉取数百个 @types 包，尤其是在 node_modules 被扁平化的多项目工作区中。现代项目几乎总是只需要 @types/node、@types/jest 或其他几个常见的、影响全局的包。
+
+在 TypeScript 6.0 中，`types` 的默认值将改为 []（一个空数组）。这一改动可防止项目在构建时无意中引入数百甚至数千个不需要的声明文件。我们观察到的许多项目仅通过合理设置 `types`，就将构建时间缩短了 20% 至 50%。
+
+------------------------------------------------------------------
+
+已弃用：target: es5
+
+ECMAScript 5 目标长期以来对于支持旧版浏览器至关重要；但其继任者 ECMAScript 2015（ES6）已于十多年前发布，且所有现代浏览器多年来均已支持该标准。随着 Internet Explorer 的退役以及常青浏览器的普及，如今几乎不再有输出 ES5 的用例。
+
+TypeScript 的最低目标版本现将调整为 ES2015，且 `target: es5` 选项已被弃用。若您此前使用 `target: es5`，则需迁移至更新的目标版本或使用外部编译器。若您仍需 ES5 输出，建议使用外部编译器直接编译 TypeScript 源代码，或对 TypeScript 的输出结果进行后处理。
+
+有关此弃用的更多信息及其实现的拉取请求，请参阅此处。
+
+------------------------------------------------------------------
+
+已弃用：--downlevelIteration
+
+--downlevelIteration 仅对 ES5 输出有效，由于 --target es5 已被弃用，因此 --downlevelIteration 已无实际用途。
+
+值得注意的是，在 TypeScript 5.9 及更早版本中，即使 --downlevelIteration 没有实际效果，但与 --target es2015 一起使用时也不会报错。而在 TypeScript 6.0 中，只要设置了 --downlevelIteration，就会引发弃用错误。
+
+请参阅此处的实现。
+
+------------------------------------------------------------------
+
+已弃用：--moduleResolution node（又名 --moduleResolution node10 ）
+
+--moduleResolution node 实现了 Node.js 模块解析算法的特定版本，该版本最准确地反映了 Node.js 10 的行为。遗憾的是，该目标（及其名称）忽略了此后 Node.js 解析算法中的诸多更新，已无法准确体现现代 Node.js 版本的行为。
+
+在 TypeScript 6.0 中，--moduleResolution node（具体而言，即 --moduleResolution node10）已被弃用。若计划直接针对 Node.js 进行开发，建议原使用 --moduleResolution node 的用户迁移至 --moduleResolution nodenext；若计划使用打包工具或 Bun，则建议迁移至 --moduleResolution bundler。
+
+更多详情请参阅此问题及其对应的拉取请求。
+
+------------------------------------------------------------------
+
+已弃用：module 的 amd、umd和systemjs值
+
+以下标志值不再受支持
+module: amd、module: umd、module: systemjs、module: none
+
+在 JavaScript 模块发展的早期阶段，当浏览器尚未原生支持模块时，AMD、UMD 和 SystemJS 曾发挥过重要作用。“none”的语义从未被明确定义，且常导致混淆。如今，ESM 已在浏览器和 Node.js 中得到普遍支持，导入映射和打包工具已成为填补空白的首选方案。若您仍需支持这些模块系统，请考虑迁移至合适的 ECMAScript 模块生成目标，采用打包工具或不同的编译器，或者在能够迁移之前继续使用 TypeScript 5.x。
+
+这也意味着将不再支持 `amd-module` 指令，该指令将不再产生任何效果。
+
+更多详情请参阅提案问题及相应的实现拉取请求。
+
+------------------------------------------------------------------
+
+已弃用：--baseUrl
+
+baseUrl 选项最常与 paths 配合使用，通常作为 paths 中每个值的前缀。遗憾的是，baseUrl 也被视为模块解析的查找根目录。
+
+------------------------------------------------------------------
+
+已弃用：--moduleResolution classic
+
+已移除 moduleResolution: classic 设置。经典解析策略是 TypeScript 的原始模块解析算法，其出现时间早于 Node.js 的解析算法成为事实标准。如今，所有实际用例均可通过 nodenext 或 bundler 实现。如果您此前使用的是 classic，请迁移至上述任一现代解析策略。
+
+更多详情请参阅此问题及相应的实现拉取请求。
+
+------------------------------------------------------------------
+
+已弃用：--esModuleInterop false和--allowSyntheticDefaultImports false
+
+以下设置不再允许设为 false：
+esModuleInterop
+allowSyntheticDefaultImports
+
+esModuleInterop 和 allowSyntheticDefaultImports 最初是可选启用的，以避免破坏现有项目。然而，它们启用的行为多年来一直是推荐的默认设置。将它们设为 false 通常会在从 ESM 加载 CommonJS 模块时导致难以察觉的运行时问题。在 TypeScript 6.0 中，更安全的互操作行为始终处于启用状态。
+
+------------------------------------------------------------------
+
+已弃用：--alwaysStrict false
+
+alwaysStrict 标志涉及 "use strict" 指令的推断和生成。在 TypeScript 6.0 中，所有代码都将被视为处于 JavaScript 严格模式，这是一种 JS 语义规范，其最显著的影响体现在保留关键字相关的语法边界情况上。如果您有“宽松模式”的代码，将 await、static、private 或 public 等保留关键字用作普通标识符，则需要重命名它们。如果您在非严格模式的代码中依赖于 this 的含义所涉及的细微语义，可能也需要调整代码。
+
+更多详情请参阅此问题及其对应的拉取请求。
+
+------------------------------------------------------------------
+
+已弃用：outFile
+
+TypeScript 6.0 已移除了 --outFile 选项。该选项最初的设计目的是将多个输入文件合并为一个输出文件。然而，如今 Webpack、Rollup、esbuild、Vite、Parcel 等外部打包工具能够以更快的速度、更优的效果以及更灵活的配置完成这项工作。移除此选项简化了实现，使我们能够专注于 TypeScript 最擅长的领域：类型检查和声明生成。如果您当前正在使用 --outFile，则需要迁移到外部打包工具。大多数现代打包工具开箱即用，对 TypeScript 提供了出色的支持。
+
+------------------------------------------------------------------
+
+已弃用：旧版 module 命名空间的语法
+
+TypeScript 的早期版本使用 `module` 关键字来声明命名空间：
+// ❌ Deprecated syntax - now an error
+module Foo {
+    export const bar = 10;
+}
+
+该语法后来通过 namespace 关键字被别名化为现代推荐的形式：
+// ✅ The correct syntax
+namespace Foo {
+    export const bar = 10;
+}
+
+在引入命名空间时，模块语法仅被视为不推荐使用。几年前，TypeScript 语言服务开始将该关键字标记为弃用，并建议改用命名空间。
+
+在 TypeScript 6.0 中，在预期使用命名空间的地方使用 module 现已被严格弃用。这一变更势在必行，因为模块代码块是 ECMAScript 的一项潜在提案，这将与 TypeScript 的旧版语法产生冲突。
+
+环境模块声明形式仍得到完全支持：
+// ✅ Still works perfectly
+declare module "some-module" {
+    export function doSomething(): void;
+}
+
+------------------------------------------------------------------
+
+已弃用：导入语句中的 asserts 关键字
+
+asserts 关键字是通过“导入断言”提案引入 JavaScript 语言的；然而，该提案最终演变为“导入属性”提案，该提案使用 with 关键字代替了 asserts。
+
+------------------------------------------------------------------
+
+已弃用： no-default-lib 指令
+/// <reference no-default-lib="true"/> 指令长期以来被广泛误解和误用。在 TypeScript 6.0 中，该指令已不再受支持。如果您曾使用过该指令，请考虑改用 --noLib 或 --libReplacement。
+
+更多详情请参阅此处及相应的拉取请求。
+
+------------------------------------------------------------------
+
+为 TypeScript 7.0 做好准备 TypeScript 6.0 被设计为一个过渡版本。
+
+虽然在设置了 "ignoreDeprecations": "6.0" 时，TypeScript 6.0 中已弃用的选项仍可正常工作且不会报错，但这些选项将在 TypeScript 7.0（原生 TypeScript 移植版）中被完全移除。如果您在升级到 TypeScript 6.0 后看到弃用警告，我们强烈建议您在项目中采用 TypeScript 7.0（或尝试原生预览版）之前先处理这些警告。
