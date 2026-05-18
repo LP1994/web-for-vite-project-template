@@ -1,5 +1,5 @@
 /**
- * Project: web-project-template
+ * Project: web-for-vite-project-template
  * FileDirPath: ModuleFederation_v2_Config.esm.mjs
  * Author: 12278
  * Email: 1227839175@qq.com
@@ -50,7 +50,7 @@ function ModuleFederation_v2_Config_Fun( {
      * 1、模块联邦使用该名称进行运行时数据检索和全局块存储变量引用。<br />
      * 2、远端模块提供者、模块使用者都得设置该参数！<br />
      */
-    name: 'MF_v2_Main_web-project-template',
+    name: 'MF_v2_Main_web-for-vite-project-template',
     /**
      * 远端模块提供者生成的remoteEntry的文件名。非必须。<br />
      * 1、默认值：'remoteEntry.js'。<br />
@@ -114,10 +114,10 @@ function ModuleFederation_v2_Config_Fun( {
      * </code>
      * 通过自定义插件（注意，只是扩展了功能，不影响原本的功能）处理后，生产模式（isProduction为true）下，上面的“remotes”实际是如此：<br />
      * 假定“远端模块使用者”的浏览器页面url地址是：<br />
-     * http://localhost:8090/web-project-template/dist/production/pages/Upload.html
+     * http://localhost:8090/web-for-vite-project-template/dist/production/pages/Upload.html
      * <code>
      * remotes: {
-     *   RemoteUploadForMultiple: `Remote_UploadForMultiple@http://localhost:8090/web-project-template/dist/production/mf_v2/upload_for_multiple/mf_v2/RemoteEntry_UploadForMultiple.js`,
+     *   RemoteUploadForMultiple: `Remote_UploadForMultiple@http://localhost:8090/web-for-vite-project-template/dist/production/mf_v2/upload_for_multiple/mf_v2/RemoteEntry_UploadForMultiple.js`,
      * },
      * </code>
      * 这样，原本插件构建模式下的“固定url（这里的“固定”一词是相对运行时可以动态设置远端模块提供者的url）”也就可以做到类似在运行时那样，可以动态设置远端模块提供者的url。<br />
@@ -273,8 +273,8 @@ function ModuleFederation_v2_Config_Fun( {
      * 其中“compiler.webpack.RuntimeGlobals.publicPath”的值为“__webpack_require__.p”的字符串。
      * 例如：
      * 将“getPublicPath”设置为`return new URL('../mf_v2/upload_for_multiple/',location.href).href`时，
-     * 在“业务代码（不是webpack的配置代码）”中可以通过：__webpack_public_path__、__webpack_require__.p这两个直接变量，就可以取到实际运行在浏览器（当前浏览器的URL：http://localhost:8090/web-project-template/dist/test/pages/Upload.html）下的具体URL值了：
-     * http://localhost:8090/web-project-template/dist/test/mf_v2/upload_for_multiple/
+     * 在“业务代码（不是webpack的配置代码）”中可以通过：__webpack_public_path__、__webpack_require__.p这两个直接变量，就可以取到实际运行在浏览器（当前浏览器的URL：http://localhost:8090/web-for-vite-project-template/dist/test/pages/Upload.html）下的具体URL值了：
+     * http://localhost:8090/web-for-vite-project-template/dist/test/mf_v2/upload_for_multiple/
      */
     // getPublicPath: `function(){}`,
     /**
@@ -395,10 +395,10 @@ function ModuleFederation_v2_Config_Fun( {
      * </code>
      * 通过自定义插件（注意，只是扩展了功能，不影响原本的功能）处理后，生产模式（isProduction为true）下，上面的“remotes”实际是如此：<br />
      * 假定“远端模块使用者”的浏览器页面url地址是：<br />
-     * http://localhost:8090/web-project-template/dist/production/pages/Upload.html
+     * http://localhost:8090/web-for-vite-project-template/dist/production/pages/Upload.html
      * <code>
      * remotes: {
-     *   RemoteUploadForMultiple: `Remote_UploadForMultiple@http://localhost:8090/web-project-template/dist/production/mf_v2/upload_for_multiple/mf_v2/RemoteEntry_UploadForMultiple.js`,
+     *   RemoteUploadForMultiple: `Remote_UploadForMultiple@http://localhost:8090/web-for-vite-project-template/dist/production/mf_v2/upload_for_multiple/mf_v2/RemoteEntry_UploadForMultiple.js`,
      * },
      * </code>
      * 这样，原本插件构建模式下的“固定url（这里的“固定”一词是相对运行时可以动态设置远端模块提供者的url）”也就可以做到类似在运行时那样，可以动态设置远端模块提供者的url。<br />

@@ -10,13 +10,13 @@ $OutputEncoding = New-Object -typename System.Text.UTF8Encoding
 $nestedArray = @(
     @("G:\WebStormWS\upload-for-multiple", "npm run test"),
     @("G:\WebStormWS\upload-for-single", "npm run test"),
-    @("G:\WebStormWS\web-project-template", "npm run test")
+    @("G:\WebStormWS\web-for-vite-project-template", "npm run test")
 )
 
 # 生产模式打包全都完成后，将各个子项目的输出复制到主项目的输出目录中。
 $nestedCopyArray = @(
-    @("G:\WebStormWS\upload-for-multiple\dist\test", "G:\WebStormWS\web-project-template\dist\test\mf_v2\upload_for_multiple"),
-    @("G:\WebStormWS\upload-for-single\dist\test", "G:\WebStormWS\web-project-template\dist\test\mf_v2\upload_for_single")
+    @("G:\WebStormWS\upload-for-multiple\dist\test", "G:\WebStormWS\web-for-vite-project-template\dist\test\mf_v2\upload_for_multiple"),
+    @("G:\WebStormWS\upload-for-single\dist\test", "G:\WebStormWS\web-for-vite-project-template\dist\test\mf_v2\upload_for_single")
 )
 
 $isSuccess = $true

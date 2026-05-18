@@ -1,7 +1,7 @@
 {
   "projects": {
-    "web-project-template": {
-      "name": "web-project-template",
+    "web-for-vite-project-template": {
+      "name": "web-for-vite-project-template",
       "schema": [
         "./src/graphQL/GraphQL.Schema.json"
       ],

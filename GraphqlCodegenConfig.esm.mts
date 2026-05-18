@@ -1,5 +1,5 @@
 /**
- * Project: web-project-template
+ * Project: web-for-vite-project-template
  * FileDirPath: GraphqlCodegenConfig.esm.mts
  * Author: 12278
  * Email: 1227839175@qq.com
@@ -248,7 +248,7 @@ const GraphqlCodegenConfig: T_CodegenConfig = {
 
           return `
 /**
- * Project: web-project-template
+ * Project: web-for-vite-project-template
  * FileDirPath: simulation_servers/deno/src/graphql_schema_definition_to_ts_type_definition/GSD2TSTD.esm.mts
  * Author: 12278
  * Email: 1227839175@qq.com
@@ -387,7 +387,7 @@ ${ fileContent }`;
 
           return `
 /**
- * Project: web-project-template
+ * Project: web-for-vite-project-template
  * FileDirPath: src/graphql_schema_definition_to_ts_type_definition/GSD2TSTD.esm.mts
  * Author: 12278
  * Email: 1227839175@qq.com
