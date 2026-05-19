@@ -15,12 +15,6 @@
 export {};
 
 import {
-  type UserOptions,
-  ModuleFederation,
-  loadRemote,
-} from '@module-federation/enhanced/runtime';
-
-import {
   type App as T_App,
   type ComponentPublicInstance as T_ComponentPublicInstance,
   type DefineComponent as T_DefineComponent,
@@ -62,10 +56,4 @@ declare global {
   type T_VueReactive<T> = T_Reactive<T>;
 
   type T_LoadRemoteVueComponent = Awaited<ReturnType<T_AsyncComponentLoader<T_DefineComponent<{}, {}, any>>>>;
-
-  type T_MF_v2_RuntimeAPI_UserOptions = UserOptions;
-
-  type T_MF_v2_RuntimeAPI_ModuleFederation = typeof ModuleFederation;
-
-  type T_MF_v2_RuntimeAPI_LoadRemote<T> = typeof loadRemote<T>;
 }
