@@ -4,7 +4,8 @@
     <xml-schema-version>XMLSchema_1_1</xml-schema-version>
   </component>
   <component name="ViteConfiguration">
-    <option name="mode" value="AUTO" />
+    <option name="mode" value="MANUAL" />
+    <option name="path" value="$PROJECT_DIR$/vite.webstorm.commonjs.js" />
   </component>
   <component name="WebPackConfiguration">
     <option name="mode" value="DISABLED" />
