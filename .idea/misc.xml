@@ -4,10 +4,10 @@
     <xml-schema-version>XMLSchema_1_1</xml-schema-version>
   </component>
   <component name="ViteConfiguration">
-    <option name="mode" value="DISABLED" />
+    <option name="mode" value="AUTO" />
   </component>
   <component name="WebPackConfiguration">
-    <option name="mode" value="MANUAL" />
+    <option name="mode" value="DISABLED" />
     <option name="path" value="$PROJECT_DIR$/webpack.webstorm.commonjs.js" />
   </component>
 </project>
