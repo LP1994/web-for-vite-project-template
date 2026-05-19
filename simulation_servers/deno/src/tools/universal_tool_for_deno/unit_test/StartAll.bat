@@ -1,1 +1,0 @@
-deno run -A --config=../../../../deno.jsonc --check --v8-flags=--max-old-space-size=1024000 --reload --watch-hmr --env-file=../../../../.env.deno ./MainAll.test.mts --color=16m&pause

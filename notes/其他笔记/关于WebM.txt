@@ -1,2 +1,0 @@
-.webm   video/webm   视频
-.webm   audio/webm   音频
