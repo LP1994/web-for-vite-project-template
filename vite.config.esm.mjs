@@ -1,6 +1,6 @@
 /**
  * Project: web-for-vite-project-template
- * FileDirPath: vite.config.js
+ * FileDirPath: vite.config.esm.mjs
  * Author: 12278
  * Email: 1227839175@qq.com
  * IDE: WebStorm

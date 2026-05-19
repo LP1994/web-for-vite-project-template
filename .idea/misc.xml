@@ -5,7 +5,7 @@
   </component>
   <component name="ViteConfiguration">
     <option name="mode" value="MANUAL" />
-    <option name="path" value="$PROJECT_DIR$/vite.webstorm.commonjs.js" />
+    <option name="path" value="$PROJECT_DIR$/vite.webstorm.esm.mjs" />
   </component>
   <component name="WebPackConfiguration">
     <option name="mode" value="DISABLED" />
