@@ -8,6 +8,5 @@
   </component>
   <component name="WebPackConfiguration">
     <option name="mode" value="DISABLED" />
-    <option name="path" value="$PROJECT_DIR$/webpack.webstorm.commonjs.js" />
   </component>
 </project>

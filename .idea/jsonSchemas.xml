@@ -31,7 +31,7 @@
                     <option name="path" value="tsconfig.typedoc.json" />
                   </Item>
                   <Item>
-                    <option name="path" value="tsconfig.webpack.json" />
+                    <option name="path" value="tsconfig.vite.json" />
                   </Item>
                 </list>
               </option>
