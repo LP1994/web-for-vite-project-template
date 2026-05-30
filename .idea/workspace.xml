@@ -4,51 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="337e58c8-4519-457e-9f65-933b3fc04e0d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.agent.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.ask.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.ask2agent.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.edit.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/cssdialects.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/40a3481f-7b7f-4cb8-a3c0-25076b1e276e.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/823ef4bf-7418-4619-9d6c-89baa4d376ff.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/db-forest-config.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dbnavigator.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/deno.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deno.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/12278.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/git_toolbox_blame.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/git_toolbox_prj.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jsonCatalog.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jsonSchemas.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/markdown.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/tailwindcss.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/watcherTasks.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/web-for-vite-project-template.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/web-for-vite-project-template.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/webServers.xml" beforeDir="false" />
+    <list default="true" id="337e58c8-4519-457e-9f65-933b3fc04e0d" name="Changes" comment="log: 日常更新。">
+      <change afterPath="$PROJECT_DIR$/.env.dev" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.env.local" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.env.production" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.env.test" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.graphqlrc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/git_toolbox_prj.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/configures/tsconfig/tsconfig.bases.json5" beforeDir="false" afterPath="$PROJECT_DIR$/configures/tsconfig/tsconfig.bases.json5" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/configures/tsconfig/tsconfig.tsx.json5" beforeDir="false" afterPath="$PROJECT_DIR$/configures/tsconfig/tsconfig.tsx.json5" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/configures/tsconfig/tsconfig.web.json5" beforeDir="false" afterPath="$PROJECT_DIR$/configures/tsconfig/tsconfig.web.json5" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/custom_declare_types/all.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/custom_declare_types/all.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/custom_declare_types/define.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/custom_declare_types/define.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/custom_declare_types/global.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/custom_declare_types/global.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/custom_declare_types/img.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/custom_declare_types/img.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/custom_declare_types/music.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/custom_declare_types/music.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/custom_declare_types/provide.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/custom_declare_types/provide.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/custom_declare_types/videos.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/custom_declare_types/videos.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/custom_declare_types/vite/client.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/custom_declare_types/vite/client.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/custom_declare_types/vue.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/custom_declare_types/vue.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tsconfig.tsx.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.tsx.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tsconfig.vite.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.vite.json" afterDir="false" />
@@ -82,6 +52,65 @@
     "accountId": "1b3686eb-0554-4d30-9417-34886ebd6f7c"
   }
 }]]></component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0" />
+      <entry key="S2" value="1.0" />
+      <entry key="S5" value="1.0000000329350751" />
+      <entry key="S10" value="1.0001815538360763" />
+      <entry key="S30" value="1.065263403293826" />
+      <entry key="S60" value="1.3988286506161567" />
+      <entry key="M2" value="2.1823382754797995" />
+      <entry key="M5" value="3.421200345373954" />
+      <entry key="M10" value="4.105070243711775" />
+      <entry key="M15" value="4.376946303929334" />
+      <entry key="M30" value="4.67441856470535" />
+      <entry key="H1" value="4.833529008519253" />
+      <entry key="H2" value="4.915822725131921" />
+      <entry key="H4" value="4.957673146787605" />
+      <entry key="D1" value="4.992912201039701" />
+      <entry key="W1" value="4.998986638086912" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="0.0" />
+      <entry key="S30" value="0.0" />
+      <entry key="S60" value="0.0" />
+      <entry key="M2" value="0.0" />
+      <entry key="M5" value="0.0" />
+      <entry key="M10" value="0.0" />
+      <entry key="M15" value="0.0" />
+      <entry key="M30" value="0.0" />
+      <entry key="H1" value="0.0" />
+      <entry key="H2" value="0.0" />
+      <entry key="H4" value="0.0" />
+      <entry key="D1" value="0.0" />
+      <entry key="W1" value="0.0" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="0.8645372313078652" />
+      <entry key="MS500" value="0.9713074955416333" />
+      <entry key="S2" value="0.992748375440308" />
+      <entry key="S5" value="0.9970930480537517" />
+      <entry key="S10" value="0.9987264257774108" />
+      <entry key="S30" value="1.0647113445238783" />
+      <entry key="S60" value="1.3983926411687075" />
+      <entry key="M2" value="2.18193886256732" />
+      <entry key="M5" value="3.4209269000184013" />
+      <entry key="M10" value="4.104902178079349" />
+      <entry key="M15" value="4.376825951582297" />
+      <entry key="M30" value="4.674353842188733" />
+      <entry key="H1" value="4.8334954311643825" />
+      <entry key="H2" value="4.915805621930376" />
+      <entry key="H4" value="4.957664515206619" />
+      <entry key="D1" value="4.992910751218246" />
+      <entry key="W1" value="4.998986430693144" />
+    </decayedShown>
+  </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 3
@@ -100,6 +129,7 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
     "ignore.virus.scanning.warn.message": "true",
     "javascript.nodejs.core.library.configured.version": "26.2.0",
@@ -112,6 +142,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "configurable.group.appearance",
+    "ts.external.directory.path": "D:\\NodeJS\\App\\node\\node_global\\node_modules\\typescript\\lib",
     "typescript.add.unambiguous.imports.on.the.fly": "true",
     "vue.rearranger.settings.migration": "true"
   }
@@ -141,11 +172,26 @@
       <updated>1700208309198</updated>
       <workItem from="1710031309699" duration="148000" />
       <workItem from="1780147701133" duration="336000" />
-      <workItem from="1780148104437" duration="143000" />
+      <workItem from="1780148104437" duration="741000" />
     </task>
+    <task id="LOCAL-00001" summary="log: 日常更新。">
+      <option name="closed" value="true" />
+      <created>1780148330792</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1780148330792</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <MESSAGE value="log: 日常更新。" />
+    <option name="LAST_COMMIT_MESSAGE" value="log: 日常更新。" />
   </component>
 </project>

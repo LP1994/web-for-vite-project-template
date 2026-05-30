@@ -238,12 +238,6 @@ declare module '*.jade' {
   export default module;
 }
 
-declare module '*.wasm' {
-  const module: I_WASMObject;
-
-  export default module;
-}
-
 declare module '*.xml' {
   const module: I_Object001;
 
@@ -262,6 +256,38 @@ declare module '*.yml' {
   export default module;
 }
 
+declare module '*.pdf' {
+  const src: string;
+
+  export default src;
+}
+
+// 视频的字幕文件。
+declare module '*.vtt' {
+  const src: string;
+
+  export default src;
+}
+
+// wasm Start
+
+declare module '*.wasm' {
+  const module: I_WASMObject;
+
+  export default module;
+}
+
+declare module '*.wasm?init' {
+  const initWasm: (
+    options?: WebAssembly.Imports,
+  ) => Promise<WebAssembly.Instance>;
+
+  export default initWasm;
+}
+
+// wasm End
+
+// web worker Start
 declare module '*?worker' {
   interface I_Options {
     type?: 'classic' | 'module';
@@ -294,6 +320,12 @@ declare module '*?worker&inline' {
   export default workerConstructor;
 }
 
+declare module '*?worker&url' {
+  const src: string;
+
+  export default src;
+}
+
 declare module '*?sharedworker' {
   interface I_Options {
     type?: 'classic' | 'module';
@@ -324,4 +356,60 @@ declare module '*?sharedworker&inline' {
   };
 
   export default sharedWorkerConstructor;
+}
+
+declare module '*?sharedworker&url' {
+  const src: string;
+
+  export default src;
+}
+
+// web worker End
+
+// resourceQuery Start
+
+declare module '*?raw' {
+  const src: string;
+
+  export default src;
+}
+
+declare module '*?url' {
+  const src: string;
+
+  export default src;
+}
+
+declare module '*?inline' {
+  const src: string;
+
+  export default src;
+}
+
+declare module '*?no-inline' {
+  const src: string;
+
+  export default src;
+}
+
+declare module '*?url&inline' {
+  const src: string;
+
+  export default src;
+}
+
+declare module '*?url&no-inline' {
+  const src: string;
+
+  export default src;
+}
+
+// resourceQuery End
+
+declare module '@module-federation/runtime-core/dist/src/utils/hooks' {
+  export {
+    SyncWaterfallHook
+  } from '@module-federation/runtime-core/dist/src/utils/hooks';
+
+  export default any;
 }

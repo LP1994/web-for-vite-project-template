@@ -19,7 +19,6 @@
 
 /test/
 /ts_compiled/
-/webpack_records/
 
 
 
@@ -44,4 +43,3 @@
 /subsystems/**/test/
 !/subsystems/**/src/**/test/
 /subsystems/**/ts_compiled/
-/subsystems/**/webpack_records/
