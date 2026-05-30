@@ -1,13 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="EditMigrationStateService">
+    <option name="migrationStatus" value="COMPLETED" />
+  </component>
+  <component name="GithubDefaultAccount">
+    <option name="defaultAccountId" value="79980a8e-6806-4463-9cf1-d453336698b5" />
+  </component>
+  <component name="JsBowerSettings">
+    <bower-package value="" />
+    <bower.json value="" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State>
+            <id>CSS</id>
+          </State>
+          <State>
+            <id>Invalid elementsCSS</id>
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>CssInvalidPropertyValue</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
+  </component>
   <component name="ProjectResources">
     <xml-schema-version>XMLSchema_1_1</xml-schema-version>
   </component>
-  <component name="ViteConfiguration">
-    <option name="mode" value="MANUAL" />
-    <option name="path" value="$PROJECT_DIR$/vite.webstorm.esm.mjs" />
-  </component>
-  <component name="WebPackConfiguration">
-    <option name="mode" value="DISABLED" />
+  <component name="TypeScriptCompiler">
+    <option name="memoryLimit" value="10240" />
+    <option name="recompileOnChanges" value="true" />
+    <option name="typeScriptCompilerParams" value="--locale zh-cn" />
+    <option name="typeScriptServiceDirectory" value="D:/NodeJS/App/node/node_global/node_modules/typescript" />
+    <option name="versionType" value="SERVICE_DIRECTORY" />
   </component>
 </project>
