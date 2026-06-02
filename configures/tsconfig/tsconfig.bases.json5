@@ -11,7 +11,7 @@ CreateDate: 2022-01-01 00:00:00 星期六
   "display": "tsconfig.bases.json5",
   "_version": "1.0.0",
   "_typescript_version": "6.0.3",
-  "_description": "这是一个基本通用的tsconfig.json。",
+  "_description": "这是一个基本通用（基于Vite的配置）的tsconfig.json。",
   "$schema": "https://json.schemastore.org/tsconfig",
   "docs": "https://www.typescriptlang.org/tsconfig",
   /*
@@ -525,13 +525,13 @@ CreateDate: 2022-01-01 00:00:00 星期六
     之所以会有这么个设置，是因为当配合Vite以及vite-plugin-checker（基于并依赖了vue-tsc）、vue-tsc时，要想使用类型检查，就必须是“noEmit”为true，表示开启该选项（true代表不在构建时发出任何文件，诸如：编译后的.js、类型描述文件等等），并且“emitDeclarationOnly”为false，表示关闭该选项（false代表不在构建时发出描述文件）。
     3、当配合Vite以及vite-plugin-checker（基于并依赖了vue-tsc）、vue-tsc时，该选项交由CIL命令行中设置，不用在配置文件中设置，直接注释掉即可，如：
     开发模式的构建：
-    vue-tsc --noEmit && vite serve --force --mode dev_server --config ./vite.config.mjs
+    vue-tsc --noEmit && vite serve --force --mode dev_server --config ./vite.base.esm.mjs
     生产模式的构建：
-    vue-tsc --noEmit && vite build --force --mode production --config ./vite.config.mjs
+    vue-tsc --noEmit && vite build --force --mode production --config ./vite.base.esm.mjs
     只希望进行生成类型描述文件：
     vue-tsc --declaration --emitDeclarationOnly
     */
-    "emitDeclarationOnly": true,
+    // "emitDeclarationOnly": false,
     /*
     允许在每个项目中从tslib导入一次助手函数，而不是在每个文件中包含它们。
     1、对于某些降级操作，TypeScript使用一些帮助代码进行扩展类、扩展数组或对象以及异步操作等操作。
@@ -584,13 +584,13 @@ CreateDate: 2022-01-01 00:00:00 星期六
     之所以会有这么个设置，是因为当配合Vite以及vite-plugin-checker（基于并依赖了vue-tsc）、vue-tsc时，要想使用类型检查，就必须是“noEmit”为true，表示开启该选项（true代表不在构建时发出任何文件，诸如：编译后的.js、类型描述文件等等），并且“emitDeclarationOnly”为false，表示关闭该选项（false代表不在构建时发出描述文件）。
     5、当配合Vite以及vite-plugin-checker（基于并依赖了vue-tsc）、vue-tsc时，该选项交由CIL命令行中设置，不用在配置文件中设置，直接注释掉即可，如：
     开发模式的构建：
-    vue-tsc --noEmit && vite serve --force --mode dev_server --config ./vite.config.mjs
+    vue-tsc --noEmit && vite serve --force --mode dev_server --config ./vite.base.esm.mjs
     生产模式的构建：
-    vue-tsc --noEmit && vite build --force --mode production --config ./vite.config.mjs
+    vue-tsc --noEmit && vite build --force --mode production --config ./vite.base.esm.mjs
     只希望进行生成类型描述文件：
     vue-tsc --declaration --emitDeclarationOnly
     */
-    "noEmit": false,
+    // "noEmit": true,
     /*
     禁用在编译输出中生成自定义帮助程序函数，如“__extends”。
     1、您可以在全局范围内为您使用的助手提供实现，并完全关闭助手函数的发射，而不是使用importHelpers导入助手。
@@ -709,7 +709,7 @@ CreateDate: 2022-01-01 00:00:00 星期六
     7、isolatedModules选项不能与选项'verbatimModuleSyntax'一起指定。
     8、当跟Vite以及vite-plugin-checker一起使用时，该选项要设置为true，也是Vite要求设置为true的。
     */
-    // "isolatedModules": false,
+    "isolatedModules": true,
     /*
     这是为了在Node.js中反映相同的标志；它不解析符号链接的实际路径。
     1、此标志还显示与Webpack的resolve.symlinks选项相反的行为（即将TypeScript的preserveSymlinks设置为true与将Webpack的resolve.symlinks设置为false并行，反之亦然）。
@@ -1026,7 +1026,7 @@ CreateDate: 2022-01-01 00:00:00 星期六
     Debug.assert(getRootLength(fromDirectory) > 0 === getRootLength(to) > 0, "Paths must either both be absolute or both be relative");
     Error: Debug Failure. False expression: Paths must either both be absolute or both be relative
     */
-    "composite": true,
+    "composite": false,
     /*
     减少TypeScript自动加载的项目数。
     1、在多项目TypeScript程序中，TypeScript会将所有可用项目加载到内存中，以便为需要完整知识图的编辑器响应提供准确的结果，例如“查找所有参考”。
@@ -1055,7 +1055,7 @@ CreateDate: 2022-01-01 00:00:00 星期六
     Debug.assert(getRootLength(fromDirectory) > 0 === getRootLength(to) > 0, "Paths must either both be absolute or both be relative");
     Error: Debug Failure. False expression: Paths must either both be absolute or both be relative
     */
-    "incremental": true,
+    "incremental": false,
     /*
     此设置允许您指定用于存储增量编译信息的文件作为复合项目的一部分，从而可以更快地构建更大的TypeScript代码库。您可以在手册中阅读有关复合项目的更多信息。
     1、此选项提供了一种配置TypeScript跟踪其存储在磁盘上的文件以指示项目的构建状态的位置的方法——默认情况下，它们与您发出的JavaScript位于同一文件夹中。
