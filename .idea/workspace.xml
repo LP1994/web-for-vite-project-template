@@ -42,23 +42,23 @@
 }</component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.4796320596626322" />
-      <entry key="MS500" value="1.863339558574412" />
-      <entry key="S2" value="1.963929807740643" />
-      <entry key="S5" value="1.9854127202602956" />
-      <entry key="S10" value="1.9926795657558283" />
-      <entry key="S30" value="1.997729407213019" />
-      <entry key="S60" value="2.016732306927545" />
-      <entry key="M2" value="2.2466434463522322" />
-      <entry key="M5" value="3.431508082612951" />
-      <entry key="M10" value="4.655494213480942" />
-      <entry key="M15" value="5.273835981693757" />
-      <entry key="M30" value="6.042699652950712" />
-      <entry key="H1" value="6.495070313508242" />
-      <entry key="H2" value="6.7405894323467175" />
-      <entry key="H4" value="6.868508905169541" />
-      <entry key="D1" value="6.977832480347251" />
-      <entry key="W1" value="6.996826974814623" />
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0" />
+      <entry key="S2" value="1.0000000000000315" />
+      <entry key="S5" value="1.000004563874007" />
+      <entry key="S10" value="1.002763960383158" />
+      <entry key="S30" value="1.218211096354609" />
+      <entry key="S60" value="1.683131786958038" />
+      <entry key="M2" value="2.3067327943728717" />
+      <entry key="M5" value="3.143813545011107" />
+      <entry key="M10" value="3.7335535641853337" />
+      <entry key="M15" value="4.038393184301704" />
+      <entry key="M30" value="4.461018507510804" />
+      <entry key="H1" value="5.050614976698268" />
+      <entry key="H2" value="6.412397320713354" />
+      <entry key="H4" value="8.234138375844317" />
+      <entry key="D1" value="11.166231998050263" />
+      <entry key="W1" value="11.874533300409038" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -80,23 +80,23 @@
       <entry key="W1" value="0.0" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.9149073413106942" />
-      <entry key="MS500" value="1.710084870936939" />
-      <entry key="S2" value="1.9231939270659077" />
-      <entry key="S5" value="1.9689147942865441" />
-      <entry key="S10" value="1.984396296494115" />
-      <entry key="S30" value="1.9949605675986581" />
-      <entry key="S60" value="2.015341376176624" />
-      <entry key="M2" value="2.2459052864797115" />
-      <entry key="M5" value="3.43111642684109" />
-      <entry key="M10" value="4.655246870083014" />
-      <entry key="M15" value="5.273653543835581" />
-      <entry key="M30" value="6.042597467974491" />
-      <entry key="H1" value="6.495015982563038" />
-      <entry key="H2" value="6.740561386397596" />
-      <entry key="H4" value="6.868494652609686" />
-      <entry key="D1" value="6.9778300722003825" />
-      <entry key="W1" value="6.996826629981255" />
+      <entry key="MS100" value="0.9265880618903709" />
+      <entry key="MS500" value="0.9848664428955506" />
+      <entry key="S2" value="0.9961949481330858" />
+      <entry key="S5" value="0.9984807968760532" />
+      <entry key="S10" value="1.0020000964159708" />
+      <entry key="S30" value="1.2179102269181623" />
+      <entry key="S60" value="1.6829299104326423" />
+      <entry key="M2" value="2.306595635601505" />
+      <entry key="M5" value="3.143738315227342" />
+      <entry key="M10" value="3.7335087342359716" />
+      <entry key="M15" value="4.038360830877633" />
+      <entry key="M30" value="4.4610004042853095" />
+      <entry key="H1" value="5.0506026192066145" />
+      <entry key="H2" value="6.412385940285695" />
+      <entry key="H4" value="8.234129035078338" />
+      <entry key="D1" value="11.166229449251913" />
+      <entry key="W1" value="11.874532901933698" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -120,7 +120,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
     "ignore.virus.scanning.warn.message": "true",
-    "javascript.nodejs.core.library.configured.version": "26.2.0",
+    "javascript.nodejs.core.library.configured.version": "26.3.0",
     "javascript.nodejs.core.library.typings.version": "25.9.1",
     "javascript.preferred.runtime.type.id": "node",
     "last_opened_file_path": "G:/WebStormWS/web-for-vite-project-template",
@@ -131,7 +131,7 @@
     "node.js.selected.package.stylelint": "G:\\WebStormWS\\web-for-vite-project-template\\node_modules\\stylelint",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "configurable.group.language",
+    "settings.editor.selected.configurable": "settings.vue",
     "ts.external.directory.path": "D:\\NodeJS\\App\\node\\node_global\\node_modules\\typescript\\lib",
     "typescript.add.unambiguous.imports.on.the.fly": "true",
     "vue.rearranger.settings.migration": "true"
@@ -176,7 +176,8 @@
       <workItem from="1780387242883" duration="45000" />
       <workItem from="1780387290463" duration="14000" />
       <workItem from="1780387313176" duration="1227000" />
-      <workItem from="1780388556247" duration="2242000" />
+      <workItem from="1780388556247" duration="4873000" />
+      <workItem from="1780407983274" duration="1271000" />
     </task>
     <task id="LOCAL-00001" summary="log: 日常更新。">
       <option name="closed" value="true" />
@@ -242,7 +243,71 @@
       <option name="project" value="LOCAL" />
       <updated>1780390081992</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="log: 日常更新。">
+      <option name="closed" value="true" />
+      <created>1780402880425</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1780402880425</updated>
+    </task>
+    <task id="LOCAL-00010" summary="log: 日常更新。">
+      <option name="closed" value="true" />
+      <created>1780408234709</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1780408234709</updated>
+    </task>
+    <task id="LOCAL-00011" summary="log: 日常更新。">
+      <option name="closed" value="true" />
+      <created>1780408286494</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1780408286494</updated>
+    </task>
+    <task id="LOCAL-00012" summary="log: 日常更新。">
+      <option name="closed" value="true" />
+      <created>1780408448644</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1780408448644</updated>
+    </task>
+    <task id="LOCAL-00013" summary="log: 日常更新。">
+      <option name="closed" value="true" />
+      <created>1780408617337</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1780408617337</updated>
+    </task>
+    <task id="LOCAL-00014" summary="log: 日常更新。">
+      <option name="closed" value="true" />
+      <created>1780408698224</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1780408698224</updated>
+    </task>
+    <task id="LOCAL-00015" summary="log: 日常更新。">
+      <option name="closed" value="true" />
+      <created>1780408761034</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1780408761034</updated>
+    </task>
+    <task id="LOCAL-00016" summary="log: 日常更新。">
+      <option name="closed" value="true" />
+      <created>1780409246082</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1780409246082</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
