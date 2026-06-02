@@ -1,0 +1,102 @@
+对于生产环境构建，您可以在 Vite 的构建命令之外额外运行 tsc --noEmit
+
+-------------------------------------------------------------------------
+
+在开发过程中，若您需要比 IDE 提示更全面的检查，建议在单独的进程中运行 `tsc --noEmit --watch`；
+
+-------------------------------------------------------------------------
+
+若您希望类型错误直接在浏览器中报告，则可使用 `vite-plugin-checker`。
+
+-------------------------------------------------------------------------
+
+TypeScript 编译器选项
+Vite 会遵循 tsconfig.json 中的部分选项，并设置相应的 Oxc Transformer 选项。
+对于每个文件，Vite 会使用最近父目录中的 tsconfig.json。
+
+-------------------------------------------------------------------------
+
+如果该 tsconfig.json 包含 references 字段，Vite 将使用满足 include 和 exclude 字段条件的被引用配置文件。
+
+-------------------------------------------------------------------------
+
+当 Vite 配置文件和 tsconfig.json 中都设置了相同选项时，Vite 配置文件中的值具有优先级。
+
+-------------------------------------------------------------------------
+
+tsconfig.json 中 compilerOptions 下的某些配置字段需要特别注意。
+
+-------------------------------------------------------------------------
+
+isolatedModules 应设置为 true。
+
+这是因为 Oxc 转换器仅执行不包含类型信息的转译，不支持 const enum 和隐式纯类型导入等某些功能。
+
+您必须在 tsconfig.json 文件的 compilerOptions 部分将 "isolatedModules" 设置为 true，这样 TypeScript 才会对无法在隔离转译环境下正常工作的特性发出警告。
+
+如果某个依赖项在 "isolatedModules": true 的情况下无法正常工作，您可以使用 "skipLibCheck": true 暂时抑制错误，直到上游修复该问题。
+
+-------------------------------------------------------------------------
+
+target
+
+Vite 会忽略 tsconfig.json 中的 target 值，其行为与 esbuild 相同。
+
+要在 dev 环境中指定 target，可以使用 oxc.target 选项，该选项默认设置为 esnext 以实现最简转译。在 builds 环境中，build.target 选项的优先级高于 oxc.target，如有需要也可进行设置。
+
+-------------------------------------------------------------------------
+
+emitDecoratorMetadata
+
+此选项仅部分受支持。要实现完全支持，需要 TypeScript 编译器进行类型推断，而目前该功能尚未支持。详情请参阅 Oxc Transformer 的文档。
+
+个人建议设置为false即可。
+
+-------------------------------------------------------------------------
+
+paths
+
+可以设置 resolve.tsconfigPaths: true，以指示 Vite 使用 tsconfig.json 中的 paths 选项来解析导入。
+
+请注意，此功能会带来性能开销，且 TypeScript 团队不建议使用此选项来更改外部工具的行为。
+
+-------------------------------------------------------------------------
+
+其他影响构建结果的编译器选项
+extends
+importsNotUsedAsValues
+preserveValueImports
+verbatimModuleSyntax
+jsx
+jsxFactory
+jsxFragmentFactory
+jsxImportSource
+experimentalDecorators
+skipLibCheck
+
+Vite 启动模板默认将 "skipLibCheck" 设置为 "true"
+
+以避免对依赖项进行类型检查，因为这些依赖项可能仅支持特定版本和配置的 TypeScript。您可以在 vuejs/vue-cli#5688 中了解更多信息。
+
+-------------------------------------------------------------------------
+
+客户端类型
+
+Vite 的默认类型适用于其 Node.js API。若要在 Vite 应用程序中为客户端代码的环境添加适配层，可以在 tsconfig.json 文件的 compilerOptions.types 中添加 vite/client：
+tsconfig.json
+{
+  "compilerOptions": {
+    "types": [ "vite/client" ]
+  }
+}
+
+请注意，如果指定了 compilerOptions.types，则只有这些包会被包含到全局作用域中（而不是所有可见的“@types”包）。自 TS 5.9 起，建议采用此做法。
+
+使用三斜杠指令，或者，您可以添加一个 d.ts 声明文件：
+vite-env.d.ts
+/// <reference types="vite/client" />
+
+vite/client 提供了以下类型适配器：
+资源导入（例如导入 .svg 文件）
+import.meta.env 中由 Vite 注入的常量的类型
+import.meta.hot 中 HMR API 的类型
