@@ -10,9 +10,7 @@
   <component name="ChangeListManager">
     <list default="true" id="337e58c8-4519-457e-9f65-933b3fc04e0d" name="Changes" comment="log: 日常更新。">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configures/tsconfig/tsconfig.tsx.json5" beforeDir="false" afterPath="$PROJECT_DIR$/configures/tsconfig/tsconfig.tsx.json5" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig.tsx.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.tsx.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -179,7 +177,7 @@
       <workItem from="1780387242883" duration="45000" />
       <workItem from="1780387290463" duration="14000" />
       <workItem from="1780387313176" duration="1227000" />
-      <workItem from="1780388556247" duration="1220000" />
+      <workItem from="1780388556247" duration="1463000" />
     </task>
     <task id="LOCAL-00001" summary="log: 日常更新。">
       <option name="closed" value="true" />
@@ -229,7 +227,15 @@
       <option name="project" value="LOCAL" />
       <updated>1780388728622</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="log: 日常更新。">
+      <option name="closed" value="true" />
+      <created>1780389796034</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1780389796034</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
