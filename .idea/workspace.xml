@@ -5,23 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="337e58c8-4519-457e-9f65-933b3fc04e0d" name="Changes" comment="log: 日常更新。">
-      <change afterPath="$PROJECT_DIR$/.env.dev" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.env.local" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.env.production" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.env.test" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.graphqlrc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/git_toolbox_prj.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/db-forest-config.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configures/tsconfig/tsconfig.bases.json5" beforeDir="false" afterPath="$PROJECT_DIR$/configures/tsconfig/tsconfig.bases.json5" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configures/tsconfig/tsconfig.tsx.json5" beforeDir="false" afterPath="$PROJECT_DIR$/configures/tsconfig/tsconfig.tsx.json5" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configures/tsconfig/tsconfig.web.json5" beforeDir="false" afterPath="$PROJECT_DIR$/configures/tsconfig/tsconfig.web.json5" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/custom_declare_types/all.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/custom_declare_types/all.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/custom_declare_types/vite/client.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/custom_declare_types/vite/client.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig.tsx.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.tsx.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig.vite.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.vite.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/favicon.ico" beforeDir="false" afterPath="$PROJECT_DIR$/favicon.ico" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,41 +24,41 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "history": [
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;history&quot;: [
     {
-      "author": "LP1994"
+      &quot;author&quot;: &quot;LP1994&quot;
     }
   ],
-  "lastFilter": {
-    "author": "LP1994"
+  &quot;lastFilter&quot;: {
+    &quot;author&quot;: &quot;LP1994&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "git@github.com:LP1994/web-for-vite-project-template.git",
-    "accountId": "1b3686eb-0554-4d30-9417-34886ebd6f7c"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:LP1994/web-for-vite-project-template.git&quot;,
+    &quot;accountId&quot;: &quot;1b3686eb-0554-4d30-9417-34886ebd6f7c&quot;
   }
-}]]></component>
+}</component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
       <entry key="MS100" value="1.0" />
       <entry key="MS500" value="1.0" />
       <entry key="S2" value="1.0" />
-      <entry key="S5" value="1.0000000329350751" />
-      <entry key="S10" value="1.0001815538360763" />
-      <entry key="S30" value="1.065263403293826" />
-      <entry key="S60" value="1.3988286506161567" />
-      <entry key="M2" value="2.1823382754797995" />
-      <entry key="M5" value="3.421200345373954" />
-      <entry key="M10" value="4.105070243711775" />
-      <entry key="M15" value="4.376946303929334" />
-      <entry key="M30" value="4.67441856470535" />
-      <entry key="H1" value="4.833529008519253" />
-      <entry key="H2" value="4.915822725131921" />
-      <entry key="H4" value="4.957673146787605" />
-      <entry key="D1" value="4.992912201039701" />
-      <entry key="W1" value="4.998986638086912" />
+      <entry key="S5" value="1.0" />
+      <entry key="S10" value="1.0000000000045077" />
+      <entry key="S30" value="1.0001759610257805" />
+      <entry key="S60" value="1.017978119290949" />
+      <entry key="M2" value="1.2474069749361925" />
+      <entry key="M5" value="2.4321036610588926" />
+      <entry key="M10" value="3.65594187809634" />
+      <entry key="M15" value="4.274184900514024" />
+      <entry key="M30" value="5.042905493431176" />
+      <entry key="H1" value="5.495182465376168" />
+      <entry key="H2" value="5.740648013448153" />
+      <entry key="H4" value="5.868538848334999" />
+      <entry key="D1" value="5.977837563831812" />
+      <entry key="W1" value="5.9968277033339685" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -92,23 +80,23 @@
       <entry key="W1" value="0.0" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.8645372313078652" />
-      <entry key="MS500" value="0.9713074955416333" />
-      <entry key="S2" value="0.992748375440308" />
-      <entry key="S5" value="0.9970930480537517" />
-      <entry key="S10" value="0.9987264257774108" />
-      <entry key="S30" value="1.0647113445238783" />
-      <entry key="S60" value="1.3983926411687075" />
-      <entry key="M2" value="2.18193886256732" />
-      <entry key="M5" value="3.4209269000184013" />
-      <entry key="M10" value="4.104902178079349" />
-      <entry key="M15" value="4.376825951582297" />
-      <entry key="M30" value="4.674353842188733" />
-      <entry key="H1" value="4.8334954311643825" />
-      <entry key="H2" value="4.915805621930376" />
-      <entry key="H4" value="4.957664515206619" />
-      <entry key="D1" value="4.992910751218246" />
-      <entry key="W1" value="4.998986430693144" />
+      <entry key="MS100" value="0.9075191553171609" />
+      <entry key="MS500" value="0.9807790039885513" />
+      <entry key="S2" value="0.9951597218200828" />
+      <entry key="S5" value="0.9980610700524115" />
+      <entry key="S10" value="0.9990300646434046" />
+      <entry key="S30" value="0.9998524534623827" />
+      <entry key="S60" value="1.0178107943172832" />
+      <entry key="M2" value="1.247280830455908" />
+      <entry key="M5" value="2.4319568513512757" />
+      <entry key="M10" value="3.6558169679078136" />
+      <entry key="M15" value="4.274084088428517" />
+      <entry key="M30" value="5.042844123784208" />
+      <entry key="H1" value="5.495148542864016" />
+      <entry key="H2" value="5.740630171931723" />
+      <entry key="H4" value="5.868529698048852" />
+      <entry key="D1" value="5.97783600607216" />
+      <entry key="W1" value="5.996827479984695" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -122,31 +110,31 @@
     <option name="showLibraryContents" value="true" />
     <option name="showMembers" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "ignore.virus.scanning.warn.message": "true",
-    "javascript.nodejs.core.library.configured.version": "26.2.0",
-    "javascript.nodejs.core.library.typings.version": "25.9.1",
-    "javascript.preferred.runtime.type.id": "node",
-    "last_opened_file_path": "G:/WebStormWS/web-for-vite-project-template",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.standard": "",
-    "node.js.selected.package.stylelint": "",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "configurable.group.appearance",
-    "ts.external.directory.path": "D:\\NodeJS\\App\\node\\node_global\\node_modules\\typescript\\lib",
-    "typescript.add.unambiguous.imports.on.the.fly": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;26.2.0&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;25.9.1&quot;,
+    &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
+    &quot;last_opened_file_path&quot;: &quot;G:/WebStormWS/web-for-vite-project-template&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
+    &quot;node.js.selected.package.stylelint&quot;: &quot;&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.appearance&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;D:\\NodeJS\\App\\node\\node_global\\node_modules\\typescript\\lib&quot;,
+    &quot;typescript.add.unambiguous.imports.on.the.fly&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="ReactDesignerToolWindowState">
     <option name="myId2Visible">
       <map>
@@ -172,7 +160,10 @@
       <updated>1700208309198</updated>
       <workItem from="1710031309699" duration="148000" />
       <workItem from="1780147701133" duration="336000" />
-      <workItem from="1780148104437" duration="741000" />
+      <workItem from="1780148104437" duration="935000" />
+      <workItem from="1780287656115" duration="2654000" />
+      <workItem from="1780385672596" duration="28000" />
+      <workItem from="1780386699065" duration="40000" />
     </task>
     <task id="LOCAL-00001" summary="log: 日常更新。">
       <option name="closed" value="true" />
@@ -182,11 +173,30 @@
       <option name="project" value="LOCAL" />
       <updated>1780148330792</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="log: 日常更新。">
+      <option name="closed" value="true" />
+      <created>1780148993061</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1780148993061</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
