@@ -3,9 +3,6 @@
   <component name="EditMigrationStateService">
     <option name="migrationStatus" value="COMPLETED" />
   </component>
-  <component name="GithubDefaultAccount">
-    <option name="defaultAccountId" value="79980a8e-6806-4463-9cf1-d453336698b5" />
-  </component>
   <component name="JsBowerSettings">
     <bower-package value="" />
     <bower.json value="" />
@@ -41,5 +38,12 @@
     <option name="typeScriptCompilerParams" value="--locale zh-cn" />
     <option name="typeScriptServiceDirectory" value="D:/NodeJS/App/node/node_global/node_modules/typescript" />
     <option name="versionType" value="SERVICE_DIRECTORY" />
+  </component>
+  <component name="ViteConfiguration">
+    <option name="mode" value="MANUAL" />
+    <option name="path" value="$PROJECT_DIR$/vite.webstorm.esm.mjs" />
+  </component>
+  <component name="WebPackConfiguration">
+    <option name="mode" value="DISABLED" />
   </component>
 </project>
