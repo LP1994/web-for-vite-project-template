@@ -100,3 +100,19 @@ vite/client 提供了以下类型适配器：
 资源导入（例如导入 .svg 文件）
 import.meta.env 中由 Vite 注入的常量的类型
 import.meta.hot 中 HMR API 的类型
+
+--------------------------------------------------------------
+
+HTML中关于资源链接的处理：
+<audio src>、<embed src>、<img src>、<img srcset>、<image href>、<image xlink:href>、<input src>、<link href>、<link imagesrcset>、<object data>、<script type="module" src>、<source src>、<source srcset>、<track src>、<use href>、<use xlink:href>、<video src>、<video poster>
+
+<meta content>
+name：
+msapplication-tileimage、msapplication-square70x70logo、msapplication-square150x150logo、msapplication-wide310x150logo、msapplication-square310x310logo、msapplication-config、twitter:image
+
+property：
+og:image、og:image:url、og:image:secure_url、og:audio、og:audio:secure_url、og:video、og:video:secure_url
+
+若要对某些元素禁用 HTML 处理，可以在该元素上添加 vite-ignore 属性，这在引用外部资源或 CDN 时会很有用。
+-----------------------------------------------------------------
+
